@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Users } from "lucide-react";
+import { useMagnetic } from "@/hooks/useMagnetic";
+import Image from "next/image";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -20,15 +23,52 @@ const trustItems = [
 ];
 
 export default function Hero() {
+  const bgRef = useRef<HTMLDivElement>(null);
+  const magnetic1 = useMagnetic(0.2);
+  const magnetic2 = useMagnetic(0.2);
+
+  // Parallax background on mouse move
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!bgRef.current) return;
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      bgRef.current.style.transform = `translate(${x}px, ${y}px)`;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   return (
     <section
       id="hero"
       className="relative min-h-[calc(100vh-110px)] md:min-h-[calc(100vh-126px)] flex items-center overflow-hidden"
     >
-      {/* Background grid — larger cells on mobile to avoid visual noise */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(42,42,62,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(42,42,62,0.2)_1px,transparent_1px)] bg-[size:40px_40px] md:bg-[size:60px_60px] pointer-events-none" />
+      {/* Aurora orbs — neon bloom */}
+      <div className="aurora-orb aurora-orb-teal top-[10%] left-[5%]" />
+      <div className="aurora-orb aurora-orb-gold bottom-[10%] right-[5%]" />
+      <div className="aurora-orb aurora-orb-warm bottom-[5%] left-[30%]" />
+
+      {/* Parallax circuit grid */}
+      <div
+        ref={bgRef}
+        className="absolute -inset-10 pointer-events-none transition-transform duration-1000 ease-out"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(56,189,248,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(56,189,248,0.04) 1px, transparent 1px),
+            linear-gradient(rgba(168,85,247,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168,85,247,0.02) 1px, transparent 1px)
+          `,
+          backgroundSize: "80px 80px, 80px 80px, 20px 20px, 20px 20px",
+        }}
+      />
       {/* Fade out grid at edges */}
       <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-transparent to-bg-primary pointer-events-none" />
+
+      {/* Reflective floor line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-accent-warm/[0.03] to-transparent pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-12 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -41,7 +81,7 @@ export default function Hero() {
               animate="visible"
               custom={0}
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] bg-bg-secondary/60 backdrop-blur-xl glass text-sm text-accent-primary font-medium">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] bg-bg-secondary/60 backdrop-blur-xl glass-enhanced text-sm text-accent-primary font-medium">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-primary" />
@@ -60,7 +100,7 @@ export default function Hero() {
               className="font-heading text-[2rem] leading-[1.15] sm:text-5xl md:text-6xl lg:text-7xl font-bold sm:leading-[1.1] tracking-tight"
             >
               Navigate Crypto Markets{" "}
-              <span className="text-accent-primary">With Clarity.</span>
+              <span className="text-gradient-animated">With Clarity.</span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -84,12 +124,18 @@ export default function Hero() {
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               <a
+                ref={magnetic1.ref as React.RefObject<HTMLAnchorElement>}
+                onMouseMove={magnetic1.onMouseMove}
+                onMouseLeave={magnetic1.onMouseLeave}
                 href="#contact"
-                className="inline-flex items-center justify-center px-7 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(0,212,170,0.35)] hover:shadow-[0_0_40px_rgba(0,212,170,0.55)]"
+                className="inline-flex items-center justify-center px-7 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
               >
                 Book a Free Consultation
               </a>
               <a
+                ref={magnetic2.ref as React.RefObject<HTMLAnchorElement>}
+                onMouseMove={magnetic2.onMouseMove}
+                onMouseLeave={magnetic2.onMouseLeave}
                 href="https://whatsapp.com/channel/0029VaqMPvw7IUYQ2BHgwr2L"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -117,7 +163,7 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right — Photo placeholder (hidden on mobile, no image yet) */}
+          {/* Right — Umair's photo */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -125,13 +171,18 @@ export default function Hero() {
             custom={2}
             className="hidden lg:flex justify-center lg:justify-end"
           >
-            <div className="relative w-80 h-80 md:w-96 md:h-96">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-primary/20 via-transparent to-accent-secondary/20 blur-2xl" />
-              <div className="relative w-full h-full rounded-full bg-gradient-to-br from-bg-tertiary to-bg-secondary border border-border flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-4 rounded-full bg-gradient-to-br from-accent-primary/10 via-bg-secondary to-accent-secondary/10" />
-                <span className="relative text-text-secondary text-sm font-medium tracking-wide">
-                  PHOTO COMING SOON
-                </span>
+            <div className="relative w-80 h-[26rem] md:w-[26rem] md:h-[30rem]">
+              {/* Glow behind the photo */}
+              <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-accent-primary/20 via-transparent to-accent-secondary/20 blur-2xl" />
+              <div className="relative w-full h-full rounded-2xl border border-white/[0.08] glass-enhanced overflow-hidden">
+                <Image
+                  src="/umair-hero.jpg"
+                  alt="Umair Orakzai - Crypto Analyst"
+                  fill
+                  className="object-cover object-top"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent" />
               </div>
             </div>
           </motion.div>

@@ -32,7 +32,7 @@ export default function Payment() {
             Payment
           </p>
           <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
-            Pay With Crypto
+            Pay With <span className="text-gradient-animated">Crypto</span>
           </h2>
           <p className="text-text-secondary mt-4 text-base sm:text-lg">
             Fast, secure, non-custodial.
@@ -46,7 +46,7 @@ export default function Payment() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="max-w-2xl mx-auto rounded-2xl bg-bg-secondary/60 backdrop-blur-xl border border-white/[0.08] glass p-6 sm:p-12"
+          className="max-w-2xl mx-auto rounded-2xl bg-bg-secondary/60 glass-enhanced border border-white/[0.08] p-6 sm:p-12 shimmer-card"
         >
           {/* Floating coin icons */}
           <div className="flex items-center justify-center gap-4 sm:gap-8 mb-8">
@@ -92,7 +92,7 @@ export default function Payment() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <a
               href="#"
-              className="inline-flex items-center justify-center px-7 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(0,212,170,0.35)] hover:shadow-[0_0_40px_rgba(0,212,170,0.55)]"
+              className="inline-flex items-center justify-center px-7 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
             >
               Pay Now
             </a>

@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useMagnetic } from "@/hooks/useMagnetic";
+import Image from "next/image";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -15,6 +17,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const magnetic = useMagnetic(0.25);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -40,11 +43,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a
-            href="#"
-            className="font-heading text-xl md:text-2xl font-bold tracking-tight"
-          >
-            UMAIR <span className="text-accent-primary">CRYPTO</span>
+          <a href="#" className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="Umair Crypto"
+              width={200}
+              height={80}
+              className="h-10 md:h-14 w-auto"
+              priority
+            />
           </a>
 
           {/* Desktop nav links */}
@@ -53,7 +60,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-200"
+                className="nav-link-underline text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -62,8 +69,11 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <a
+            ref={magnetic.ref as React.RefObject<HTMLAnchorElement>}
+            onMouseMove={magnetic.onMouseMove}
+            onMouseLeave={magnetic.onMouseLeave}
             href="#contact"
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_20px_rgba(0,212,170,0.3)] hover:shadow-[0_0_30px_rgba(0,212,170,0.5)]"
+            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] btn-neon-glow"
           >
             Book a Call
           </a>
@@ -124,7 +134,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="flex items-center justify-center w-full px-6 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary shadow-[0_0_25px_rgba(0,212,170,0.3)]"
+                  className="flex items-center justify-center w-full px-6 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary shadow-[0_0_25px_rgba(56,189,248,0.3)] btn-neon-glow"
                 >
                   Book a Call
                 </motion.a>

@@ -80,7 +80,11 @@ export default function FAQ() {
             return (
               <div
                 key={i}
-                className="rounded-2xl border border-white/[0.08] bg-bg-secondary/60 backdrop-blur-xl glass overflow-hidden"
+                className={`rounded-2xl border bg-bg-secondary/60 glass-enhanced overflow-hidden transition-all duration-300 ${
+                  isOpen
+                    ? "border-accent-primary/30 shadow-[0_0_20px_rgba(56,189,248,0.1)]"
+                    : "border-white/[0.08] hover:border-accent-primary/20 hover:shadow-[0_0_15px_rgba(56,189,248,0.08)]"
+                }`}
               >
                 <button
                   onClick={() => toggle(i)}
