@@ -83,10 +83,10 @@ export default function Footer() {
             <a href="#" className="inline-block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logo_navbar.png"
-                srcSet="/logo_navbar.png 1x, /logo_navbar@2x.png 2x"
+                src="/UmairLogo.png"
                 alt="Umair Crypto"
                 className="h-8 w-auto"
+                style={{ imageRendering: "crisp-edges", WebkitFontSmoothing: "antialiased" }}
               />
             </a>
             <p className="text-text-secondary text-sm mt-3 leading-relaxed max-w-xs mx-auto md:mx-0">

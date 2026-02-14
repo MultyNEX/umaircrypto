@@ -45,10 +45,10 @@ export default function Navbar() {
           <a href="#" className="flex items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logo_navbar.png"
-              srcSet="/logo_navbar.png 1x, /logo_navbar@2x.png 2x"
+              src="/UmairLogo.png"
               alt="Umair Crypto"
               className="h-8 md:h-10 w-auto"
+              style={{ imageRendering: "crisp-edges", WebkitFontSmoothing: "antialiased" }}
             />
           </a>
 

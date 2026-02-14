@@ -61,10 +61,10 @@ export default function Preloader() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logo_hero.png"
-              srcSet="/logo_hero.png 1x, /logo_hero@2x.png 2x"
+              src="/UmairLogo.png"
               alt="Umair Crypto"
               className="w-52 sm:w-72 h-auto drop-shadow-[0_0_60px_rgba(56,189,248,0.3)]"
+              style={{ imageRendering: "crisp-edges", WebkitFontSmoothing: "antialiased" }}
             />
           </motion.div>
 
