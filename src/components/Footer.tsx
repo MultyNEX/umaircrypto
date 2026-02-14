@@ -90,7 +90,7 @@ export default function Footer() {
               />
             </a>
             <p className="text-text-secondary text-sm mt-3 leading-relaxed max-w-xs mx-auto md:mx-0">
-              Technical analysis. Real conviction.
+              Professional crypto trading consultancy. Technical analysis, portfolio guidance, and a thriving community of 300K+ traders.
             </p>
           </div>
 
@@ -155,14 +155,20 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Disclaimer */}
+      <div className="border-t border-border">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6 text-center">
+          <p className="text-xs text-text-secondary leading-relaxed max-w-3xl mx-auto">
+            <span className="text-accent-primary font-semibold">Disclaimer:</span>{" "}
+            Not financial advice. Trading involves risk. Always do your own research. Cryptocurrency investments are volatile and can result in significant losses.
+          </p>
+        </div>
+      </div>
+
       {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-text-secondary text-center">
           <p>&copy; 2026 Umair Crypto. All rights reserved.</p>
-          <p>
-            Not financial advice. Trading involves risk. Always do your own
-            research.
-          </p>
           <a
             href="#"
             className="hover:text-text-primary transition-colors duration-200"
