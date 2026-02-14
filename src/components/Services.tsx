@@ -154,7 +154,7 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
 
 export default function Services() {
   return (
-    <section id="services" className="relative py-16 md:py-32 overflow-hidden">
+    <section id="services" className="relative py-16 md:py-32 overflow-x-clip">
       {/* Aurora orbs */}
       <div className="aurora-orb aurora-orb-gold top-[30%] left-[5%]" />
       <div className="aurora-orb aurora-orb-warm bottom-[10%] right-[15%]" />

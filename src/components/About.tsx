@@ -94,30 +94,30 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
 
-              {/* Swirling arrow pointing to Umair (right side of photo) */}
+              {/* Arrow pointing to Umair */}
               <svg
-                className="absolute -right-16 top-[8%] w-44 h-44 text-accent-primary drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]"
-                viewBox="0 0 160 160"
+                className="absolute -right-20 top-[5%] w-52 h-52 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                viewBox="0 0 200 200"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                {/* Swirl path from label down toward Umair */}
+                {/* Curved arrow path from label down to Umair */}
                 <path
-                  d="M140 15 C120 10, 80 5, 55 30 C30 55, 45 80, 35 105 C28 120, 15 118, 8 112"
+                  d="M150 20 C125 12, 90 8, 65 35 C40 62, 55 90, 42 120 C34 140, 18 138, 10 130"
                   stroke="currentColor"
-                  strokeWidth="2.5"
+                  strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
-                  strokeDasharray="5 5"
+                  strokeDasharray="8 6"
                 />
-                {/* Arrowhead */}
+                {/* Arrowhead — larger and bolder */}
                 <polygon
-                  points="2,118 14,110 10,102"
+                  points="2,138 18,128 12,116"
                   fill="currentColor"
                 />
               </svg>
               {/* Label */}
-              <span className="absolute -right-10 top-[3%] font-heading text-base font-bold text-accent-primary drop-shadow-[0_0_12px_rgba(56,189,248,0.5)] whitespace-nowrap">
+              <span className="absolute -right-14 top-[1%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
             </div>
