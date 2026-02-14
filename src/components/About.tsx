@@ -85,13 +85,40 @@ export default function About() {
               <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-accent-primary/10 via-transparent to-accent-secondary/10 blur-2xl" />
               <div className="relative w-full h-full rounded-2xl border border-white/[0.08] glass-enhanced overflow-hidden">
                 <Image
-                  src="/umair.png"
+                  src="/umair-about.png"
                   alt="Umair Orakzai - Crypto Analyst"
                   fill
                   className="object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
+
+              {/* Swirling arrow pointing to Umair (right side) */}
+              <svg
+                className="absolute -right-8 top-1/4 w-28 h-28 text-accent-primary drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]"
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Swirl path */}
+                <path
+                  d="M110 20 C95 15, 70 10, 55 25 C40 40, 50 60, 40 75 C30 90, 20 85, 15 80"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray="4 4"
+                />
+                {/* Arrowhead */}
+                <polygon
+                  points="10,85 20,78 16,72"
+                  fill="currentColor"
+                />
+              </svg>
+              {/* Label */}
+              <span className="absolute -right-4 top-[14%] font-heading text-sm font-bold text-accent-primary drop-shadow-[0_0_8px_rgba(56,189,248,0.5)] whitespace-nowrap">
+                That&apos;s me!
+              </span>
             </div>
           </motion.div>
 

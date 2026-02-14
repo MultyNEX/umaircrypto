@@ -28,6 +28,10 @@ export const metadata: Metadata = {
   title: "Umair Crypto | Crypto Trading Consultant & Analyst",
   description:
     "Join 300K+ traders. Umair Orakzai provides expert BTC & ETH technical analysis, 1-on-1 consultations, and a thriving crypto trading community. 152K+ on Instagram.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "Umair Crypto | Crypto Trading Consultant & Analyst",
     description:

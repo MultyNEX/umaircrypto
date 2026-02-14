@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useMagnetic } from "@/hooks/useMagnetic";
-import Image from "next/image";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -44,13 +43,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <a href="#" className="flex items-center">
-            <Image
-              src="/logo.png"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo_navbar.png"
+              srcSet="/logo_navbar.png 1x, /logo_navbar@2x.png 2x"
               alt="Umair Crypto"
-              width={200}
-              height={80}
-              className="h-10 md:h-14 w-auto"
-              priority
+              className="h-8 md:h-10 w-auto"
             />
           </a>
 

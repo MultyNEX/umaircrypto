@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Users } from "lucide-react";
 import { useMagnetic } from "@/hooks/useMagnetic";
-import Image from "next/image";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -74,12 +73,28 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left — Text content */}
           <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-            {/* Badge */}
+            {/* Hero logo */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               custom={0}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo_hero.png"
+                srcSet="/logo_hero.png 1x, /logo_hero@2x.png 2x"
+                alt="Umair Crypto"
+                className="h-20 sm:h-28 md:h-32 w-auto mx-auto lg:mx-0 drop-shadow-[0_0_40px_rgba(56,189,248,0.25)]"
+              />
+            </motion.div>
+
+            {/* Badge */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={1}
             >
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] bg-bg-secondary/60 backdrop-blur-xl glass-enhanced text-sm text-accent-primary font-medium">
                 <span className="relative flex h-2 w-2">
@@ -96,7 +111,7 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={1}
+              custom={2}
               className="font-heading text-[2rem] leading-[1.15] sm:text-5xl md:text-6xl lg:text-7xl font-bold sm:leading-[1.1] tracking-tight"
             >
               Navigate Crypto Markets{" "}
@@ -108,7 +123,7 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={2}
+              custom={3}
               className="text-text-secondary text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
               Technical analysis. Real conviction. No fluff. Join 300,000+
@@ -120,7 +135,7 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={3}
+              custom={4}
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               <a
@@ -151,7 +166,7 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={4}
+              custom={5}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-x-2 sm:gap-x-4 gap-y-1 text-xs sm:text-sm text-text-secondary pt-2"
             >
               {trustItems.map((item, i) => (
@@ -168,19 +183,18 @@ export default function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={2}
+            custom={3}
             className="hidden lg:flex justify-center lg:justify-end"
           >
             <div className="relative w-80 h-[26rem] md:w-[26rem] md:h-[30rem]">
               {/* Glow behind the photo */}
               <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-accent-primary/20 via-transparent to-accent-secondary/20 blur-2xl" />
               <div className="relative w-full h-full rounded-2xl border border-white/[0.08] glass-enhanced overflow-hidden">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src="/umair-hero.jpg"
                   alt="Umair Orakzai - Crypto Analyst"
-                  fill
-                  className="object-cover object-top"
-                  priority
+                  className="absolute inset-0 w-full h-full object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent" />
               </div>

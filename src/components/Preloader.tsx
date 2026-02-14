@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 
 export default function Preloader() {
   const [progress, setProgress] = useState(0);
@@ -60,13 +59,12 @@ export default function Preloader() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="relative z-10 mb-8"
           >
-            <Image
-              src="/logo-full.png"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo_hero.png"
+              srcSet="/logo_hero.png 1x, /logo_hero@2x.png 2x"
               alt="Umair Crypto"
-              width={340}
-              height={340}
               className="w-52 sm:w-72 h-auto drop-shadow-[0_0_60px_rgba(56,189,248,0.3)]"
-              priority
             />
           </motion.div>
 

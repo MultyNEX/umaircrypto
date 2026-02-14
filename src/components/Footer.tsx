@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 const quickLinks = [
   { label: "About", href: "#about" },
@@ -82,12 +81,12 @@ export default function Footer() {
           {/* Column 1 — Brand */}
           <div>
             <a href="#" className="inline-block">
-              <Image
-                src="/logo.png"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo_navbar.png"
+                srcSet="/logo_navbar.png 1x, /logo_navbar@2x.png 2x"
                 alt="Umair Crypto"
-                width={160}
-                height={65}
-                className="h-10 w-auto"
+                className="h-8 w-auto"
               />
             </a>
             <p className="text-text-secondary text-sm mt-3 leading-relaxed max-w-xs mx-auto md:mx-0">
