@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Users, TrendingUp, Calendar } from "lucide-react";
 import { useMagnetic } from "@/hooks/useMagnetic";
 
 const fadeUp: Variants = {
@@ -15,10 +15,10 @@ const fadeUp: Variants = {
 };
 
 const trustItems = [
-  "152K+ Instagram",
-  "26.8K X",
-  "300K+ Traders",
-  "Since 2021",
+  { label: "152K+ Instagram", icon: TrendingUp },
+  { label: "26.8K X", icon: TrendingUp },
+  { label: "300K+ Traders", icon: Users },
+  { label: "Since 2021", icon: Calendar },
 ];
 
 export default function Hero() {
@@ -41,12 +41,15 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[calc(100vh-110px)] md:min-h-[calc(100vh-126px)] flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden"
     >
-      {/* Aurora orbs — neon bloom */}
+      {/* Aurora orbs */}
       <div className="aurora-orb aurora-orb-teal top-[10%] left-[5%]" />
       <div className="aurora-orb aurora-orb-gold bottom-[10%] right-[5%]" />
       <div className="aurora-orb aurora-orb-warm bottom-[5%] left-[30%]" />
+
+      {/* Subtle green glow behind heading area */}
+      <div className="absolute top-1/4 left-[10%] w-[500px] h-[400px] rounded-full bg-accent-primary/[0.06] blur-[120px] pointer-events-none" />
 
       {/* Parallax circuit grid */}
       <div
@@ -69,53 +72,34 @@ export default function Hero() {
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-accent-warm/[0.03] to-transparent pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-12 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-20 md:py-28 lg:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left — Text content */}
-          <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-            {/* Hero logo */}
+          <div className="space-y-7 sm:space-y-8 text-center lg:text-left">
+            {/* Green pill badge */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               custom={0}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo_hero.png"
-                srcSet="/logo_hero.png 1x, /logo_hero@2x.png 2x"
-                alt="Umair Crypto"
-                className="h-20 sm:h-28 md:h-32 w-auto mx-auto lg:mx-0 drop-shadow-[0_0_40px_rgba(56,189,248,0.25)]"
-              />
-            </motion.div>
-
-            {/* Badge */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={1}
-            >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] bg-bg-secondary/60 backdrop-blur-xl glass-enhanced text-sm text-accent-primary font-medium">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-primary" />
-                </span>
-                <Users size={14} />
+              <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-accent-primary/15 text-sm text-accent-primary font-semibold tracking-wide">
+                <Users size={16} />
                 300K+ Traders Community
               </span>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline — significantly larger */}
             <motion.h1
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={2}
-              className="font-heading text-[2rem] leading-[1.15] sm:text-5xl md:text-6xl lg:text-7xl font-bold sm:leading-[1.1] tracking-tight"
+              custom={1}
+              className="font-heading font-bold tracking-tight"
+              style={{ fontSize: "clamp(2.75rem, 6vw, 5rem)", lineHeight: 1.08 }}
             >
               Navigate Crypto Markets{" "}
-              <span className="text-gradient-animated">With Clarity.</span>
+              <span className="text-accent-primary">With Clarity.</span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -123,19 +107,19 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={3}
-              className="text-text-secondary text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              custom={2}
+              className="text-text-secondary text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
               Technical analysis. Real conviction. No fluff. Join 300,000+
               traders who trust Umair Crypto for BTC, ETH, and altcoin insights.
             </motion.p>
 
-            {/* CTAs — full width stacked on mobile */}
+            {/* CTAs */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={4}
+              custom={3}
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               <a
@@ -143,9 +127,10 @@ export default function Hero() {
                 onMouseMove={magnetic1.onMouseMove}
                 onMouseLeave={magnetic1.onMouseLeave}
                 href="#contact"
-                className="inline-flex items-center justify-center px-7 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
               >
                 Book a Free Consultation
+                <ArrowRight size={18} />
               </a>
               <a
                 ref={magnetic2.ref as React.RefObject<HTMLAnchorElement>}
@@ -154,49 +139,81 @@ export default function Hero() {
                 href="https://whatsapp.com/channel/0029VaqMPvw7IUYQ2BHgwr2L"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 text-base font-semibold rounded-xl border border-border text-text-primary hover:bg-bg-tertiary transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold rounded-xl border border-white/[0.08] bg-white/[0.03] text-text-primary hover:bg-white/[0.06] transition-all duration-200"
               >
                 Join the Community
                 <ArrowRight size={18} />
               </a>
             </motion.div>
 
-            {/* Trust bar */}
+            {/* Social proof bar with icons */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              custom={5}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-x-2 sm:gap-x-4 gap-y-1 text-xs sm:text-sm text-text-secondary pt-2"
+              custom={4}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 sm:gap-x-6 gap-y-2 text-sm text-text-secondary pt-3"
             >
               {trustItems.map((item, i) => (
-                <span key={i} className="flex items-center gap-1 sm:gap-2">
-                  {i > 0 && <span className="text-border">·</span>}
-                  {item}
+                <span key={i} className="inline-flex items-center gap-1.5">
+                  <item.icon size={14} className="text-accent-primary" />
+                  {item.label}
                 </span>
               ))}
             </motion.div>
           </div>
 
-          {/* Right — Umair's photo */}
+          {/* Right — Hero image card with floating badges */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={3}
+            custom={2}
             className="hidden lg:flex justify-center lg:justify-end"
           >
-            <div className="relative w-80 h-[26rem] md:w-[26rem] md:h-[30rem]">
-              {/* Glow behind the photo */}
-              <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-accent-primary/20 via-transparent to-accent-secondary/20 blur-2xl" />
-              <div className="relative w-full h-full rounded-2xl border border-white/[0.08] glass-enhanced overflow-hidden">
+            <div className="relative">
+              {/* Glow behind card */}
+              <div className="absolute -inset-6 rounded-3xl bg-gradient-to-br from-accent-primary/15 via-transparent to-accent-secondary/15 blur-3xl" />
+
+              {/* Main image card */}
+              <div className="relative w-[420px] h-[480px] rounded-2xl border border-white/[0.08] overflow-hidden bg-bg-secondary">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/umair-hero.jpg"
                   alt="Umair Orakzai - Crypto Analyst"
                   className="absolute inset-0 w-full h-full object-cover object-top"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/70 via-transparent to-bg-primary/20" />
+              </div>
+
+              {/* Floating badge — 300K+ Community (top-left) */}
+              <div
+                className="absolute -left-12 top-[18%] z-20 float-bob"
+                style={{ animationDelay: "0s" }}
+              >
+                <div className="px-5 py-4 rounded-xl border border-white/[0.1] bg-bg-primary/60 backdrop-blur-xl shadow-lg">
+                  <p className="text-2xl font-bold text-accent-primary font-heading">
+                    300K+
+                  </p>
+                  <p className="text-[11px] font-semibold tracking-[0.2em] text-text-secondary uppercase mt-0.5">
+                    Community
+                  </p>
+                </div>
+              </div>
+
+              {/* Floating badge — 4+ Years Exp (bottom-right) */}
+              <div
+                className="absolute -right-10 bottom-[15%] z-20 float-bob"
+                style={{ animationDelay: "1.5s" }}
+              >
+                <div className="px-5 py-4 rounded-xl border border-white/[0.1] bg-bg-primary/60 backdrop-blur-xl shadow-lg">
+                  <p className="text-2xl font-bold text-accent-primary font-heading">
+                    4+
+                  </p>
+                  <p className="text-[11px] font-semibold tracking-[0.2em] text-text-secondary uppercase mt-0.5">
+                    Years Exp.
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
