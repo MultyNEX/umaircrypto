@@ -81,42 +81,43 @@ export default function About() {
             transition={{ duration: 0.6 }}
             className="hidden lg:flex justify-center lg:justify-start"
           >
-            <div className="relative w-80 h-[22rem] md:w-96 md:h-[28rem]">
+            <div className="relative w-full max-w-[480px]">
               <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-accent-primary/10 via-transparent to-accent-secondary/10 blur-2xl" />
-              <div className="relative w-full h-full rounded-2xl border border-white/[0.08] glass-enhanced overflow-hidden">
+              <div className="relative w-full rounded-2xl border border-white/[0.08] glass-enhanced overflow-hidden">
                 <Image
                   src="/umair-about.png"
                   alt="Umair Orakzai - Crypto Analyst"
-                  fill
-                  className="object-cover object-top"
+                  width={1024}
+                  height={1328}
+                  className="w-full h-auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
 
-              {/* Swirling arrow pointing to Umair (right side) */}
+              {/* Swirling arrow pointing to Umair (right side of photo) */}
               <svg
-                className="absolute -right-8 top-1/4 w-28 h-28 text-accent-primary drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]"
-                viewBox="0 0 120 120"
+                className="absolute -right-16 top-[8%] w-44 h-44 text-accent-primary drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]"
+                viewBox="0 0 160 160"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                {/* Swirl path */}
+                {/* Swirl path from label down toward Umair */}
                 <path
-                  d="M110 20 C95 15, 70 10, 55 25 C40 40, 50 60, 40 75 C30 90, 20 85, 15 80"
+                  d="M140 15 C120 10, 80 5, 55 30 C30 55, 45 80, 35 105 C28 120, 15 118, 8 112"
                   stroke="currentColor"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   fill="none"
-                  strokeDasharray="4 4"
+                  strokeDasharray="5 5"
                 />
                 {/* Arrowhead */}
                 <polygon
-                  points="10,85 20,78 16,72"
+                  points="2,118 14,110 10,102"
                   fill="currentColor"
                 />
               </svg>
               {/* Label */}
-              <span className="absolute -right-4 top-[14%] font-heading text-sm font-bold text-accent-primary drop-shadow-[0_0_8px_rgba(56,189,248,0.5)] whitespace-nowrap">
+              <span className="absolute -right-10 top-[3%] font-heading text-base font-bold text-accent-primary drop-shadow-[0_0_12px_rgba(56,189,248,0.5)] whitespace-nowrap">
                 That&apos;s me!
               </span>
             </div>
