@@ -42,7 +42,6 @@ export default function CryptoCoins() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    console.log("[CryptoCoins] mounted, canvas:", canvas.width, canvas.height);
     const ctx = canvas.getContext("2d")!;
     let frameId: number;
     let particles: Particle[] = [];
