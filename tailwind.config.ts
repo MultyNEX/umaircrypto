@@ -10,22 +10,22 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: "#060612",
-          secondary: "#0c0c1d",
-          tertiary: "#141432",
+          primary: "rgb(var(--bg-primary) / <alpha-value>)",
+          secondary: "rgb(var(--bg-secondary) / <alpha-value>)",
+          tertiary: "rgb(var(--bg-tertiary) / <alpha-value>)",
         },
         accent: {
-          primary: "#38BDF8",
-          secondary: "#A855F7",
-          warm: "#F59E0B",
+          primary: "rgb(var(--accent-primary) / <alpha-value>)",
+          secondary: "rgb(var(--accent-secondary) / <alpha-value>)",
+          warm: "rgb(var(--accent-warm) / <alpha-value>)",
         },
         text: {
-          primary: "#F0F0F0",
-          secondary: "#8B8B9E",
+          primary: "rgb(var(--text-primary) / <alpha-value>)",
+          secondary: "rgb(var(--text-secondary) / <alpha-value>)",
         },
-        border: "#1e1e3a",
-        danger: "#FF4757",
-        success: "#38BDF8",
+        border: "rgb(var(--border) / <alpha-value>)",
+        danger: "rgb(var(--danger) / <alpha-value>)",
+        success: "rgb(var(--success) / <alpha-value>)",
       },
       fontFamily: {
         heading: ["var(--font-space-grotesk)", "sans-serif"],

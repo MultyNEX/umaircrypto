@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useMagnetic } from "@/hooks/useMagnetic";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -68,16 +69,19 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <a
-            ref={magnetic.ref as React.RefObject<HTMLAnchorElement>}
-            onMouseMove={magnetic.onMouseMove}
-            onMouseLeave={magnetic.onMouseLeave}
-            href="#contact"
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] btn-neon-glow"
-          >
-            Book a Call
-          </a>
+          {/* Desktop CTA + Theme Toggle */}
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
+            <a
+              ref={magnetic.ref as React.RefObject<HTMLAnchorElement>}
+              onMouseMove={magnetic.onMouseMove}
+              onMouseLeave={magnetic.onMouseLeave}
+              href="#contact"
+              className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] btn-neon-glow"
+            >
+              Book a Call
+            </a>
+          </div>
 
           {/* Mobile hamburger */}
           <button
@@ -128,6 +132,16 @@ export default function Navbar() {
                     </motion.a>
                   ))}
                 </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  className="flex items-center justify-between px-4 py-3 rounded-xl bg-bg-secondary/50 mb-4"
+                >
+                  <span className="text-sm text-text-secondary">Theme</span>
+                  <ThemeToggle />
+                </motion.div>
 
                 <motion.a
                   href="#contact"
