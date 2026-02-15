@@ -71,7 +71,7 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
       transition={{ duration: 0.5, delay: i * 0.15 }}
       className={`relative flex flex-col rounded-2xl p-6 sm:p-8 glass-enhanced border shimmer-card tilt-card ${
         tier.highlighted
-          ? "bg-bg-secondary/80 border-animated-gold"
+          ? "bg-bg-secondary/80 border-animated-gold overflow-visible"
           : "bg-bg-secondary/60 border-white/[0.08]"
       }`}
     >

@@ -374,6 +374,11 @@ body::after {
   display: none;
 }
 
+/* Force overflow visible when needed (overrides shimmer-card) */
+.overflow-visible {
+  overflow: visible !important;
+}
+
 /* Touch device — restore default cursor */
 @media (hover: none) and (pointer: coarse) {
   body { cursor: auto; }
