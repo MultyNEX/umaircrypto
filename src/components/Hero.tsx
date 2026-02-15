@@ -51,22 +51,16 @@ export default function Hero() {
       {/* Subtle green glow behind heading area */}
       <div className="absolute top-1/4 left-[10%] w-[500px] h-[400px] rounded-full bg-accent-primary/[0.06] blur-[120px] pointer-events-none" />
 
-      {/* Parallax circuit grid */}
+      {/* Background image with parallax */}
       <div
         ref={bgRef}
-        className="absolute -inset-10 pointer-events-none transition-transform duration-1000 ease-out"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(56,189,248,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(56,189,248,0.04) 1px, transparent 1px),
-            linear-gradient(rgba(168,85,247,0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(168,85,247,0.02) 1px, transparent 1px)
-          `,
-          backgroundSize: "80px 80px, 80px 80px, 20px 20px, 20px 20px",
-        }}
+        className="absolute -inset-10 pointer-events-none transition-transform duration-1000 ease-out bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero-bg.jpg')" }}
       />
-      {/* Fade out grid at edges */}
-      <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-transparent to-bg-primary pointer-events-none" />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-bg-primary/60 pointer-events-none" />
+      {/* Fade edges into site background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-bg-primary/80 via-transparent to-bg-primary pointer-events-none" />
 
       {/* Reflective floor line */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
