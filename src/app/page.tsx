@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import TickerTape from "@/components/TickerTape";
 import Hero from "@/components/Hero";
@@ -11,9 +12,18 @@ import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
+const CryptoCoins = dynamic(() => import("@/components/CryptoCoins"), {
+  ssr: false,
+});
+const Preloader = dynamic(() => import("@/components/Preloader"), {
+  ssr: false,
+});
+
 export default function Home() {
   return (
     <>
+      <Preloader />
+      <CryptoCoins />
       <Navbar />
       <TickerTape />
       {/* Spacer: navbar (64/80px) + ticker tape (56/50px) */}

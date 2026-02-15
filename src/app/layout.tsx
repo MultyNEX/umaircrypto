@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import Preloader from "@/components/Preloader";
 import CustomCursor from "@/components/CustomCursor";
-import CryptoCoins from "@/components/CryptoCoins";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -65,9 +63,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-body antialiased overflow-x-hidden`}
       >
-        <Preloader />
         <CustomCursor />
-        <CryptoCoins />
         {/* Circuit board grid overlay */}
         <div className="circuit-grid" aria-hidden="true" />
         {children}
