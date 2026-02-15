@@ -67,12 +67,14 @@ export default function Preloader() {
 
   useEffect(() => {
     const start = performance.now();
-    const duration = 2200;
+    const duration = 3200;
     let raf: number;
 
     const tick = (now: number) => {
       const elapsed = now - start;
-      const p = Math.min(elapsed / duration, 1);
+      // Don't start counting until 400ms in
+      const adjusted = Math.max(0, elapsed - 400);
+      const p = Math.min(adjusted / duration, 1);
       const eased = 1 - Math.pow(1 - p, 4);
       const val = Math.round(eased * 100);
 
@@ -116,8 +118,11 @@ export default function Preloader() {
               50% { transform: translateY(var(--float-amp, -15px)); }
             }
             @keyframes preloader-pulse {
-              0%, 100% { opacity: var(--pulse-min, 0.06); }
+              0% { opacity: 0; }
+              15% { opacity: var(--pulse-max, 0.18); }
               50% { opacity: var(--pulse-max, 0.18); }
+              85% { opacity: var(--pulse-min, 0.06); }
+              100% { opacity: var(--pulse-min, 0.06); }
             }
             @keyframes preloader-glow-a {
               0%, 100% { transform: scale(1); opacity: 0.08; }
@@ -185,8 +190,8 @@ export default function Preloader() {
                   textShadow: `0 0 ${p.symbol.size * 0.6}px ${p.symbol.color}`,
                   "--float-amp": `${-p.floatAmp}px`,
                   "--dur": `${p.duration}s`,
-                  "--delay": `${p.delay}s`,
-                  "--pulse-min": "0.06",
+                  "--delay": `${0.3 + i * 0.08}s`,
+                  "--pulse-min": "0",
                   "--pulse-max": `${0.12 + (11 - p.symbol.size / 4) * 0.008}`,
                 } as React.CSSProperties}
               >
