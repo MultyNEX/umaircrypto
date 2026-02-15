@@ -13,7 +13,7 @@ const SYMBOLS = [
   { char: "A", label: "AVAX", color: "#e84142", rank: 8 },
 ];
 
-// Mulberry32 — proper PRNG with uniform distribution
+// Mulberry32 PRNG
 function mulberry32(seed: number) {
   return function () {
     seed |= 0;
@@ -45,33 +45,48 @@ interface Particle {
 }
 
 function generateParticles(isMobile: boolean): Particle[] {
+  const rand = mulberry32(77742);
+  const COUNT = isMobile ? 32 : 60;
+  const MIN_DIST = isMobile ? 0.1 : 0.08; // minimum distance between symbols as ratio
+
+  // Poisson-disc-like placement: place randomly, reject if too close to existing
+  const points: { x: number; y: number }[] = [];
+  const maxAttempts = 500;
+  let attempts = 0;
+
+  while (points.length < COUNT && attempts < maxAttempts) {
+    const x = 0.02 + rand() * 0.96;
+    const y = 0.02 + rand() * 0.96;
+    attempts++;
+
+    // Check distance to all existing points
+    let tooClose = false;
+    for (const p of points) {
+      const dx = x - p.x;
+      const dy = y - p.y;
+      if (Math.sqrt(dx * dx + dy * dy) < MIN_DIST) {
+        tooClose = true;
+        break;
+      }
+    }
+
+    if (!tooClose) {
+      points.push({ x, y });
+      attempts = 0; // reset attempts on success
+    }
+  }
+
+  // Convert points to particles
   const particles: Particle[] = [];
-  const rand = mulberry32(12345);
 
-  // Grid-based placement with heavy jitter for even coverage that looks random
-  const cols = isMobile ? 5 : 8;
-  const rows = isMobile ? 7 : 8;
-  const total = cols * rows;
-  const cellW = 1 / cols;
-  const cellH = 1 / rows;
-
-  for (let i = 0; i < total; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
+  points.forEach((pt, i) => {
     const symbol = SYMBOLS[i % SYMBOLS.length];
-
-    // Center of cell + random jitter within 80% of cell
-    const jitterX = (rand() - 0.5) * cellW * 0.8;
-    const jitterY = (rand() - 0.5) * cellH * 0.8;
-    const ratioX = cellW * (col + 0.5) + jitterX;
-    const ratioY = cellH * (row + 0.5) + jitterY;
-
     const size = sizeFromRank(symbol.rank, isMobile);
     const baseOpacity = 0.07 + (9 - symbol.rank) * 0.016;
 
     particles.push({
-      ratioX: Math.max(0.01, Math.min(0.99, ratioX)),
-      ratioY: Math.max(0.01, Math.min(0.99, ratioY)),
+      ratioX: pt.x,
+      ratioY: pt.y,
       size,
       symbol,
       phase: rand() * Math.PI * 2,
@@ -81,7 +96,7 @@ function generateParticles(isMobile: boolean): Particle[] {
       offsetX: 0,
       offsetY: 0,
     });
-  }
+  });
 
   return particles;
 }
