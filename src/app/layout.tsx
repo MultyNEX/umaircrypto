@@ -25,27 +25,33 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Umair Crypto | Crypto Trading Consultant & Analyst",
+  title: {
+    default: "UmairCrypto - Crypto Trading Signals & Analysis",
+    template: "%s | UmairCrypto",
+  },
   description:
-    "Join 300K+ traders. Umair Orakzai provides expert BTC & ETH technical analysis, 1-on-1 consultations, and a thriving crypto trading community. 152K+ on Instagram.",
+    "Professional cryptocurrency trading signals, market analysis, and crypto education by Umair. Join 300K+ traders for expert BTC & ETH technical analysis and 1-on-1 consultations.",
+  metadataBase: new URL("https://umaircrypto.com"),
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "Umair Crypto | Crypto Trading Consultant & Analyst",
+    title: "UmairCrypto",
     description:
-      "Join 300K+ traders. Umair Orakzai provides expert BTC & ETH technical analysis, 1-on-1 consultations, and a thriving crypto trading community.",
+      "Professional crypto trading signals & analysis. Join 300K+ traders for expert BTC & ETH insights.",
+    url: "https://umaircrypto.com",
+    siteName: "UmairCrypto",
     type: "website",
     locale: "en_US",
-    url: "https://umaircrypto.com",
   },
   twitter: {
     card: "summary_large_image",
     creator: "@Umairorkz",
-    title: "Umair Crypto | Crypto Trading Consultant & Analyst",
-    description:
-      "Join 300K+ traders. Umair Orakzai provides expert BTC & ETH technical analysis, 1-on-1 consultations, and a thriving crypto trading community.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
