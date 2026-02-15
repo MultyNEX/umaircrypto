@@ -96,23 +96,22 @@ export default function About() {
 
               {/* Arrow pointing to Umair */}
               <svg
-                className="hidden lg:block absolute -right-20 top-[5%] w-52 h-52 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                className="hidden lg:block absolute -right-20 top-[5%] w-44 h-44 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
                 viewBox="0 0 200 200"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
               >
-                {/* Curved arrow path from label down to Umair */}
+                {/* Tighter curve — starts from label, sweeps down naturally */}
                 <path
-                  d="M150 20 C125 12, 90 8, 65 35 C40 62, 55 90, 42 120 C34 140, 18 138, 10 130"
+                  d="M140 15 C110 10, 80 25, 60 55 C40 85, 35 115, 25 145"
                   stroke="currentColor"
-                  strokeWidth="3.5"
+                  strokeWidth="3"
                   strokeLinecap="round"
                   fill="none"
                   strokeDasharray="8 6"
                 />
-                {/* Arrowhead — larger and bolder */}
+                {/* Arrowhead */}
                 <polygon
-                  points="2,138 18,128 12,116"
+                  points="18,155 32,145 22,135"
                   fill="currentColor"
                 />
               </svg>
