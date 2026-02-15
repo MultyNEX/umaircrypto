@@ -133,9 +133,12 @@ export default function About() {
               transition={{ duration: 0.6 }}
               className="text-center lg:text-left"
             >
-              <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
-                About
-              </p>
+              <div className="flex justify-center lg:justify-start mb-5">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-semibold uppercase tracking-widest shadow-[0_0_15px_rgba(56,189,248,0.15)]">
+                  <TrendingUp size={14} />
+                  The Analyst
+                </span>
+              </div>
               <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
                 About <span className="text-gradient-animated">Umair Orakzai</span>
               </h2>
