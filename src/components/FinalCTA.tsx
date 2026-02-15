@@ -16,7 +16,7 @@ export default function FinalCTA() {
   return (
     <section
       id="contact"
-      className="relative py-20 md:py-36 overflow-hidden"
+      className="relative py-10 md:py-20 overflow-hidden"
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 via-transparent to-accent-secondary/5 pointer-events-none" />

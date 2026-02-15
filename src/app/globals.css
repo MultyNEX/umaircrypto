@@ -397,16 +397,3 @@ body::after {
   }
   body { cursor: auto; }
 }
-
-/* Tighten section spacing */
-section {
-  padding-top: 2.5rem;    /* 40px */
-  padding-bottom: 2.5rem; /* 40px */
-}
-
-@media (min-width: 768px) {
-  section {
-    padding-top: 5rem;     /* 80px */
-    padding-bottom: 5rem;  /* 80px */
-  }
-}

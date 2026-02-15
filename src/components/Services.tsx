@@ -154,7 +154,7 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
 
 export default function Services() {
   return (
-    <section id="services" className="relative py-16 md:py-32 overflow-x-clip">
+    <section id="services" className="relative py-10 md:py-20 overflow-x-clip">
       {/* Aurora orbs */}
       <div className="aurora-orb aurora-orb-gold top-[30%] left-[5%]" />
       <div className="aurora-orb aurora-orb-warm bottom-[10%] right-[15%]" />
@@ -169,7 +169,7 @@ export default function Services() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10 md:mb-14"
+          className="text-center mb-6 md:mb-8"
         >
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Services

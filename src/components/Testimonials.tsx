@@ -81,7 +81,7 @@ function TestimonialCard({
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="relative py-16 md:py-32 overflow-hidden">
+    <section id="testimonials" className="relative py-10 md:py-20 overflow-hidden">
       {/* Aurora orb */}
       <div className="aurora-orb aurora-orb-teal bottom-[20%] left-[10%]" />
 
@@ -93,7 +93,7 @@ export default function Testimonials() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10 md:mb-14"
+          className="text-center mb-6 md:mb-8"
         >
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Testimonials

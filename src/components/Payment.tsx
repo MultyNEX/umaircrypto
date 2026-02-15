@@ -17,7 +17,7 @@ const fadeUp = {
 
 export default function Payment() {
   return (
-    <section className="relative py-16 md:py-32">
+    <section className="relative py-10 md:py-20">
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -26,7 +26,7 @@ export default function Payment() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10 md:mb-14"
+          className="text-center mb-6 md:mb-8"
         >
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Payment

@@ -66,7 +66,7 @@ function StaticStatCard({ stat, index }: { stat: typeof stats[number]; index: nu
 
 export default function About() {
   return (
-    <section id="about" className="relative py-16 md:py-32 overflow-hidden">
+    <section id="about" className="relative py-10 md:py-20 overflow-hidden">
       {/* Aurora orbs */}
       <div className="aurora-orb aurora-orb-teal top-[20%] right-[10%]" />
 

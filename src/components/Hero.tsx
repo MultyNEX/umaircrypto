@@ -66,7 +66,7 @@ export default function Hero() {
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-accent-warm/[0.03] to-transparent pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-20 md:py-28 lg:py-32">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-12 md:py-20 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left — Text content */}
           <div className="space-y-7 sm:space-y-8 text-center lg:text-left">
