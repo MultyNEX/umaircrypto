@@ -16,8 +16,8 @@ export default function Home() {
     <>
       <Navbar />
       <TickerTape />
-      {/* Spacer: navbar (64/80px) + ticker tape (~46px) */}
-      <div className="pt-[110px] md:pt-[126px]">
+      {/* Spacer: navbar (64/80px) + ticker tape (56/50px) */}
+      <div className="pt-[120px] md:pt-[130px]">
         <Hero />
         <About />
         <LiveMarkets />
