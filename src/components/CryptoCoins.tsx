@@ -54,12 +54,14 @@ export default function CryptoCoins() {
     const REPEATS = isMobile ? 2 : 4;
 
     function resize() {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
     function createParticles() {
       particles = [];
+      if (!canvas) return;
       const w = canvas.width;
       const h = canvas.height;
 
@@ -114,6 +116,7 @@ export default function CryptoCoins() {
     function animate() {
       frameId = requestAnimationFrame(animate);
       time += 0.016;
+      if (!canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((p) => {
