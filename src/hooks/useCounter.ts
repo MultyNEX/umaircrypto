@@ -7,9 +7,15 @@ export function useCounter(
   duration = 2000,
   suffix = ""
 ) {
-  const [count, setCount] = useState(0);
+  // Start at the real number so server-rendered HTML has actual values for SEO
+  const [count, setCount] = useState(end);
   const ref = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
+
+  // On mount, reset to 0 then animate up when visible
+  useEffect(() => {
+    setCount(0);
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
