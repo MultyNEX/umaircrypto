@@ -65,12 +65,6 @@ const socials = [
     icon: TelegramIcon,
     handle: "Telegram",
   },
-  {
-    label: "Discord",
-    href: "#",
-    icon: DiscordIcon,
-    handle: "Coming Soon",
-  },
 ];
 
 export default function Footer() {
