@@ -13,7 +13,6 @@ const SYMBOLS = [
   { char: "A", label: "AVAX", color: "#e84142", rank: 8 },
 ];
 
-// Mulberry32 PRNG
 function mulberry32(seed: number) {
   return function () {
     seed |= 0;
@@ -37,8 +36,10 @@ interface Particle {
   size: number;
   symbol: typeof SYMBOLS[number];
   phase: number;
-  floatSpeed: number;
-  floatAmp: number;
+  floatSpeedY: number;
+  floatAmpY: number;
+  floatSpeedX: number;
+  floatAmpX: number;
   opacity: number;
   offsetX: number;
   offsetY: number;
@@ -46,20 +47,17 @@ interface Particle {
 
 function generateParticles(isMobile: boolean): Particle[] {
   const rand = mulberry32(77742);
-  const COUNT = isMobile ? 32 : 60;
-  const MIN_DIST = isMobile ? 0.1 : 0.08; // minimum distance between symbols as ratio
+  const COUNT = isMobile ? 16 : 30;
+  const MIN_DIST = isMobile ? 0.13 : 0.11;
 
-  // Poisson-disc-like placement: place randomly, reject if too close to existing
   const points: { x: number; y: number }[] = [];
-  const maxAttempts = 500;
   let attempts = 0;
 
-  while (points.length < COUNT && attempts < maxAttempts) {
+  while (points.length < COUNT && attempts < 800) {
     const x = 0.02 + rand() * 0.96;
     const y = 0.02 + rand() * 0.96;
     attempts++;
 
-    // Check distance to all existing points
     let tooClose = false;
     for (const p of points) {
       const dx = x - p.x;
@@ -72,11 +70,10 @@ function generateParticles(isMobile: boolean): Particle[] {
 
     if (!tooClose) {
       points.push({ x, y });
-      attempts = 0; // reset attempts on success
+      attempts = 0;
     }
   }
 
-  // Convert points to particles
   const particles: Particle[] = [];
 
   points.forEach((pt, i) => {
@@ -90,8 +87,10 @@ function generateParticles(isMobile: boolean): Particle[] {
       size,
       symbol,
       phase: rand() * Math.PI * 2,
-      floatSpeed: 0.2 + rand() * 0.35,
-      floatAmp: 10 + rand() * 18,
+      floatSpeedY: 0.25 + rand() * 0.35,
+      floatAmpY: 25 + rand() * 35,
+      floatSpeedX: 0.15 + rand() * 0.25,
+      floatAmpX: 15 + rand() * 25,
       opacity: Math.min(baseOpacity + rand() * 0.05, 0.3),
       offsetX: 0,
       offsetY: 0,
@@ -119,9 +118,9 @@ export default function CryptoCoins() {
 
     const particles = generateParticles(isMobile);
 
-    const MOUSE_RADIUS = isMobile ? 0 : 180;
-    const PUSH_STRENGTH = 60;
-    const RETURN_SPEED = 0.04;
+    const MOUSE_RADIUS = isMobile ? 0 : 200;
+    const PUSH_STRENGTH = 70;
+    const RETURN_SPEED = 0.03;
 
     function resize() {
       if (!canvas) return;
@@ -164,8 +163,9 @@ export default function CryptoCoins() {
         const baseX = p.ratioX * w;
         const baseY = p.ratioY * h;
 
-        const floatX = baseX + Math.sin(time * 0.15 + p.phase * 0.7) * 8;
-        const floatY = baseY + Math.sin(time * p.floatSpeed + p.phase) * p.floatAmp;
+        // More movement — both axes have independent speed and amplitude
+        const floatX = baseX + Math.sin(time * p.floatSpeedX + p.phase * 0.7) * p.floatAmpX;
+        const floatY = baseY + Math.sin(time * p.floatSpeedY + p.phase) * p.floatAmpY;
 
         if (MOUSE_RADIUS > 0) {
           const dx = floatX + p.offsetX - mx;
