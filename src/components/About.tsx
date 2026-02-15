@@ -79,7 +79,7 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="hidden lg:flex justify-center lg:justify-start"
+            className="flex justify-center lg:justify-start"
           >
             <div className="relative w-full max-w-[480px]">
               <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-accent-primary/10 via-transparent to-accent-secondary/10 blur-2xl" />
@@ -96,7 +96,7 @@ export default function About() {
 
               {/* Arrow pointing to Umair */}
               <svg
-                className="absolute -right-20 top-[5%] w-52 h-52 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                className="hidden lg:block absolute -right-20 top-[5%] w-52 h-52 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
                 viewBox="0 0 200 200"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ export default function About() {
                 />
               </svg>
               {/* Label */}
-              <span className="absolute -right-14 top-[1%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+              <span className="hidden lg:block absolute -right-14 top-[1%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
             </div>

@@ -163,14 +163,14 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={2}
-            className="hidden lg:flex justify-center lg:justify-end"
+            className="flex justify-center lg:justify-end order-first lg:order-last"
           >
             <div className="relative">
               {/* Glow behind card */}
               <div className="absolute -inset-6 rounded-3xl bg-gradient-to-br from-accent-primary/15 via-transparent to-accent-secondary/15 blur-3xl" />
 
               {/* Main image card */}
-              <div className="relative w-[420px] h-[480px] rounded-2xl border border-white/[0.08] overflow-hidden bg-bg-secondary">
+              <div className="relative w-[280px] h-[340px] sm:w-[350px] sm:h-[420px] lg:w-[420px] lg:h-[480px] rounded-2xl border border-white/[0.08] overflow-hidden bg-bg-secondary">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/umair-hero.jpg"
