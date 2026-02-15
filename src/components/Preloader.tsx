@@ -256,6 +256,9 @@ export default function Preloader() {
                 src="/UmairLogo.png"
                 alt="Umair Crypto"
                 className="w-64 sm:w-80 md:w-96 h-auto drop-shadow-[0_0_80px_rgba(56,189,248,0.35)]"
+                loading="eager"
+                fetchPriority="high"
+                decoding="sync"
                 style={{ imageRendering: "crisp-edges" }}
               />
             </div>

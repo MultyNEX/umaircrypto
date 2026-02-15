@@ -73,8 +73,9 @@ export default function Footer() {
               <img
                 src="/UmairLogo.png"
                 alt="Umair Crypto"
-                className="h-16 md:h-20 w-auto"
-                style={{ imageRendering: "crisp-edges", WebkitFontSmoothing: "antialiased" }}
+                className="h-20 md:h-28 w-auto transition-opacity duration-300"
+                loading="eager"
+                style={{ imageRendering: "crisp-edges" }}
               />
             </a>
             <p className="text-text-secondary text-sm mt-3 leading-relaxed max-w-xs mx-auto md:mx-0">

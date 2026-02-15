@@ -47,8 +47,11 @@ export default function Navbar() {
             <img
               src="/UmairLogo.png"
               alt="Umair Crypto"
-              className="h-14 md:h-20 w-auto"
-              style={{ imageRendering: "crisp-edges", WebkitFontSmoothing: "antialiased" }}
+              className="h-16 md:h-24 w-auto transition-opacity duration-300"
+              loading="eager"
+              fetchPriority="high"
+              decoding="sync"
+              style={{ imageRendering: "crisp-edges" }}
             />
           </a>
 
