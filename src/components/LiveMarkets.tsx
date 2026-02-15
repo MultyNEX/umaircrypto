@@ -86,11 +86,11 @@ export default function LiveMarkets() {
   };
 
   return (
-    <section id="markets" className="relative py-10 md:py-20 overflow-hidden">
+    <section id="markets" className="relative py-8 md:py-16 overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-accent-primary/[0.04] blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           variants={fadeUp}
@@ -107,10 +107,10 @@ export default function LiveMarkets() {
             </span>
           </div>
 
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             Live Markets
           </h2>
-          <p className="text-text-secondary mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-text-secondary mt-4 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
             Real-time prices. No delay. Track BTC, ETH, and major altcoins with
             professional-grade charts.
           </p>

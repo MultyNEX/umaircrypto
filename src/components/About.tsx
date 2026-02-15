@@ -66,11 +66,11 @@ function StaticStatCard({ stat, index }: { stat: typeof stats[number]; index: nu
 
 export default function About() {
   return (
-    <section id="about" className="relative py-10 md:py-20 overflow-hidden">
+    <section id="about" className="relative py-8 md:py-16 overflow-hidden">
       {/* Aurora orbs */}
       <div className="aurora-orb aurora-orb-teal top-[20%] right-[10%]" />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left — Umair's photo */}
           <motion.div
@@ -139,7 +139,7 @@ export default function About() {
                   The Analyst
                 </span>
               </div>
-              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
                 About <span className="text-gradient-animated">Umair Orakzai</span>
               </h2>
             </motion.div>
@@ -151,7 +151,7 @@ export default function About() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="space-y-4 text-text-secondary leading-relaxed text-base sm:text-lg"
+              className="space-y-4 text-text-secondary leading-relaxed text-sm sm:text-base"
             >
               <p>
                 I&apos;ve been in crypto since 2021. Started as a trader, built a

@@ -23,9 +23,16 @@
 }
 
 html {
+  font-size: 15px;
   scroll-behavior: smooth;
   scroll-padding-top: 140px;
   overflow-x: hidden;
+}
+@media (min-width: 768px) {
+  html { font-size: 15.5px; }
+}
+@media (min-width: 1024px) {
+  html { font-size: 16px; }
 }
 
 body {

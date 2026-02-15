@@ -66,7 +66,7 @@ export default function Hero() {
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-accent-warm/[0.03] to-transparent pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-12 md:py-20 lg:py-24">
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-10 md:py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left — Text content */}
           <div className="space-y-7 sm:space-y-8 text-center lg:text-left">
@@ -90,7 +90,7 @@ export default function Hero() {
               animate="visible"
               custom={1}
               className="font-heading font-bold tracking-tight"
-              style={{ fontSize: "clamp(2.75rem, 6vw, 5rem)", lineHeight: 1.08 }}
+              style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)", lineHeight: 1.08 }}
             >
               Navigate Crypto Markets{" "}
               <span className="text-accent-primary">With Clarity.</span>
@@ -102,7 +102,7 @@ export default function Hero() {
               initial="hidden"
               animate="visible"
               custom={2}
-              className="text-text-secondary text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              className="text-text-secondary text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
               Technical analysis. Real conviction. No fluff. Join 300,000+
               traders who trust Umair Crypto for BTC, ETH, and altcoin insights.

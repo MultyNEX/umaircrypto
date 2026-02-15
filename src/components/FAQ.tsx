@@ -44,7 +44,7 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="relative py-10 md:py-20">
+    <section id="faq" className="relative py-8 md:py-16">
       <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -58,10 +58,10 @@ export default function FAQ() {
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             FAQ
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             Frequently Asked Questions
           </h2>
-          <p className="text-text-secondary mt-4 text-base sm:text-lg">
+          <p className="text-text-secondary mt-4 text-sm sm:text-base">
             Common questions answered.
           </p>
         </motion.div>

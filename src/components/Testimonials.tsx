@@ -64,7 +64,7 @@ function TestimonialCard({
       />
 
       {/* Quote text */}
-      <p className="text-text-secondary italic leading-relaxed text-base sm:text-lg mb-6 pr-8">
+      <p className="text-text-secondary italic leading-relaxed text-sm sm:text-base mb-6 pr-8">
         &ldquo;{t.quote}&rdquo;
       </p>
 
@@ -81,11 +81,11 @@ function TestimonialCard({
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="relative py-10 md:py-20 overflow-hidden">
+    <section id="testimonials" className="relative py-8 md:py-16 overflow-hidden">
       {/* Aurora orb */}
       <div className="aurora-orb aurora-orb-teal bottom-[20%] left-[10%]" />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           variants={fadeUp}
@@ -98,7 +98,7 @@ export default function Testimonials() {
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Testimonials
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             What Traders <span className="text-gradient-animated">Say</span>
           </h2>
         </motion.div>

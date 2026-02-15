@@ -17,8 +17,8 @@ const fadeUp = {
 
 export default function Payment() {
   return (
-    <section className="relative py-10 md:py-20">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <section className="relative py-8 md:py-16">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           variants={fadeUp}
@@ -31,10 +31,10 @@ export default function Payment() {
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Payment
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             Pay With <span className="text-gradient-animated">Crypto</span>
           </h2>
-          <p className="text-text-secondary mt-4 text-base sm:text-lg max-w-xl mx-auto">
+          <p className="text-text-secondary mt-4 text-sm sm:text-base max-w-xl mx-auto">
             Pay securely with BTC, ETH, USDT, or Binance Pay. Direct wallet
             transfer — no middleman.
           </p>

@@ -94,7 +94,7 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
       </p>
 
       {/* Title */}
-      <h3 className="font-heading text-xl sm:text-2xl font-bold mb-5">
+      <h3 className="font-heading text-lg sm:text-xl font-bold mb-5">
         {tier.title}
       </h3>
 
@@ -154,14 +154,14 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
 
 export default function Services() {
   return (
-    <section id="services" className="relative py-10 md:py-20 overflow-x-clip">
+    <section id="services" className="relative py-8 md:py-16 overflow-x-clip">
       {/* Aurora orbs */}
       <div className="aurora-orb aurora-orb-gold top-[30%] left-[5%]" />
       <div className="aurora-orb aurora-orb-warm bottom-[10%] right-[15%]" />
       {/* Top reflective line */}
       <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-accent-secondary/15 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           variants={fadeUp}
@@ -174,10 +174,10 @@ export default function Services() {
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Services
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             Work <span className="text-gradient-animated">With Me</span>
           </h2>
-          <p className="text-text-secondary mt-4 text-base sm:text-lg">
+          <p className="text-text-secondary mt-4 text-sm sm:text-base">
             Choose the plan that fits your level.
           </p>
         </motion.div>

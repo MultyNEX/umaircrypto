@@ -16,7 +16,7 @@ export default function FinalCTA() {
   return (
     <section
       id="contact"
-      className="relative py-10 md:py-20 overflow-hidden"
+      className="relative py-8 md:py-16 overflow-hidden"
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 via-transparent to-accent-secondary/5 pointer-events-none" />
@@ -38,11 +38,11 @@ export default function FinalCTA() {
           transition={{ duration: 0.6 }}
           className="space-y-6"
         >
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             Ready to Trade{" "}
             <span className="text-gradient-animated">With Clarity?</span>
           </h2>
-          <p className="text-text-secondary text-base sm:text-lg max-w-xl mx-auto">
+          <p className="text-text-secondary text-sm sm:text-base max-w-xl mx-auto">
             Book your free consultation or message me directly.
           </p>
         </motion.div>

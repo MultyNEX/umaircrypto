@@ -57,12 +57,12 @@ function StepCard({ step, i }: { step: (typeof steps)[number]; i: number }) {
       <step.icon size={22} className="text-text-secondary mb-3" />
 
       {/* Title */}
-      <h3 className="font-heading text-xl font-bold mb-2">
+      <h3 className="font-heading text-lg font-bold mb-2">
         {step.title}
       </h3>
 
       {/* Description */}
-      <p className="text-text-secondary text-base leading-relaxed">
+      <p className="text-text-secondary text-sm leading-relaxed">
         {step.description}
       </p>
     </motion.div>
@@ -71,8 +71,8 @@ function StepCard({ step, i }: { step: (typeof steps)[number]; i: number }) {
 
 export default function HowItWorks() {
   return (
-    <section className="relative py-10 md:py-20">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <section className="relative py-8 md:py-16">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           variants={fadeUp}
@@ -85,7 +85,7 @@ export default function HowItWorks() {
           <p className="text-accent-primary font-semibold text-sm uppercase tracking-widest mb-3">
             Process
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold">
             How It Works
           </h2>
         </motion.div>

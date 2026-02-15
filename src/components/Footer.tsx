@@ -64,7 +64,7 @@ const socials = [
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-bg-secondary/40">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 text-center md:text-left">
           {/* Column 1 — Brand */}
           <div>
@@ -146,7 +146,7 @@ export default function Footer() {
 
       {/* Disclaimer */}
       <div className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6 text-center">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-6 text-center">
           <p className="text-xs text-text-secondary leading-relaxed max-w-3xl mx-auto">
             <span className="text-accent-primary font-semibold">Disclaimer:</span>{" "}
             Not financial advice. Trading involves risk. Always do your own research. Cryptocurrency investments are volatile and can result in significant losses.
@@ -156,7 +156,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-text-secondary text-center">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-text-secondary text-center">
           <p>&copy; 2026 Umair Crypto. All rights reserved.</p>
           <a
             href="#"
