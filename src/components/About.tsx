@@ -94,29 +94,29 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
 
-              {/* Arrow pointing to Umair's face */}
+              {/* Arrow curving from label UP toward face */}
               <svg
-                className="hidden lg:block absolute -right-20 top-[5%] w-44 h-44 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
-                viewBox="0 0 200 200"
+                className="hidden lg:block absolute -right-10 top-[10%] w-48 h-[60%] text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                viewBox="0 0 200 300"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M10 170 C30 140, 70 100, 100 70 C130 40, 150 25, 160 20"
+                  d="M160 280 C150 220, 140 180, 120 140 C100 100, 60 60, 40 30"
                   stroke="currentColor"
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
                   strokeDasharray="8 6"
                 />
-                {/* Arrowhead — pointing at face (top-right end) */}
+                {/* Arrowhead — pointing up-left at face */}
                 <polygon
-                  points="168,16 155,14 158,28"
+                  points="32,22 48,28 38,40"
                   fill="currentColor"
                 />
               </svg>
-              {/* Label at the bottom-start of the arrow */}
-              <span className="hidden lg:block absolute -right-14 top-[42%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+              {/* Label at the bottom-right of the arrow */}
+              <span className="hidden lg:block absolute -right-14 top-[75%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
             </div>
