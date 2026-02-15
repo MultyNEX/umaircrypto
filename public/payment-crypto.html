@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Crypto Payment - UmairCrypto</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #060612;
+            --surface: #0c0c1d;
+            --surface2: #141432;
+            --border: #1e1e3a;
+            --text: #F0F0F0;
+            --text-dim: #8B8B9E;
+            --cyan: #38BDF8;
+            --purple: #A855F7;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --orange: #f97316;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header img {
+            height: 48px;
+            margin: 0 auto 16px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .header .service {
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .header .amount {
+            font-size: 1.8em;
+            color: var(--cyan);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Crypto Tabs */
+        .crypto-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding: 4px;
+            background: var(--surface2);
+            border-radius: 12px;
+        }
+
+        .crypto-tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 16px 12px;
+            background: transparent;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .crypto-tab:hover {
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .crypto-tab.active {
+            background: var(--surface);
+            border-color: var(--cyan);
+        }
+
+        .crypto-tab .icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .crypto-tab .name {
+            font-size: 0.85em;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .crypto-tab .network {
+            font-size: 0.7em;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .crypto-tab.active .name {
+            color: var(--cyan);
+        }
+
+        /* Payment Content */
+        .payment-content {
+            display: none;
+        }
+
+        .payment-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 20px;
+        }
+
+        .step-title {
+            color: var(--cyan);
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85em;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--red);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .warning .icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .warning-text {
+            font-size: 0.9em;
+            color: var(--text);
+        }
+
+        .warning-text strong {
+            color: var(--red);
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .info-box .icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        .info-box-text {
+            font-size: 0.9em;
+            color: var(--text);
+        }
+
+        .network-badge {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--purple);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 16px;
+        }
+
+        .wallet-section {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .wallet-label {
+            font-size: 0.85em;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .wallet-address {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: #fff;
+            word-break: break-all;
+            background: var(--bg);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .amount-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2em;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-copy {
+            background: var(--cyan);
+            color: #000;
+        }
+
+        .btn-copy:hover {
+            background: #0ea5e9;
+            transform: scale(1.02);
+        }
+
+        .btn-copy.copied {
+            background: var(--green);
+        }
+
+        .btn-qr {
+            background: transparent;
+            border: 2px solid var(--purple);
+            color: var(--purple);
+        }
+
+        .btn-qr:hover {
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .qr-container.show {
+            display: block;
+        }
+
+        .qr-container canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+
+        /* Binance Pay Special */
+        .binance-section {
+            text-align: center;
+        }
+
+        .binance-pay-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #f3ba2f, #f0b90b);
+            color: #000;
+            padding: 18px 48px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-radius: 12px;
+            text-decoration: none;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .binance-pay-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(243, 186, 47, 0.4);
+        }
+
+        .binance-pay-btn .icon {
+            font-size: 1.3em;
+            margin-right: 8px;
+        }
+
+        .binance-instructions {
+            background: var(--surface2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        .binance-instructions ol {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .binance-instructions li {
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .form-label .required {
+            color: var(--red);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--surface2);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--surface2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--cyan);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .upload-zone.drag-over {
+            border-color: var(--cyan);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .upload-text {
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 0.85em;
+            color: var(--text-dim);
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .file-preview.show {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-preview .file-name {
+            flex: 1;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+
+        .file-preview .remove-btn {
+            background: transparent;
+            border: none;
+            color: var(--red);
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .screenshot-guide {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .screenshot-guide-title {
+            font-size: 0.85em;
+            color: var(--cyan);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .screenshot-guide ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .screenshot-guide li {
+            font-size: 0.85em;
+            color: var(--text-dim);
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .screenshot-guide li:before {
+            content: "\2713";
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px 32px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--cyan), #0ea5e9);
+            color: #000;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-notice {
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .security-notice-title {
+            color: var(--purple);
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .security-notice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .security-notice li {
+            font-size: 0.85em;
+            color: var(--text-dim);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .security-notice li:before {
+            content: "\2022";
+            position: absolute;
+            left: 0;
+            color: var(--purple);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-link a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.4em;
+            }
+
+            .header .amount {
+                font-size: 1.5em;
+            }
+
+            .crypto-tabs {
+                overflow-x: auto;
+            }
+
+            .crypto-tab {
+                min-width: 100px;
+            }
+
+            .crypto-tab .icon {
+                font-size: 1.5em;
+            }
+
+            .wallet-address {
+                font-size: 0.7em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/UmairLogo.png" alt="UmairCrypto">
+            <h1>Secure Crypto Payment</h1>
+            <div class="service">UmairCrypto Service</div>
+            <div class="amount">$0.00 USD</div>
+        </div>
+
+        <!-- Crypto Payment Tabs -->
+        <div class="crypto-tabs">
+            <div class="crypto-tab active" onclick="switchCrypto('usdt-trc20')">
+                <div class="icon">\u20AE</div>
+                <div class="name">USDT</div>
+                <div class="network">TRC20</div>
+            </div>
+            <div class="crypto-tab" onclick="switchCrypto('usdt-erc20')">
+                <div class="icon">\u20AE</div>
+                <div class="name">USDT</div>
+                <div class="network">ERC20</div>
+            </div>
+            <div class="crypto-tab" onclick="switchCrypto('btc')">
+                <div class="icon">\u20BF</div>
+                <div class="name">Bitcoin</div>
+                <div class="network">BTC</div>
+            </div>
+            <div class="crypto-tab" onclick="switchCrypto('eth')">
+                <div class="icon">\u039E</div>
+                <div class="name">Ethereum</div>
+                <div class="network">ETH</div>
+            </div>
+            <div class="crypto-tab" onclick="switchCrypto('binance')">
+                <div class="icon">B</div>
+                <div class="name">Binance</div>
+                <div class="network">Pay</div>
+            </div>
+        </div>
+
+        <!-- USDT TRC20 Content -->
+        <div id="usdt-trc20" class="payment-content active">
+            <div class="card">
+                <div class="step-title">Step 1: Send Payment</div>
+
+                <div class="warning">
+                    <div class="icon">&#x26A0;&#xFE0F;</div>
+                    <div class="warning-text">
+                        <strong>IMPORTANT:</strong> Only send <strong>TRC20 USDT</strong> (Tron network).<br>
+                        Do NOT use other networks. Wrong network = lost funds.
+                    </div>
+                </div>
+
+                <div class="network-badge">Network: TRC20 (Tron) &bull; Low Fees (~$1)</div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Wallet Address:</div>
+                    <div class="wallet-address" id="addr-usdt-trc20">TXwE8Zr3kM9nPq2fLm4kLm2kPq</div>
+                    <div class="button-group">
+                        <button class="btn btn-copy" onclick="copyToClipboard('usdt-trc20', this)">
+                            Copy Address
+                        </button>
+                        <button class="btn btn-qr" onclick="toggleQR('qr-usdt-trc20')">Show QR</button>
+                    </div>
+                    <div id="qr-usdt-trc20" class="qr-container"></div>
+                </div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Amount to Send:</div>
+                    <div class="amount-display">0.00 USDT</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title">Step 2: Upload Proof</div>
+                <form class="payment-form">
+                    <input type="hidden" name="crypto_type" value="USDT-TRC20">
+                    <div class="form-group">
+                        <label class="form-label">Screenshot Upload <span class="required">*</span></label>
+                        <div class="upload-zone" onclick="this.querySelector('input').click()">
+                            <input type="file" accept="image/*,.pdf" required>
+                            <div class="upload-icon">&#x1F4C4;</div>
+                            <div class="upload-text">Click or drag screenshot here</div>
+                            <div class="upload-hint">JPG, PNG, PDF &bull; Max 5MB</div>
+                        </div>
+                        <div class="file-preview">
+                            <div class="file-name"></div>
+                            <button type="button" class="remove-btn" onclick="removeFile(this)">&times;</button>
+                        </div>
+                        <div class="screenshot-guide">
+                            <div class="screenshot-guide-title">Screenshot must show:</div>
+                            <ul>
+                                <li>Amount (USDT)</li>
+                                <li>Recipient address</li>
+                                <li>Transaction completed</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="email" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">TX Hash (Optional)</label>
+                        <input type="text" class="form-input" name="tx_hash" placeholder="Transaction hash">
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Payment Proof</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- USDT ERC20 Content -->
+        <div id="usdt-erc20" class="payment-content">
+            <div class="card">
+                <div class="step-title">Step 1: Send Payment</div>
+
+                <div class="warning">
+                    <div class="icon">&#x26A0;&#xFE0F;</div>
+                    <div class="warning-text">
+                        <strong>IMPORTANT:</strong> Only send <strong>ERC20 USDT</strong> (Ethereum network).<br>
+                        Note: ETH network has higher gas fees (~$5-20).
+                    </div>
+                </div>
+
+                <div class="network-badge">Network: ERC20 (Ethereum) &bull; Higher Fees</div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Wallet Address:</div>
+                    <div class="wallet-address" id="addr-usdt-erc20">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0</div>
+                    <div class="button-group">
+                        <button class="btn btn-copy" onclick="copyToClipboard('usdt-erc20', this)">
+                            Copy Address
+                        </button>
+                        <button class="btn btn-qr" onclick="toggleQR('qr-usdt-erc20')">Show QR</button>
+                    </div>
+                    <div id="qr-usdt-erc20" class="qr-container"></div>
+                </div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Amount to Send:</div>
+                    <div class="amount-display">0.00 USDT</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title">Step 2: Upload Proof</div>
+                <form class="payment-form">
+                    <input type="hidden" name="crypto_type" value="USDT-ERC20">
+                    <div class="form-group">
+                        <label class="form-label">Screenshot Upload <span class="required">*</span></label>
+                        <div class="upload-zone" onclick="this.querySelector('input').click()">
+                            <input type="file" accept="image/*,.pdf" required>
+                            <div class="upload-icon">&#x1F4C4;</div>
+                            <div class="upload-text">Click or drag screenshot here</div>
+                            <div class="upload-hint">JPG, PNG, PDF &bull; Max 5MB</div>
+                        </div>
+                        <div class="file-preview">
+                            <div class="file-name"></div>
+                            <button type="button" class="remove-btn" onclick="removeFile(this)">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="name" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Payment Proof</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bitcoin Content -->
+        <div id="btc" class="payment-content">
+            <div class="card">
+                <div class="step-title">Step 1: Send Payment</div>
+
+                <div class="info-box">
+                    <span class="icon">&#x2139;&#xFE0F;</span>
+                    <span class="info-box-text">Send the exact BTC equivalent of the agreed amount.</span>
+                </div>
+
+                <div class="network-badge">Network: Bitcoin &bull; Moderate Fees</div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Wallet Address:</div>
+                    <div class="wallet-address" id="addr-btc">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
+                    <div class="button-group">
+                        <button class="btn btn-copy" onclick="copyToClipboard('btc', this)">
+                            Copy Address
+                        </button>
+                        <button class="btn btn-qr" onclick="toggleQR('qr-btc')">Show QR</button>
+                    </div>
+                    <div id="qr-btc" class="qr-container"></div>
+                </div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Amount to Send:</div>
+                    <div class="amount-display">Agreed BTC Amount</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title">Step 2: Upload Proof</div>
+                <form class="payment-form">
+                    <input type="hidden" name="crypto_type" value="BTC">
+                    <div class="form-group">
+                        <label class="form-label">Screenshot Upload <span class="required">*</span></label>
+                        <div class="upload-zone" onclick="this.querySelector('input').click()">
+                            <input type="file" accept="image/*,.pdf" required>
+                            <div class="upload-icon">&#x1F4C4;</div>
+                            <div class="upload-text">Click or drag screenshot here</div>
+                            <div class="upload-hint">JPG, PNG, PDF &bull; Max 5MB</div>
+                        </div>
+                        <div class="file-preview">
+                            <div class="file-name"></div>
+                            <button type="button" class="remove-btn" onclick="removeFile(this)">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="name" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Payment Proof</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Ethereum Content -->
+        <div id="eth" class="payment-content">
+            <div class="card">
+                <div class="step-title">Step 1: Send Payment</div>
+
+                <div class="info-box">
+                    <span class="icon">&#x2139;&#xFE0F;</span>
+                    <span class="info-box-text">Send the exact ETH equivalent of the agreed amount.</span>
+                </div>
+
+                <div class="network-badge">Network: Ethereum &bull; Higher Gas Fees</div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Wallet Address:</div>
+                    <div class="wallet-address" id="addr-eth">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0</div>
+                    <div class="button-group">
+                        <button class="btn btn-copy" onclick="copyToClipboard('eth', this)">
+                            Copy Address
+                        </button>
+                        <button class="btn btn-qr" onclick="toggleQR('qr-eth')">Show QR</button>
+                    </div>
+                    <div id="qr-eth" class="qr-container"></div>
+                </div>
+
+                <div class="wallet-section">
+                    <div class="wallet-label">Amount to Send:</div>
+                    <div class="amount-display">Agreed ETH Amount</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title">Step 2: Upload Proof</div>
+                <form class="payment-form">
+                    <input type="hidden" name="crypto_type" value="ETH">
+                    <div class="form-group">
+                        <label class="form-label">Screenshot Upload <span class="required">*</span></label>
+                        <div class="upload-zone" onclick="this.querySelector('input').click()">
+                            <input type="file" accept="image/*,.pdf" required>
+                            <div class="upload-icon">&#x1F4C4;</div>
+                            <div class="upload-text">Click or drag screenshot here</div>
+                            <div class="upload-hint">JPG, PNG, PDF &bull; Max 5MB</div>
+                        </div>
+                        <div class="file-preview">
+                            <div class="file-name"></div>
+                            <button type="button" class="remove-btn" onclick="removeFile(this)">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="name" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Payment Proof</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Binance Pay Content -->
+        <div id="binance" class="payment-content">
+            <div class="card binance-section">
+                <div class="step-title">Pay with Binance Pay</div>
+
+                <div class="info-box">
+                    <span class="icon">&#x26A1;</span>
+                    <span class="info-box-text">
+                        <strong>Instant &amp; Free:</strong> Zero fees, instant confirmation if you have a Binance account
+                    </span>
+                </div>
+
+                <a href="#" class="binance-pay-btn">
+                    <span class="icon">B</span>
+                    Pay with Binance Pay
+                </a>
+
+                <div class="binance-instructions">
+                    <h3 style="margin-bottom: 16px; color: var(--text);">How to Pay:</h3>
+                    <ol>
+                        <li>Click the button above (opens Binance app)</li>
+                        <li>Login to your Binance account</li>
+                        <li>Confirm the payment amount</li>
+                        <li>Screenshot the confirmation</li>
+                        <li>Upload proof below</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title">Upload Payment Confirmation</div>
+                <form class="payment-form">
+                    <input type="hidden" name="crypto_type" value="Binance-Pay">
+                    <div class="form-group">
+                        <label class="form-label">Payment Screenshot <span class="required">*</span></label>
+                        <div class="upload-zone" onclick="this.querySelector('input').click()">
+                            <input type="file" accept="image/*,.pdf" required>
+                            <div class="upload-icon">&#x1F4C4;</div>
+                            <div class="upload-text">Upload Binance Pay confirmation</div>
+                            <div class="upload-hint">JPG, PNG, PDF &bull; Max 5MB</div>
+                        </div>
+                        <div class="file-preview">
+                            <div class="file-name"></div>
+                            <button type="button" class="remove-btn" onclick="removeFile(this)">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Binance Order ID (Optional)</label>
+                        <input type="text" class="form-input" name="order_id" placeholder="From confirmation screen">
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Payment Proof</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="security-notice">
+            <div class="security-notice-title">
+                <span>&#x1F512;</span>
+                <span>Security Notice</span>
+            </div>
+            <ul>
+                <li>We will NEVER ask for additional payments</li>
+                <li>These are the ONLY wallet addresses we use</li>
+                <li>Double-check network before sending</li>
+                <li>Verification takes 5-15 minutes</li>
+            </ul>
+        </div>
+
+        <div class="back-link">
+            <a href="/">&larr; Back to UmairCrypto</a>
+        </div>
+    </div>
+
+    <script>
+        // Wallet addresses (update these with real addresses)
+        var wallets = {
+            'usdt-trc20': 'TXwE8Zr3kM9nPq2fLm4kLm2kPq',
+            'usdt-erc20': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+            'btc': 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+            'eth': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0'
+        };
+
+        // Switch between crypto options
+        function switchCrypto(cryptoType) {
+            document.querySelectorAll('.crypto-tab').forEach(function(tab) { tab.classList.remove('active'); });
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.payment-content').forEach(function(content) {
+                content.classList.remove('active');
+            });
+            document.getElementById(cryptoType).classList.add('active');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(cryptoKey, button) {
+            var text = wallets[cryptoKey];
+            navigator.clipboard.writeText(text);
+            var originalText = button.textContent;
+            button.classList.add('copied');
+            button.textContent = '\u2713 Copied!';
+            setTimeout(function() {
+                button.classList.remove('copied');
+                button.textContent = originalText;
+            }, 2000);
+        }
+
+        // Toggle QR Code
+        function toggleQR(qrId) {
+            var qrDiv = document.getElementById(qrId);
+            if (qrDiv.classList.contains('show')) {
+                qrDiv.classList.remove('show');
+            } else {
+                document.querySelectorAll('.qr-container').forEach(function(qr) { qr.classList.remove('show'); });
+                if (!qrDiv.querySelector('canvas')) {
+                    var address = wallets[qrId.replace('qr-', '')];
+                    if (address) {
+                        QRCode.toCanvas(address, {
+                            width: 250,
+                            margin: 2,
+                            color: { dark: '#000', light: '#fff' }
+                        }, function(err, canvas) {
+                            if (!err) qrDiv.appendChild(canvas);
+                        });
+                    }
+                }
+                qrDiv.classList.add('show');
+            }
+        }
+
+        // File handling for all upload zones
+        document.querySelectorAll('.upload-zone input[type="file"]').forEach(function(input) {
+            input.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    var file = e.target.files[0];
+                    var preview = e.target.closest('.form-group').querySelector('.file-preview');
+                    var nameEl = preview.querySelector('.file-name');
+                    nameEl.textContent = file.name;
+                    preview.classList.add('show');
+                }
+            });
+        });
+
+        function removeFile(btn) {
+            var group = btn.closest('.form-group');
+            var input = group.querySelector('input[type="file"]');
+            var preview = group.querySelector('.file-preview');
+            input.value = '';
+            preview.classList.remove('show');
+        }
+
+        // Drag and drop
+        document.querySelectorAll('.upload-zone').forEach(function(zone) {
+            zone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+            zone.addEventListener('dragleave', function() {
+                zone.classList.remove('drag-over');
+            });
+            zone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                var input = zone.querySelector('input[type="file"]');
+                if (e.dataTransfer.files.length > 0) {
+                    input.files = e.dataTransfer.files;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        // Form submissions
+        document.querySelectorAll('.payment-form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                window.location.href = 'payment-confirmation.html';
+            });
+        });
+    </script>
+</body>
+</html>

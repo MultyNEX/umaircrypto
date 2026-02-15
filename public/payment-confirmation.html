@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Proof Received - UmairCrypto</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #060612;
+            --surface: #0c0c1d;
+            --surface2: #141432;
+            --border: #1e1e3a;
+            --text: #F0F0F0;
+            --text-dim: #8B8B9E;
+            --cyan: #38BDF8;
+            --purple: #A855F7;
+            --green: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .success-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+        }
+
+        .logo {
+            height: 48px;
+            margin: 0 auto 24px;
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--green), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 3em;
+            color: #fff;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            color: var(--text);
+            font-size: 1.1em;
+            margin-bottom: 32px;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 32px 0;
+        }
+
+        .steps {
+            text-align: left;
+            background: var(--surface2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .steps-title {
+            font-size: 1.1em;
+            color: var(--cyan);
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--cyan), #0ea5e9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            color: var(--text-dim);
+            font-size: 0.9em;
+        }
+
+        .details-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .details-title {
+            font-size: 0.85em;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-dim);
+            font-size: 0.9em;
+        }
+
+        .detail-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .help-section {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .help-title {
+            color: var(--cyan);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .help-item {
+            font-size: 0.9em;
+            color: var(--text-dim);
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .help-item:before {
+            content: "\2022";
+            position: absolute;
+            left: 8px;
+            color: var(--cyan);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-size: 1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), #0ea5e9);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .success-card {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 6px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-card">
+            <img src="/UmairLogo.png" alt="UmairCrypto" class="logo">
+            <div class="success-icon">&#x2713;</div>
+            <h1>Payment Proof Received</h1>
+            <p class="subtitle">Thanks! We've received your payment proof.</p>
+
+            <div class="divider"></div>
+
+            <div class="steps">
+                <div class="steps-title">What's Next:</div>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Verification in Progress</div>
+                        <div class="step-desc">Our team is verifying your payment (usually 5-15 minutes)</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Confirmation Email</div>
+                        <div class="step-desc">You'll receive confirmation at your email address</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Access Link Sent</div>
+                        <div class="step-desc">Once verified, we'll send your booking link</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <div class="details-title">Your Payment Details</div>
+                <div class="detail-row">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value" style="color: var(--green);">Proof Submitted</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Service</div>
+                    <div class="detail-value">UmairCrypto Consultation</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Reference</div>
+                    <div class="detail-value">#PMT-<span id="ref-number"></span></div>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-title">Not verified yet?</div>
+                <div class="help-item">Check your spam folder for our email</div>
+                <div class="help-item">Wait 15-20 minutes for verification</div>
+                <div class="help-item">Still nothing? Contact us via WhatsApp</div>
+            </div>
+
+            <div class="button-group">
+                <a href="https://wa.me/PLACEHOLDER?text=Hi%2C%20I%20submitted%20payment%20proof%20and%20waiting%20for%20verification"
+                   class="btn btn-primary" target="_blank">
+                    WhatsApp Support
+                </a>
+                <a href="/" class="btn btn-secondary">
+                    Back to UmairCrypto
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate random reference number
+        var refNumber = Math.random().toString(36).substring(2, 8).toUpperCase();
+        document.getElementById('ref-number').textContent = refNumber;
+
+        // Store in localStorage for tracking
+        localStorage.setItem('payment_ref', refNumber);
+        localStorage.setItem('payment_time', new Date().toISOString());
+    </script>
+</body>
+</html>
