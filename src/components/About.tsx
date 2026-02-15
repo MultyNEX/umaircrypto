@@ -94,29 +94,29 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
 
-              {/* Arrow pointing to Umair */}
+              {/* Arrow pointing to Umair's face */}
               <svg
                 className="hidden lg:block absolute -right-20 top-[5%] w-44 h-44 text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
                 viewBox="0 0 200 200"
                 fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {/* Tighter curve — starts from label, sweeps down naturally */}
                 <path
-                  d="M140 15 C110 10, 80 25, 60 55 C40 85, 35 115, 25 145"
+                  d="M10 170 C30 140, 70 100, 100 70 C130 40, 150 25, 160 20"
                   stroke="currentColor"
-                  strokeWidth="3"
+                  strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
                   strokeDasharray="8 6"
                 />
-                {/* Arrowhead */}
+                {/* Arrowhead — pointing at face (top-right end) */}
                 <polygon
-                  points="18,155 32,145 22,135"
+                  points="168,16 155,14 158,28"
                   fill="currentColor"
                 />
               </svg>
-              {/* Label */}
-              <span className="hidden lg:block absolute -right-14 top-[1%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+              {/* Label at the bottom-start of the arrow */}
+              <span className="hidden lg:block absolute -right-14 top-[42%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
             </div>
