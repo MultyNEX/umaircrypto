@@ -4,7 +4,7 @@ import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Preloader from "@/components/Preloader";
 import CustomCursor from "@/components/CustomCursor";
-import ParticleBackground from "@/components/ParticleBackground";
+import CryptoCoins from "@/components/CryptoCoins";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -67,7 +67,7 @@ export default function RootLayout({
       >
         <Preloader />
         <CustomCursor />
-        <ParticleBackground />
+        <CryptoCoins />
         {/* Circuit board grid overlay */}
         <div className="circuit-grid" aria-hidden="true" />
         {children}
