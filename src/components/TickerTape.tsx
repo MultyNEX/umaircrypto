@@ -57,7 +57,7 @@ export default function TickerTape() {
   }, [isVisible]);
 
   return (
-    <div className="fixed top-20 md:top-24 left-0 right-0 z-40 h-[72px] sm:h-[56px]">
+    <div className="fixed top-20 md:top-24 left-0 right-0 z-40 h-[72px] sm:h-[56px] bg-gradient-to-b from-bg-primary/80 to-transparent backdrop-blur-sm">
       <div
         ref={containerRef}
         className="tradingview-widget-container h-full"
