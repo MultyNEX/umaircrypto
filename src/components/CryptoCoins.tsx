@@ -200,7 +200,7 @@ export default function CryptoCoins() {
         ctx.save();
         ctx.translate(finalX, finalY);
         ctx.shadowColor = p.symbol.color;
-        ctx.shadowBlur = p.size * 0.7;
+        ctx.shadowBlur = p.size * 0.25;
         ctx.globalAlpha = drawOpacity;
         ctx.fillStyle = p.symbol.color;
         ctx.font = `bold ${p.size}px Arial, sans-serif`;
