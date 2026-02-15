@@ -40,14 +40,14 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <a href="#" className="flex items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/UmairLogo.png"
               alt="Umair Crypto"
-              className="h-10 md:h-14 w-auto"
+              className="h-14 md:h-20 w-auto"
               style={{ imageRendering: "crisp-edges", WebkitFontSmoothing: "antialiased" }}
             />
           </a>
@@ -97,7 +97,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden fixed inset-0 top-16 bg-black/60 z-40"
+              className="md:hidden fixed inset-0 top-20 bg-black/60 z-40"
               onClick={() => setMobileOpen(false)}
             />
 
@@ -107,7 +107,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="md:hidden fixed inset-x-0 top-16 bottom-0 z-50 bg-bg-primary/95 backdrop-blur-xl"
+              className="md:hidden fixed inset-x-0 top-20 bottom-0 z-50 bg-bg-primary/95 backdrop-blur-xl"
             >
               <div className="flex flex-col h-full px-6 pt-8 pb-10">
                 <div className="flex flex-col gap-1 flex-1">

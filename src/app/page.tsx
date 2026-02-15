@@ -26,8 +26,8 @@ export default function Home() {
       <CryptoCoins />
       <Navbar />
       <TickerTape />
-      {/* Spacer: navbar (64/80px) + ticker tape (44/40px) */}
-      <div className="pt-[108px] md:pt-[120px]">
+      {/* Spacer: navbar (80/96px) + ticker tape (44/40px) */}
+      <div className="pt-[124px] md:pt-[136px]">
         <Hero />
         <About />
         <LiveMarkets />
