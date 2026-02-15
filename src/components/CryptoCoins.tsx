@@ -47,7 +47,7 @@ interface Particle {
 
 function generateParticles(isMobile: boolean): Particle[] {
   const rand = mulberry32(77742);
-  const COUNT = isMobile ? 16 : 30;
+  const COUNT = isMobile ? 12 : 22;
   const MIN_DIST = isMobile ? 0.13 : 0.11;
 
   const points: { x: number; y: number }[] = [];
@@ -146,12 +146,15 @@ export default function CryptoCoins() {
     }
 
     let time = 0;
+    let frame = 0;
 
     function animate() {
       frameId = requestAnimationFrame(animate);
+      frame++;
+      if (frame % 2 !== 0) return;
       if (!canvas || !ctx) return;
 
-      time += 0.016;
+      time += 0.032;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const w = canvas.width;
@@ -199,8 +202,6 @@ export default function CryptoCoins() {
 
         ctx.save();
         ctx.translate(finalX, finalY);
-        ctx.shadowColor = p.symbol.color;
-        ctx.shadowBlur = p.size * 0.25;
         ctx.globalAlpha = drawOpacity;
         ctx.fillStyle = p.symbol.color;
         ctx.font = `bold ${p.size}px Arial, sans-serif`;
@@ -233,6 +234,7 @@ export default function CryptoCoins() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-[2] pointer-events-none"
+      style={{ willChange: "transform" }}
       aria-hidden="true"
     />
   );
