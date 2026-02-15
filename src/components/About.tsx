@@ -94,31 +94,31 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
 
-              {/* Arrow curving from label UP toward face */}
+              {/* "That's me!" label at top-right */}
+              <span className="hidden lg:block absolute -right-16 top-[2%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+                That&apos;s me!
+              </span>
+              {/* Arrow curving from label down-left toward face */}
               <svg
-                className="hidden lg:block absolute -right-10 top-[10%] w-48 h-[60%] text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
-                viewBox="0 0 200 300"
+                className="hidden lg:block absolute -right-8 top-[6%] w-36 h-[30%] text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                viewBox="0 0 180 200"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M160 280 C150 220, 140 180, 120 140 C100 100, 60 60, 40 30"
+                  d="M150 10 C130 40, 110 80, 80 120 C60 150, 30 170, 15 180"
                   stroke="currentColor"
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
                   strokeDasharray="8 6"
                 />
-                {/* Arrowhead — pointing up-left at face */}
+                {/* Arrowhead — pointing down-left at face */}
                 <polygon
-                  points="32,22 48,28 38,40"
+                  points="6,176 22,170 12,184"
                   fill="currentColor"
                 />
               </svg>
-              {/* Label at the bottom-right of the arrow */}
-              <span className="hidden lg:block absolute -right-14 top-[75%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
-                That&apos;s me!
-              </span>
             </div>
           </motion.div>
 
