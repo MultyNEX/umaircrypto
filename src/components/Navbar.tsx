@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -16,7 +14,6 @@ const navLinks = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const magnetic = useMagnetic(0.25);
 
   useEffect(() => {
@@ -24,13 +21,6 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
 
   return (
     <nav
@@ -83,81 +73,12 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex items-center justify-center w-12 h-12 -mr-2 text-text-primary"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Theme Toggle */}
+          <div className="md:hidden">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
-
-      {/* Mobile full-screen overlay menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden fixed inset-0 top-20 bg-black/60 z-40"
-              onClick={() => setMobileOpen(false)}
-            />
-
-            {/* Menu panel */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="md:hidden fixed inset-x-0 top-20 bottom-0 z-50 bg-bg-primary/95 backdrop-blur-xl"
-            >
-              <div className="flex flex-col h-full px-6 pt-8 pb-10">
-                <div className="flex flex-col gap-1 flex-1">
-                  {navLinks.map((link, i) => (
-                    <motion.a
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
-                      initial={{ opacity: 0, x: -16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.06 }}
-                      className="flex items-center px-4 py-4 text-lg text-text-primary font-medium transition-colors rounded-xl hover:bg-bg-secondary border-b border-border/50 last:border-0"
-                    >
-                      {link.label}
-                    </motion.a>
-                  ))}
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 }}
-                  className="flex items-center justify-between px-4 py-3 rounded-xl bg-bg-secondary/50 mb-4"
-                >
-                  <span className="text-sm text-text-secondary">Theme</span>
-                  <ThemeToggle />
-                </motion.div>
-
-                <motion.a
-                  href="#contact"
-                  onClick={() => setMobileOpen(false)}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-center justify-center w-full px-6 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary shadow-[0_0_25px_rgba(56,189,248,0.3)] btn-neon-glow"
-                >
-                  Book a Call
-                </motion.a>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </nav>
   );
 }
