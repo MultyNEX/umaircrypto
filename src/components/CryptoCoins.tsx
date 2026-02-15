@@ -2,56 +2,111 @@
 
 import { useEffect, useRef } from "react";
 
-// Ordered by market cap — size decreases down the list
 const SYMBOLS = [
-  { char: "₿", color: "#f7931a", rank: 1 },   // BTC
-  { char: "Ξ", color: "#627eea", rank: 2 },   // ETH
-  { char: "✕", color: "#38bdf8", rank: 3 },   // XRP
-  { char: "₮", color: "#26a17b", rank: 4 },   // USDT
-  { char: "◎", color: "#9945ff", rank: 5 },   // SOL
-  { char: "B", color: "#f3ba2f", rank: 6 },   // BNB
-  { char: "₳", color: "#0033ad", rank: 7 },   // ADA
-  { char: "⬡", color: "#e6007a", rank: 8 },   // DOT
-  { char: "Ð", color: "#c2a633", rank: 9 },   // DOGE
-  { char: "◈", color: "#2775ca", rank: 10 },  // USDC
+  { char: "₿", label: "BTC", color: "#f7931a", rank: 1 },
+  { char: "Ξ", label: "ETH", color: "#627eea", rank: 2 },
+  { char: "◎", label: "SOL", color: "#9945ff", rank: 3 },
+  { char: "B", label: "BNB", color: "#f3ba2f", rank: 4 },
+  { char: "✕", label: "XRP", color: "#38bdf8", rank: 5 },
+  { char: "Ð", label: "DOGE", color: "#c2a633", rank: 6 },
+  { char: "₳", label: "ADA", color: "#0033ad", rank: 7 },
+  { char: "A", label: "AVAX", color: "#e84142", rank: 8 },
 ];
 
-// Size mapping: rank 1 = biggest, rank 10 = smallest
+// Mulberry32 — proper PRNG with uniform distribution
+function mulberry32(seed: number) {
+  return function () {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function sizeFromRank(rank: number, isMobile: boolean): number {
-  const base = isMobile ? 38 : 52;
-  const min = isMobile ? 12 : 16;
-  // Exponential falloff so BTC is significantly larger
-  const scale = Math.pow(0.82, rank - 1);
+  const base = isMobile ? 56 : 82;
+  const min = isMobile ? 26 : 34;
+  const scale = Math.pow(0.86, rank - 1);
   return Math.max(min, Math.round(base * scale));
 }
 
 interface Particle {
-  baseX: number;
-  baseY: number;
+  ratioX: number;
+  ratioY: number;
   size: number;
   symbol: typeof SYMBOLS[number];
   phase: number;
   floatSpeed: number;
   floatAmp: number;
   opacity: number;
+  offsetX: number;
+  offsetY: number;
+}
+
+function generateParticles(isMobile: boolean): Particle[] {
+  const particles: Particle[] = [];
+  const rand = mulberry32(12345);
+
+  // Grid-based placement with heavy jitter for even coverage that looks random
+  const cols = isMobile ? 5 : 8;
+  const rows = isMobile ? 7 : 8;
+  const total = cols * rows;
+  const cellW = 1 / cols;
+  const cellH = 1 / rows;
+
+  for (let i = 0; i < total; i++) {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const symbol = SYMBOLS[i % SYMBOLS.length];
+
+    // Center of cell + random jitter within 80% of cell
+    const jitterX = (rand() - 0.5) * cellW * 0.8;
+    const jitterY = (rand() - 0.5) * cellH * 0.8;
+    const ratioX = cellW * (col + 0.5) + jitterX;
+    const ratioY = cellH * (row + 0.5) + jitterY;
+
+    const size = sizeFromRank(symbol.rank, isMobile);
+    const baseOpacity = 0.07 + (9 - symbol.rank) * 0.016;
+
+    particles.push({
+      ratioX: Math.max(0.01, Math.min(0.99, ratioX)),
+      ratioY: Math.max(0.01, Math.min(0.99, ratioY)),
+      size,
+      symbol,
+      phase: rand() * Math.PI * 2,
+      floatSpeed: 0.2 + rand() * 0.35,
+      floatAmp: 10 + rand() * 18,
+      opacity: Math.min(baseOpacity + rand() * 0.05, 0.3),
+      offsetX: 0,
+      offsetY: 0,
+    });
+  }
+
+  return particles;
 }
 
 export default function CryptoCoins() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -9999, y: -9999 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
     let frameId: number;
-    let particles: Particle[] = [];
 
     const isMobile =
       window.innerWidth < 768 ||
       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    // More particles on desktop, each symbol appears multiple times
-    const REPEATS = isMobile ? 2 : 4;
+    const particles = generateParticles(isMobile);
+
+    const MOUSE_RADIUS = isMobile ? 0 : 180;
+    const PUSH_STRENGTH = 60;
+    const RETURN_SPEED = 0.04;
 
     function resize() {
       if (!canvas) return;
@@ -59,75 +114,79 @@ export default function CryptoCoins() {
       canvas.height = window.innerHeight;
     }
 
-    function createParticles() {
-      particles = [];
-      if (!canvas) return;
-      const w = canvas.width;
-      const h = canvas.height;
+    resize();
 
-      // Total particles
-      const allSymbols: typeof SYMBOLS[number][] = [];
-      for (let r = 0; r < REPEATS; r++) {
-        SYMBOLS.forEach((s) => allSymbols.push(s));
-      }
-
-      const total = allSymbols.length;
-
-      // Grid-based distribution for even spread
-      const cols = Math.ceil(Math.sqrt(total * (w / h)));
-      const rows = Math.ceil(total / cols);
-      const cellW = w / cols;
-      const cellH = h / rows;
-
-      allSymbols.forEach((symbol, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-
-        // Position within cell with randomness (but stay within cell bounds)
-        const jitterX = (Math.random() - 0.5) * cellW * 0.7;
-        const jitterY = (Math.random() - 0.5) * cellH * 0.7;
-        const baseX = cellW * (col + 0.5) + jitterX;
-        const baseY = cellH * (row + 0.5) + jitterY;
-
-        const size = sizeFromRank(symbol.rank, isMobile);
-
-        // Higher rank = slightly more visible
-        const baseOpacity = 0.06 + (11 - symbol.rank) * 0.012;
-        const opacity = baseOpacity + Math.random() * 0.06;
-
-        particles.push({
-          baseX,
-          baseY,
-          size,
-          symbol,
-          phase: Math.random() * Math.PI * 2,
-          floatSpeed: 0.2 + Math.random() * 0.4,
-          floatAmp: 12 + Math.random() * 22,
-          opacity: Math.min(opacity, 0.25),
-        });
-      });
+    function onMouseMove(e: MouseEvent) {
+      mouseRef.current.x = e.clientX;
+      mouseRef.current.y = e.clientY;
     }
 
-    resize();
-    createParticles();
+    function onMouseLeave() {
+      mouseRef.current.x = -9999;
+      mouseRef.current.y = -9999;
+    }
+
+    if (!isMobile) {
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+      document.addEventListener("mouseleave", onMouseLeave);
+    }
 
     let time = 0;
 
     function animate() {
       frameId = requestAnimationFrame(animate);
+      if (!canvas || !ctx) return;
+
       time += 0.016;
-      if (!canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const w = canvas.width;
+      const h = canvas.height;
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+
       particles.forEach((p) => {
-        const y = p.baseY + Math.sin(time * p.floatSpeed + p.phase) * p.floatAmp;
-        const x = p.baseX + Math.sin(time * 0.15 + p.phase * 0.7) * 8;
+        const baseX = p.ratioX * w;
+        const baseY = p.ratioY * h;
+
+        const floatX = baseX + Math.sin(time * 0.15 + p.phase * 0.7) * 8;
+        const floatY = baseY + Math.sin(time * p.floatSpeed + p.phase) * p.floatAmp;
+
+        if (MOUSE_RADIUS > 0) {
+          const dx = floatX + p.offsetX - mx;
+          const dy = floatY + p.offsetY - my;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            const force = (1 - dist / MOUSE_RADIUS) * PUSH_STRENGTH;
+            const angle = Math.atan2(dy, dx);
+            p.offsetX += Math.cos(angle) * force * 0.15;
+            p.offsetY += Math.sin(angle) * force * 0.15;
+          }
+
+          p.offsetX *= 1 - RETURN_SPEED;
+          p.offsetY *= 1 - RETURN_SPEED;
+        }
+
+        const finalX = floatX + p.offsetX;
+        const finalY = floatY + p.offsetY;
+
+        let drawOpacity = p.opacity;
+        if (MOUSE_RADIUS > 0) {
+          const distToMouse = Math.sqrt(
+            (finalX - mx) ** 2 + (finalY - my) ** 2
+          );
+          if (distToMouse < MOUSE_RADIUS * 1.5) {
+            const boost = (1 - distToMouse / (MOUSE_RADIUS * 1.5)) * 0.15;
+            drawOpacity = Math.min(p.opacity + boost, 0.45);
+          }
+        }
 
         ctx.save();
-        ctx.translate(x, y);
+        ctx.translate(finalX, finalY);
         ctx.shadowColor = p.symbol.color;
-        ctx.shadowBlur = p.size * 0.6;
-        ctx.globalAlpha = p.opacity;
+        ctx.shadowBlur = p.size * 0.7;
+        ctx.globalAlpha = drawOpacity;
         ctx.fillStyle = p.symbol.color;
         ctx.font = `bold ${p.size}px Arial, sans-serif`;
         ctx.textAlign = "center";
@@ -142,16 +201,15 @@ export default function CryptoCoins() {
     let resizeTimeout: ReturnType<typeof setTimeout>;
     function handleResize() {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        resize();
-        createParticles();
-      }, 200);
+      resizeTimeout = setTimeout(resize, 200);
     }
     window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseleave", onMouseLeave);
       clearTimeout(resizeTimeout);
     };
   }, []);
