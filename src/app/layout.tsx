@@ -62,6 +62,17 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-body antialiased overflow-x-hidden`}
       >
+        {/* Preloader gate — covers screen instantly on HTML paint, removed by Preloader.tsx */}
+        <div
+          id="preloader-gate"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 99999,
+            backgroundColor: "#060612",
+            pointerEvents: "none",
+          }}
+        />
         {/* Circuit board grid overlay */}
         <div className="circuit-grid" aria-hidden="true" />
         {children}
