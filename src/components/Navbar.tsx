@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useMagnetic } from "@/hooks/useMagnetic";
-import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -59,9 +58,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop CTA + Theme Toggle */}
+          {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <ThemeToggle />
             <a
               ref={magnetic.ref as React.RefObject<HTMLAnchorElement>}
               onMouseMove={magnetic.onMouseMove}
@@ -71,11 +69,6 @@ export default function Navbar() {
             >
               Book a Call
             </a>
-          </div>
-
-          {/* Mobile Theme Toggle */}
-          <div className="md:hidden">
-            <ThemeToggle />
           </div>
         </div>
       </div>

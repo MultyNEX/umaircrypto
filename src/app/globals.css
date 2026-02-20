@@ -16,20 +16,6 @@
   --success: 56 189 248;         /* #38BDF8 */
 }
 
-[data-theme="light"] {
-  --bg-primary: 248 250 252;     /* #f8fafc */
-  --bg-secondary: 241 245 249;   /* #f1f5f9 */
-  --bg-tertiary: 226 232 240;    /* #e2e8f0 */
-  --accent-primary: 14 165 233;  /* #0ea5e9 */
-  --accent-secondary: 147 51 234;/* #9333ea */
-  --accent-warm: 217 119 6;      /* #d97706 */
-  --text-primary: 15 23 42;      /* #0f172a */
-  --text-secondary: 100 116 139; /* #64748b */
-  --border: 226 232 240;         /* #e2e8f0 */
-  --danger: 255 71 87;
-  --success: 14 165 233;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -57,7 +43,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   min-height: 100vh;
-  cursor: none;
 }
 
 /* Atmospheric cyberpunk depth gradient */
@@ -83,21 +68,6 @@ body::before {
   pointer-events: none;
 }
 
-/* Light mode: flatten the atmospheric glow */
-[data-theme="light"] body::before {
-  background:
-    radial-gradient(ellipse 120% 40% at 50% 100%, rgba(var(--accent-warm), 0.03) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(var(--accent-secondary), 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 50% at 100% 0%, rgba(var(--accent-primary), 0.03) 0%, transparent 50%),
-    linear-gradient(
-      180deg,
-      rgb(var(--bg-primary)) 0%,
-      rgb(var(--bg-secondary)) 40%,
-      rgb(var(--bg-secondary)) 60%,
-      rgb(var(--bg-primary)) 100%
-    );
-}
-
 /* Circuit board grid overlay */
 .circuit-grid {
   position: fixed;
@@ -115,12 +85,6 @@ body::before {
   mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 80%, transparent 100%);
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 80%, transparent 100%);
   pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-/* Hide circuit grid in light mode */
-[data-theme="light"] .circuit-grid {
-  opacity: 0;
 }
 
 /* Noise texture overlay — premium film grain */
@@ -133,11 +97,6 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   opacity: 0.3;
   mix-blend-mode: overlay;
-}
-
-/* Reduce noise in light mode */
-[data-theme="light"] body::after {
-  opacity: 0.08;
 }
 
 /* Cyan text selection */
@@ -179,19 +138,6 @@ body::after {
   );
 }
 
-/* Light mode glass */
-[data-theme="light"] .glass {
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
-              inset 0 0 24px 0 rgba(255, 255, 255, 0.2),
-              0 1px 3px rgba(0, 0, 0, 0.06);
-  background-image: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-}
-
 /* Enhanced glassmorphism — cyberpunk tinted */
 .glass-enhanced {
   box-shadow:
@@ -208,22 +154,6 @@ body::after {
   );
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-}
-
-/* Light mode enhanced glass */
-[data-theme="light"] .glass-enhanced {
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
-    inset 0 0 30px 0 rgba(255, 255, 255, 0.1),
-    0 4px 16px rgba(0, 0, 0, 0.06),
-    0 1px 4px rgba(0, 0, 0, 0.04),
-    0 0 1px rgba(var(--accent-primary), 0.15);
-  background-image: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.4) 100%
-  );
 }
 
 /* ========== BUTTON EFFECTS ========== */
@@ -307,18 +237,6 @@ body::after {
   animation: border-glow-gold 3s ease-in-out infinite;
 }
 
-/* Light mode: reduce glow intensity */
-[data-theme="light"] .border-animated-teal {
-  animation: none;
-  border-color: rgba(var(--accent-primary), 0.3);
-  box-shadow: 0 0 8px rgba(var(--accent-primary), 0.1);
-}
-[data-theme="light"] .border-animated-gold {
-  animation: none;
-  border-color: rgba(var(--accent-secondary), 0.3);
-  box-shadow: 0 0 8px rgba(var(--accent-secondary), 0.1);
-}
-
 /* ========== ANIMATIONS ========== */
 
 /* Floating bob for stat cards */
@@ -393,12 +311,6 @@ body::after {
   animation: aurora-3 20s ease-in-out infinite;
 }
 
-/* Light mode: reduce aurora orb intensity */
-[data-theme="light"] .aurora-orb {
-  opacity: 0.3;
-  filter: blur(100px);
-}
-
 /* ========== SPARKLE / TWINKLE ========== */
 
 @keyframes sparkle {
@@ -422,11 +334,6 @@ body::after {
     0 0 80px rgba(var(--accent-secondary), 0.1);
 }
 
-/* Light mode: remove neon glow */
-[data-theme="light"] .neon-glow-text {
-  text-shadow: none;
-}
-
 /* ========== REFLECTIVE SURFACE ========== */
 
 .reflective-surface {
@@ -441,11 +348,6 @@ body::after {
   height: 1px;
   background: linear-gradient(90deg, transparent 0%, rgba(var(--accent-primary), 0.3) 30%, rgba(var(--accent-secondary), 0.3) 70%, transparent 100%);
   box-shadow: 0 0 15px rgba(var(--accent-primary), 0.2), 0 0 30px rgba(var(--accent-secondary), 0.1);
-}
-
-/* Light mode: subtle reflective surface */
-[data-theme="light"] .reflective-surface::after {
-  box-shadow: none;
 }
 
 /* Navbar link underline animation */
@@ -467,11 +369,6 @@ body::after {
   width: 100%;
 }
 
-/* Light mode: remove link glow */
-[data-theme="light"] .nav-link-underline::after {
-  box-shadow: none;
-}
-
 /* Hide scrollbar — used for horizontal scroll areas */
 .scrollbar-hide {
   -ms-overflow-style: none;
@@ -486,11 +383,6 @@ body::after {
   overflow: visible !important;
 }
 
-/* Touch device — restore default cursor */
-@media (hover: none) and (pointer: coarse) {
-  body { cursor: auto; }
-}
-
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -502,5 +394,4 @@ body::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  body { cursor: auto; }
 }

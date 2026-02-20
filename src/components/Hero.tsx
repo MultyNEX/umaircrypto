@@ -18,7 +18,7 @@ const trustItems = [
   { label: "152K+ Instagram", icon: TrendingUp },
   { label: "26.8K X", icon: TrendingUp },
   { label: "300K+ Traders", icon: Users },
-  { label: "Since 2021", icon: Calendar },
+  { label: "Since 2020", icon: Calendar },
 ];
 
 export default function Hero() {
@@ -37,6 +37,9 @@ export default function Hero() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  // Auto-updating years of experience
+  const yearsExp = new Date().getFullYear() - 2020;
 
   return (
     <section
@@ -83,7 +86,7 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* Headline — significantly larger */}
+            {/* Headline */}
             <motion.h1
               variants={fadeUp}
               initial="hidden"
@@ -120,10 +123,10 @@ export default function Hero() {
                 ref={magnetic1.ref as React.RefObject<HTMLAnchorElement>}
                 onMouseMove={magnetic1.onMouseMove}
                 onMouseLeave={magnetic1.onMouseLeave}
-                href="#contact"
+                href="#services"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
               >
-                Book a Free Consultation
+                Get Started
                 <ArrowRight size={18} />
               </a>
               <a
@@ -195,14 +198,14 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Floating badge — 4+ Years Exp (bottom-right) */}
+              {/* Floating badge — Years Exp (bottom-right, auto-updates) */}
               <div
                 className="absolute -right-10 bottom-[15%] z-20 float-bob"
                 style={{ animationDelay: "1.5s" }}
               >
                 <div className="px-5 py-4 rounded-xl border border-white/[0.1] bg-bg-primary/60 backdrop-blur-xl shadow-lg">
                   <p className="text-2xl font-bold text-accent-primary font-heading">
-                    4+
+                    {yearsExp}+
                   </p>
                   <p className="text-[11px] font-semibold tracking-[0.2em] text-text-secondary uppercase mt-0.5">
                     Years Exp.

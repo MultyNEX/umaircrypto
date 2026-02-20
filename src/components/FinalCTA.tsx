@@ -43,7 +43,7 @@ export default function FinalCTA() {
             <span className="text-gradient-animated">With Clarity?</span>
           </h2>
           <p className="text-text-secondary text-sm sm:text-base max-w-xl mx-auto">
-            Book your free consultation or message me directly.
+            Book a consultation or message me directly.
           </p>
         </motion.div>
 
@@ -59,10 +59,10 @@ export default function FinalCTA() {
             ref={magnetic1.ref as React.RefObject<HTMLAnchorElement>}
             onMouseMove={magnetic1.onMouseMove}
             onMouseLeave={magnetic1.onMouseLeave}
-            href="#contact"
+            href="#services"
             className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
           >
-            Book a Free Call
+            Book a Call
           </a>
           <a
             ref={magnetic2.ref as React.RefObject<HTMLAnchorElement>}
