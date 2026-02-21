@@ -4,6 +4,7 @@ import TickerTape from "@/components/TickerTape";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import LiveMarkets from "@/components/LiveMarkets";
+import MarketUpdates from "@/components/MarketUpdates";
 import Services from "@/components/Services";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
@@ -29,6 +30,7 @@ export default function Home() {
         <About />
         <Services />
         <LiveMarkets />
+        <MarketUpdates />
         <HowItWorks />
         <Testimonials />
         <FAQ />
