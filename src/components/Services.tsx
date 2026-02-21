@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useTilt } from "@/hooks/useTilt";
+import DisclaimerBanner from "@/components/DisclaimerBanner";
 
 const tiers = [
   {
@@ -188,6 +189,7 @@ export default function Services() {
           ))}
         </div>
       </div>
+      <DisclaimerBanner variant="education" className="mt-6" />
     </section>
   );
 }

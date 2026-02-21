@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Activity, TrendingUp, TrendingDown } from "lucide-react";
 import Image from "next/image";
+import DisclaimerBanner from "@/components/DisclaimerBanner";
 
 const COIN_PAIRS = [
   {
@@ -466,6 +467,9 @@ export default function LiveMarkets() {
             </div>
           </div>
         </motion.div>
+
+        {/* Subtle disclaimer */}
+        <DisclaimerBanner variant="trading" className="mt-4" />
       </div>
     </section>
   );

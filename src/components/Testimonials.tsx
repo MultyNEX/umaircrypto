@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 import { useTilt } from "@/hooks/useTilt";
+import DisclaimerBanner from "@/components/DisclaimerBanner";
 
 const testimonials = [
   {
@@ -122,6 +123,7 @@ export default function Testimonials() {
           ))}
         </div>
       </div>
+      <DisclaimerBanner variant="past" className="mt-6" />
     </section>
   );
 }
