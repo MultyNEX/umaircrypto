@@ -95,7 +95,6 @@ const fadeUp = {
 
 function formatPrice(price: string, symbol: string): string {
   const num = parseFloat(price);
-  // Large-cap coins show 2 decimals, small ones show more
   if (
     symbol === "BTCUSDT" ||
     symbol === "ETHUSDT" ||
@@ -119,16 +118,24 @@ function formatPrice(price: string, symbol: string): string {
 }
 
 export default function LiveMarkets() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [tickerData, setTickerData] = useState<Record<string, TickerData>>({});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chartRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const candleSeriesRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const volumeSeriesRef = useRef<any>(null);
+  const wsRef = useRef<WebSocket | null>(null);
 
   const activePair = COIN_PAIRS[activeIndex];
 
-  // Intersection observer for lazy loading chart
+  // Intersection observer for lazy loading
   useEffect(() => {
-    const el = containerRef.current;
+    const el = sectionRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
@@ -177,78 +184,189 @@ export default function LiveMarkets() {
     return () => clearInterval(interval);
   }, [activePair.binanceSymbol, fetchTicker]);
 
-  // Load TradingView widget
-  const loadWidget = useCallback((symbol: string) => {
-    if (!containerRef.current) return;
-
-    const widgetDiv = containerRef.current.querySelector(
-      ".tradingview-widget-container__widget"
-    );
-    if (!widgetDiv) return;
-
-    widgetDiv.innerHTML = "";
-
-    const script = document.createElement("script");
-    script.src =
-      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-    script.async = true;
-    script.type = "text/javascript";
-    script.textContent = JSON.stringify({
-      autosize: true,
-      symbol,
-      interval: "D",
-      timezone: "Etc/UTC",
-      theme: "dark",
-      style: "1",
-      locale: "en",
-      hide_top_toolbar: true,
-      hide_side_toolbar: true,
-      hide_legend: false,
-      allow_symbol_change: false,
-      save_image: false,
-      calendar: false,
-      hide_volume: false,
-      support_host: "https://www.tradingview.com",
-      backgroundColor: "rgba(6, 6, 18, 1)",
-      gridColor: "rgba(56, 189, 248, 0.03)",
-      overrides: {
-        "paneProperties.background": "#060612",
-        "paneProperties.backgroundType": "solid",
-        "paneProperties.vertGridProperties.color": "rgba(56, 189, 248, 0.03)",
-        "paneProperties.horzGridProperties.color": "rgba(56, 189, 248, 0.03)",
-        "mainSeriesProperties.candleStyle.upColor": "#38BDF8",
-        "mainSeriesProperties.candleStyle.downColor": "#EF4444",
-        "mainSeriesProperties.candleStyle.borderUpColor": "#38BDF8",
-        "mainSeriesProperties.candleStyle.borderDownColor": "#EF4444",
-        "mainSeriesProperties.candleStyle.wickUpColor": "#38BDF8",
-        "mainSeriesProperties.candleStyle.wickDownColor": "#EF4444",
-        "mainSeriesProperties.hollowCandleStyle.upColor": "#38BDF8",
-        "mainSeriesProperties.hollowCandleStyle.downColor": "#EF4444",
-        "mainSeriesProperties.hollowCandleStyle.borderUpColor": "#38BDF8",
-        "mainSeriesProperties.hollowCandleStyle.borderDownColor": "#EF4444",
-        "mainSeriesProperties.areaStyle.color1": "rgba(56, 189, 248, 0.28)",
-        "mainSeriesProperties.areaStyle.color2": "rgba(56, 189, 248, 0.02)",
-        "mainSeriesProperties.areaStyle.linecolor": "#38BDF8",
-        "mainSeriesProperties.lineStyle.color": "#38BDF8",
-        "paneProperties.crossHairProperties.color": "rgba(56, 189, 248, 0.25)",
-        "scalesProperties.textColor": "rgba(148, 163, 184, 0.6)",
-        "scalesProperties.lineColor": "rgba(56, 189, 248, 0.06)",
-        "scalesProperties.backgroundColor": "#060612",
-        "paneProperties.separatorColor": "rgba(56, 189, 248, 0.06)",
-        volumePaneSize: "small",
-      },
-      studies_overrides: {
-        "volume.volume.color.0": "rgba(239, 68, 68, 0.3)",
-        "volume.volume.color.1": "rgba(56, 189, 248, 0.3)",
-      },
-    });
-    widgetDiv.appendChild(script);
-  }, []);
-
+  // Initialize lightweight-charts once visible
   useEffect(() => {
-    if (!isVisible) return;
-    loadWidget(activePair.symbol);
-  }, [isVisible, activePair.symbol, loadWidget]);
+    if (!isVisible || !chartContainerRef.current) return;
+
+    let disposed = false;
+
+    async function initChart() {
+      const lc = await import("lightweight-charts");
+
+      if (disposed || !chartContainerRef.current) return;
+
+      const chart = lc.createChart(chartContainerRef.current, {
+        autoSize: true,
+        layout: {
+          background: { type: lc.ColorType.Solid, color: "#060612" },
+          textColor: "rgba(148, 163, 184, 0.6)",
+          fontFamily: "'DM Sans', sans-serif",
+        },
+        grid: {
+          vertLines: { color: "rgba(56, 189, 248, 0.04)" },
+          horzLines: { color: "rgba(56, 189, 248, 0.04)" },
+        },
+        crosshair: {
+          mode: lc.CrosshairMode.Normal,
+          vertLine: {
+            color: "rgba(56, 189, 248, 0.3)",
+            width: 1,
+            style: lc.LineStyle.Dashed,
+            labelBackgroundColor: "#1a1a2e",
+          },
+          horzLine: {
+            color: "rgba(56, 189, 248, 0.3)",
+            width: 1,
+            style: lc.LineStyle.Dashed,
+            labelBackgroundColor: "#1a1a2e",
+          },
+        },
+        rightPriceScale: {
+          borderColor: "rgba(56, 189, 248, 0.06)",
+          scaleMargins: { top: 0.1, bottom: 0.2 },
+        },
+        timeScale: {
+          borderColor: "rgba(56, 189, 248, 0.06)",
+          timeVisible: false,
+          secondsVisible: false,
+        },
+      });
+
+      const candleSeries = chart.addSeries(lc.CandlestickSeries, {
+        upColor: "#38BDF8",
+        downColor: "#E74694",
+        borderUpColor: "#38BDF8",
+        borderDownColor: "#E74694",
+        wickUpColor: "#38BDF8",
+        wickDownColor: "#E74694",
+        priceLineColor: "#38BDF8",
+        priceLineStyle: lc.LineStyle.Dashed,
+      });
+
+      const volumeSeries = chart.addSeries(lc.HistogramSeries, {
+        priceFormat: { type: "volume" },
+      }, 1);
+
+      volumeSeries.priceScale().applyOptions({
+        scaleMargins: { top: 0.2, bottom: 0 },
+      });
+
+      chartRef.current = chart;
+      candleSeriesRef.current = candleSeries;
+      volumeSeriesRef.current = volumeSeries;
+    }
+
+    initChart();
+
+    return () => {
+      disposed = true;
+      if (chartRef.current) {
+        chartRef.current.remove();
+        chartRef.current = null;
+        candleSeriesRef.current = null;
+        volumeSeriesRef.current = null;
+      }
+    };
+  }, [isVisible]);
+
+  // Load data + WebSocket when pair changes (or chart first mounts)
+  useEffect(() => {
+    if (!isVisible || !candleSeriesRef.current || !volumeSeriesRef.current)
+      return;
+
+    const candleSeries = candleSeriesRef.current;
+    const volumeSeries = volumeSeriesRef.current;
+    const symbol = activePair.binanceSymbol.toLowerCase();
+
+    // Disconnect previous WebSocket
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+
+    let cancelled = false;
+
+    async function loadHistorical() {
+      try {
+        const res = await fetch(
+          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=500`
+        );
+        if (!res.ok || cancelled) return;
+        const klines: (string | number)[][] = await res.json();
+
+        const candles = klines.map((k) => ({
+          time: (Math.floor(Number(k[0]) / 1000) as number),
+          open: parseFloat(k[1] as string),
+          high: parseFloat(k[2] as string),
+          low: parseFloat(k[3] as string),
+          close: parseFloat(k[4] as string),
+        }));
+
+        const volumes = klines.map((k) => {
+          const open = parseFloat(k[1] as string);
+          const close = parseFloat(k[4] as string);
+          return {
+            time: (Math.floor(Number(k[0]) / 1000) as number),
+            value: parseFloat(k[5] as string),
+            color:
+              close >= open
+                ? "rgba(56, 189, 248, 0.25)"
+                : "rgba(231, 70, 148, 0.25)",
+          };
+        });
+
+        if (cancelled) return;
+        candleSeries.setData(candles);
+        volumeSeries.setData(volumes);
+      } catch {
+        // Fail silently
+      }
+    }
+
+    loadHistorical().then(() => {
+      if (cancelled) return;
+
+      // Connect WebSocket for live updates
+      const ws = new WebSocket(
+        `wss://stream.binance.com:9443/ws/${symbol}@kline_4h`
+      );
+      wsRef.current = ws;
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        const k = msg.k;
+        if (!k) return;
+
+        const candle = {
+          time: (Math.floor(k.t / 1000) as number),
+          open: parseFloat(k.o),
+          high: parseFloat(k.h),
+          low: parseFloat(k.l),
+          close: parseFloat(k.c),
+        };
+
+        const volume = {
+          time: (Math.floor(k.t / 1000) as number),
+          value: parseFloat(k.v),
+          color:
+            candle.close >= candle.open
+              ? "rgba(56, 189, 248, 0.25)"
+              : "rgba(231, 70, 148, 0.25)",
+        };
+
+        candleSeries.update(candle);
+        volumeSeries.update(volume);
+      };
+    });
+
+    return () => {
+      cancelled = true;
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, [isVisible, activePair.binanceSymbol, activePair.binanceSymbol]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePairSelect = (index: number) => {
     if (index === activeIndex) return;
@@ -416,6 +534,7 @@ export default function LiveMarkets() {
 
         {/* Chart container */}
         <motion.div
+          ref={sectionRef}
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
@@ -442,17 +561,17 @@ export default function LiveMarkets() {
             <div className="absolute top-0 right-0 w-20 h-20 bg-accent-secondary/[0.03] blur-2xl pointer-events-none z-10" />
 
             <div
-              ref={containerRef}
-              className="tradingview-widget-container rounded-2xl h-[350px] sm:h-[450px] md:h-[520px] lg:h-[560px]"
+              className="rounded-2xl h-[350px] sm:h-[450px] md:h-[520px] lg:h-[560px]"
               style={{
                 border: "1px solid rgba(56, 189, 248, 0.06)",
                 boxShadow:
                   "0 0 30px rgba(56, 189, 248, 0.04), 0 0 60px rgba(168, 85, 247, 0.02), inset 0 1px 0 rgba(56, 189, 248, 0.06)",
+                background: "#060612",
               }}
             >
               <div
-                className="tradingview-widget-container__widget"
-                style={{ height: "100%", width: "100%" }}
+                ref={chartContainerRef}
+                style={{ width: "100%", height: "100%" }}
               />
               {!isVisible && (
                 <div
