@@ -98,7 +98,7 @@ export default function About() {
               </div>
 
               {/* "That's me!" label — points to Umair on the RIGHT of the photo */}
-              <span className="hidden lg:block absolute -right-20 top-[1%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+              <span className="hidden lg:block absolute -right-14 top-[5%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
               {/* Dashed arrow curving from label down to Umair (right side of photo) */}
@@ -108,17 +108,18 @@ export default function About() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                {/* Left hook at top then line down */}
                 <path
-                  d="M60 5 C58 30, 52 60, 50 95"
+                  d="M95 5 C75 5, 52 10, 50 25 C48 50, 49 75, 50 110"
                   stroke="currentColor"
                   strokeWidth="3"
                   strokeLinecap="round"
                   fill="none"
                   strokeDasharray="7 5"
                 />
-                {/* Arrowhead pointing down toward Umair */}
+                {/* Arrowhead pointing down */}
                 <polygon
-                  points="42,90 58,90 50,104"
+                  points="42,105 58,105 50,119"
                   fill="currentColor"
                 />
               </svg>
