@@ -12,6 +12,7 @@ import {
   Lock,
   Upload,
   X,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,6 +29,7 @@ const WALLETS = [
     icon: "₮",
     fee: "~$1",
     speed: "~30 seconds",
+    explorer: "https://tronscan.org/#/address/TF2Hu8Uu6rcLNQX32681G2Cu9uCjCQwoeg",
   },
   {
     id: "sol",
@@ -39,6 +41,7 @@ const WALLETS = [
     icon: "◎",
     fee: "~$0.01",
     speed: "~2 seconds",
+    explorer: "https://solscan.io/account/4ueGVRXrbY1tA4LSRQ6R6Se6tWwgAJHmEHQ8SqBTKEdj",
   },
   {
     id: "erc20",
@@ -50,6 +53,7 @@ const WALLETS = [
     icon: "Ξ",
     fee: "~$2-10",
     speed: "~30 seconds",
+    explorer: "https://etherscan.io/address/0x59cda610b21524ec8c70fe4e7c5f3fbb134b9d9e",
   },
 ];
 
@@ -140,14 +144,44 @@ function PaymentContent() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitError, setSubmitError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate submission — replace with real API later
-    setTimeout(() => {
+    setSubmitError("");
+
+    try {
+      const body = new FormData();
+      body.append("name", formData.name);
+      body.append("email", formData.email);
+      body.append("phone", formData.phone);
+      body.append("txHash", formData.txHash);
+      body.append("tier", TIERS[selectedTier!].name);
+      body.append("amount", TIERS[selectedTier!].price);
+      body.append("network", WALLETS[activeWallet].network);
+      if (screenshot) {
+        body.append("screenshot", screenshot);
+      }
+
+      const res = await fetch("/api/submit-proof", {
+        method: "POST",
+        body,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Submission failed");
+      }
+
       setSubmitting(false);
       setSubmitted(true);
-    }, 1500);
+    } catch (err: unknown) {
+      setSubmitting(false);
+      setSubmitError(
+        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      );
+    }
   };
 
   // ─── Submitted success state ─────────────────────────────────────
@@ -426,6 +460,20 @@ function PaymentContent() {
                         {copied ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
                       </button>
                     </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="flex items-center gap-1 text-xs text-yellow-400/60">
+                        <AlertTriangle size={11} />
+                        Always verify the first and last 4 characters after pasting
+                      </p>
+                      <a
+                        href={wallet.explorer}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs text-accent-primary/50 hover:text-accent-primary/80 transition-colors"
+                      >
+                        Verify on Explorer <ExternalLink size={11} />
+                      </a>
+                    </div>
                   </div>
 
                   {/* Amount reminder */}
@@ -445,6 +493,25 @@ function PaymentContent() {
               </div>
             </motion.div>
           </AnimatePresence>
+        </motion.div>
+
+        {/* ── Security Badge ─────────────────────────────────────── */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="mt-6 mb-8 p-4 rounded-xl bg-bg-secondary/30 border border-white/[0.05]"
+        >
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary/80 mb-2.5">
+            <Shield size={13} className="text-accent-primary/60" />
+            Payment Security
+          </p>
+          <div className="space-y-1.5 text-xs text-text-secondary/60">
+            <p>✓ Verify address matches after pasting</p>
+            <p>✓ Only pay from your own wallet</p>
+            <p>✓ Save your TX hash for verification</p>
+          </div>
         </motion.div>
 
         {/* ── Step 4: Upload Proof ──────────────────────────────── */}
@@ -580,6 +647,12 @@ function PaymentContent() {
               </div>
 
               {/* Submit */}
+              {submitError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+                  {submitError}
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={!screenshot || !formData.name || !formData.email || !formData.phone || submitting}
