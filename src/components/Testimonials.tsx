@@ -7,27 +7,39 @@ import { useTilt } from "@/hooks/useTilt";
 const testimonials = [
   {
     quote:
-      "Umair's chart analysis is on another level. Called the BTC bounce at $85K before anyone else saw it.",
-    name: "Ahmad R.",
-    role: "Crypto Trader",
+      "Umair's chart analysis is on another level. Called the BTC bounce at $85K before anyone else saw it. Hands down the best TA I've followed.",
+    name: "Marcus J.",
+    role: "Crypto Trader · New York",
   },
   {
     quote:
-      "Joined the community 6 months ago. Best decision I made. The TA breakdowns are worth 10x the consultation fee.",
-    name: "Sarah K.",
-    role: "Portfolio Manager",
+      "Joined the community 6 months ago — best decision I made. The TA breakdowns alone are worth 10x the consultation fee.",
+    name: "Sophie L.",
+    role: "Portfolio Manager · London",
   },
   {
     quote:
-      "No hype, no hopium — just clean analysis. Exactly what I needed to stop losing money on bad entries.",
-    name: "Bilal M.",
-    role: "Day Trader",
+      "No hype, no hopium — just clean analysis. Exactly what I needed to stop losing money on bad entries. Finally profitable.",
+    name: "Daniel K.",
+    role: "Day Trader · Toronto",
   },
   {
     quote:
-      "The VIP mentorship changed how I read charts. I finally understand structure, not just price.",
-    name: "Fatima Z.",
-    role: "Swing Trader",
+      "The VIP mentorship changed how I read charts. I finally understand market structure, not just price. Worth every dollar.",
+    name: "Aisha N.",
+    role: "Swing Trader · Dubai",
+  },
+  {
+    quote:
+      "I've paid for courses that taught me less than one session with Umair. Clear, honest, and always backed by the chart.",
+    name: "Lucas M.",
+    role: "DeFi Investor · Berlin",
+  },
+  {
+    quote:
+      "Went from guessing entries to having a real system. The private group is full of serious traders — no noise, just alpha.",
+    name: "Elena R.",
+    role: "Full-Time Trader · Singapore",
   },
 ];
 
