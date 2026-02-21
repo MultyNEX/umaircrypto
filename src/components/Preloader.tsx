@@ -132,6 +132,14 @@ export default function Preloader() {
     const gate = document.getElementById("preloader-gate");
     if (gate) gate.remove();
   }, []);
+  
+  // Force scroll to top on every page load
+useEffect(() => {
+  window.scrollTo(0, 0);
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+}, []);
 
   return (
     <AnimatePresence>
