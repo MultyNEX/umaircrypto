@@ -254,7 +254,7 @@ export default function Hero() {
                   ref={magnetic1.ref as React.RefObject<HTMLAnchorElement>}
                   onMouseMove={magnetic1.onMouseMove}
                   onMouseLeave={magnetic1.onMouseLeave}
-                  href="#services"
+                  href="/payment?from=hero"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
                 >
                   Get Started

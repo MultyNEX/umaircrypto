@@ -87,7 +87,7 @@ export default function FinalCTA() {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Link
-            href="/payment"
+            href="/payment?from=cta"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold rounded-xl bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow"
           >
             Book a Consultation

@@ -321,6 +321,7 @@ export default function LiveMarkets() {
         if (cancelled) return;
         candleSeries.setData(candles);
         volumeSeries.setData(volumes);
+        chartRef.current?.timeScale().fitContent();
       } catch {
         // Fail silently
       }

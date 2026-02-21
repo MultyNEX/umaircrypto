@@ -64,7 +64,7 @@ export default function Navbar() {
               ref={magnetic.ref as React.RefObject<HTMLAnchorElement>}
               onMouseMove={magnetic.onMouseMove}
               onMouseLeave={magnetic.onMouseLeave}
-              href="#contact"
+              href="/payment?from=nav"
               className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-accent-primary text-bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] btn-neon-glow"
             >
               Book a Call

@@ -246,6 +246,7 @@ export default function PaymentPage() {
 function PaymentContent() {
   const searchParams = useSearchParams();
   const tierParam = searchParams.get("tier");
+  const fromParam = searchParams.get("from");
   const lockedTier = tierParam !== null ? parseInt(tierParam, 10) : null;
   const isLocked = lockedTier !== null && lockedTier >= 0 && lockedTier <= 2;
 
@@ -435,11 +436,11 @@ function PaymentContent() {
       <div className="relative z-10 max-w-3xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
         {/* Back link */}
         <Link
-          href="/"
+          href={fromParam ? `/#${fromParam}` : "/"}
           className="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-sm mb-8 transition-colors"
         >
           <ArrowLeft size={16} />
-          Back to home
+          {fromParam ? "Back" : "Back to home"}
         </Link>
 
         {/* Header */}
