@@ -6,13 +6,16 @@ import { useCounter } from "@/hooks/useCounter";
 import { useTilt } from "@/hooks/useTilt";
 import Image from "next/image";
 
+const START_YEAR = 2020;
+const yearsExp = new Date().getFullYear() - START_YEAR;
+
 const stats = [
-  { value: "300K+", label: "Traders in Community", icon: Users, countEnd: 300, suffix: "K+" },
+  { value: "200K+", label: "Traders in Community", icon: Users, countEnd: 200, suffix: "K+" },
   { value: "152K", label: "Instagram Followers", icon: Camera, countEnd: 152, suffix: "K" },
-  { value: "26.8K", label: "X Followers", icon: AtSign, countEnd: 26.8, suffix: "K" },
-  { value: "4+", label: "Years in Crypto", icon: Clock, countEnd: 4, suffix: "+" },
+  { value: "30K+", label: "X Followers", icon: AtSign, countEnd: 30, suffix: "K+" },
+  { value: `${yearsExp}+`, label: "Years in Crypto", icon: Clock, countEnd: yearsExp, suffix: "+" },
   { value: "BTC & ETH", label: "Specialist", icon: TrendingUp },
-  { value: "UAE 🇦🇪", label: "Based in", icon: MapPin },
+  { value: "UAE \u{1F1E6}\u{1F1EA}", label: "Based in", icon: MapPin },
 ];
 
 const fadeUp = {
@@ -154,17 +157,21 @@ export default function About() {
               className="space-y-4 text-text-secondary leading-relaxed text-sm sm:text-base"
             >
               <p>
-                I&apos;ve been in crypto since 2021. Started as a trader, built a
-                community of 300,000+ along the way. I focus on what the charts
-                tell me — SMA, RSI, volume, structure. No hype, no hopium. If
-                the setup&apos;s there, I call it. If it&apos;s not, I say so.
-                That&apos;s it.
+                I&apos;ve been active in the crypto space since 2020, starting
+                as a trader and evolving into a community builder and mentor.
+                I&apos;ve built a community of 200,000+ traders and investors,
+                founded Chuff Gang, and co-founded Thrive.
               </p>
               <p>
-                I&apos;m the founder of The Chuff Gang and run one of the
-                largest trading communities in the space. Whether you&apos;re
-                just getting started or managing a serious portfolio, I can help
-                you read the market with clarity.
+                I successfully predicted the 2023 bull market and called the
+                2025 cycle top at $125K. My trading win rate for 2026 so far is
+                95%. I&apos;ve completed multiple trading challenges and received
+                awards from exchanges as a top-performing trader.
+              </p>
+              <p>
+                Whether you&apos;re just starting out or already experienced, I
+                help people understand crypto, improve their trading, and make
+                smarter decisions — from fundamentals to advanced strategies.
               </p>
             </motion.div>
 
