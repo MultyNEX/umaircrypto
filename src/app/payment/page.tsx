@@ -57,6 +57,173 @@ const WALLETS = [
   },
 ];
 
+const COUNTRY_CODES = [
+  { code: "+93", flag: "🇦🇫", country: "Afghanistan", digits: 9 },
+  { code: "+355", flag: "🇦🇱", country: "Albania", digits: 9 },
+  { code: "+213", flag: "🇩🇿", country: "Algeria", digits: 9 },
+  { code: "+376", flag: "🇦🇩", country: "Andorra", digits: 6 },
+  { code: "+244", flag: "🇦🇴", country: "Angola", digits: 9 },
+  { code: "+54", flag: "🇦🇷", country: "Argentina", digits: 10 },
+  { code: "+374", flag: "🇦🇲", country: "Armenia", digits: 8 },
+  { code: "+61", flag: "🇦🇺", country: "Australia", digits: 9 },
+  { code: "+43", flag: "🇦🇹", country: "Austria", digits: 10 },
+  { code: "+994", flag: "🇦🇿", country: "Azerbaijan", digits: 9 },
+  { code: "+973", flag: "🇧🇭", country: "Bahrain", digits: 8 },
+  { code: "+880", flag: "🇧🇩", country: "Bangladesh", digits: 10 },
+  { code: "+375", flag: "🇧🇾", country: "Belarus", digits: 9 },
+  { code: "+32", flag: "🇧🇪", country: "Belgium", digits: 9 },
+  { code: "+501", flag: "🇧🇿", country: "Belize", digits: 7 },
+  { code: "+229", flag: "🇧🇯", country: "Benin", digits: 8 },
+  { code: "+975", flag: "🇧🇹", country: "Bhutan", digits: 8 },
+  { code: "+591", flag: "🇧🇴", country: "Bolivia", digits: 8 },
+  { code: "+387", flag: "🇧🇦", country: "Bosnia", digits: 8 },
+  { code: "+267", flag: "🇧🇼", country: "Botswana", digits: 8 },
+  { code: "+55", flag: "🇧🇷", country: "Brazil", digits: 9 },
+  { code: "+673", flag: "🇧🇳", country: "Brunei", digits: 7 },
+  { code: "+359", flag: "🇧🇬", country: "Bulgaria", digits: 9 },
+  { code: "+226", flag: "🇧🇫", country: "Burkina Faso", digits: 8 },
+  { code: "+257", flag: "🇧🇮", country: "Burundi", digits: 8 },
+  { code: "+855", flag: "🇰🇭", country: "Cambodia", digits: 9 },
+  { code: "+237", flag: "🇨🇲", country: "Cameroon", digits: 9 },
+  { code: "+1", flag: "🇨🇦", country: "Canada", digits: 10 },
+  { code: "+238", flag: "🇨🇻", country: "Cape Verde", digits: 7 },
+  { code: "+236", flag: "🇨🇫", country: "Central African Rep.", digits: 8 },
+  { code: "+235", flag: "🇹🇩", country: "Chad", digits: 8 },
+  { code: "+56", flag: "🇨🇱", country: "Chile", digits: 9 },
+  { code: "+86", flag: "🇨🇳", country: "China", digits: 11 },
+  { code: "+57", flag: "🇨🇴", country: "Colombia", digits: 10 },
+  { code: "+242", flag: "🇨🇬", country: "Congo", digits: 9 },
+  { code: "+243", flag: "🇨🇩", country: "Congo (DR)", digits: 9 },
+  { code: "+506", flag: "🇨🇷", country: "Costa Rica", digits: 8 },
+  { code: "+385", flag: "🇭🇷", country: "Croatia", digits: 9 },
+  { code: "+53", flag: "🇨🇺", country: "Cuba", digits: 8 },
+  { code: "+357", flag: "🇨🇾", country: "Cyprus", digits: 8 },
+  { code: "+420", flag: "🇨🇿", country: "Czech Republic", digits: 9 },
+  { code: "+45", flag: "🇩🇰", country: "Denmark", digits: 8 },
+  { code: "+253", flag: "🇩🇯", country: "Djibouti", digits: 8 },
+  { code: "+593", flag: "🇪🇨", country: "Ecuador", digits: 9 },
+  { code: "+20", flag: "🇪🇬", country: "Egypt", digits: 10 },
+  { code: "+503", flag: "🇸🇻", country: "El Salvador", digits: 8 },
+  { code: "+240", flag: "🇬🇶", country: "Equatorial Guinea", digits: 9 },
+  { code: "+291", flag: "🇪🇷", country: "Eritrea", digits: 7 },
+  { code: "+372", flag: "🇪🇪", country: "Estonia", digits: 8 },
+  { code: "+251", flag: "🇪🇹", country: "Ethiopia", digits: 9 },
+  { code: "+679", flag: "🇫🇯", country: "Fiji", digits: 7 },
+  { code: "+358", flag: "🇫🇮", country: "Finland", digits: 9 },
+  { code: "+33", flag: "🇫🇷", country: "France", digits: 9 },
+  { code: "+241", flag: "🇬🇦", country: "Gabon", digits: 8 },
+  { code: "+220", flag: "🇬🇲", country: "Gambia", digits: 7 },
+  { code: "+995", flag: "🇬🇪", country: "Georgia", digits: 9 },
+  { code: "+49", flag: "🇩🇪", country: "Germany", digits: 11 },
+  { code: "+233", flag: "🇬🇭", country: "Ghana", digits: 9 },
+  { code: "+30", flag: "🇬🇷", country: "Greece", digits: 10 },
+  { code: "+502", flag: "🇬🇹", country: "Guatemala", digits: 8 },
+  { code: "+224", flag: "🇬🇳", country: "Guinea", digits: 9 },
+  { code: "+592", flag: "🇬🇾", country: "Guyana", digits: 7 },
+  { code: "+509", flag: "🇭🇹", country: "Haiti", digits: 8 },
+  { code: "+504", flag: "🇭🇳", country: "Honduras", digits: 8 },
+  { code: "+852", flag: "🇭🇰", country: "Hong Kong", digits: 8 },
+  { code: "+36", flag: "🇭🇺", country: "Hungary", digits: 9 },
+  { code: "+354", flag: "🇮🇸", country: "Iceland", digits: 7 },
+  { code: "+91", flag: "🇮🇳", country: "India", digits: 10 },
+  { code: "+62", flag: "🇮🇩", country: "Indonesia", digits: 10 },
+  { code: "+98", flag: "🇮🇷", country: "Iran", digits: 10 },
+  { code: "+964", flag: "🇮🇶", country: "Iraq", digits: 10 },
+  { code: "+353", flag: "🇮🇪", country: "Ireland", digits: 9 },
+  { code: "+972", flag: "🇮🇱", country: "Israel", digits: 9 },
+  { code: "+39", flag: "🇮🇹", country: "Italy", digits: 10 },
+  { code: "+1876", flag: "🇯🇲", country: "Jamaica", digits: 7 },
+  { code: "+81", flag: "🇯🇵", country: "Japan", digits: 10 },
+  { code: "+962", flag: "🇯🇴", country: "Jordan", digits: 9 },
+  { code: "+7", flag: "🇰🇿", country: "Kazakhstan", digits: 10 },
+  { code: "+254", flag: "🇰🇪", country: "Kenya", digits: 9 },
+  { code: "+965", flag: "🇰🇼", country: "Kuwait", digits: 8 },
+  { code: "+996", flag: "🇰🇬", country: "Kyrgyzstan", digits: 9 },
+  { code: "+856", flag: "🇱🇦", country: "Laos", digits: 10 },
+  { code: "+371", flag: "🇱🇻", country: "Latvia", digits: 8 },
+  { code: "+961", flag: "🇱🇧", country: "Lebanon", digits: 8 },
+  { code: "+231", flag: "🇱🇷", country: "Liberia", digits: 7 },
+  { code: "+218", flag: "🇱🇾", country: "Libya", digits: 9 },
+  { code: "+370", flag: "🇱🇹", country: "Lithuania", digits: 8 },
+  { code: "+352", flag: "🇱🇺", country: "Luxembourg", digits: 9 },
+  { code: "+853", flag: "🇲🇴", country: "Macau", digits: 8 },
+  { code: "+261", flag: "🇲🇬", country: "Madagascar", digits: 9 },
+  { code: "+265", flag: "🇲🇼", country: "Malawi", digits: 7 },
+  { code: "+60", flag: "🇲🇾", country: "Malaysia", digits: 10 },
+  { code: "+960", flag: "🇲🇻", country: "Maldives", digits: 7 },
+  { code: "+223", flag: "🇲🇱", country: "Mali", digits: 8 },
+  { code: "+356", flag: "🇲🇹", country: "Malta", digits: 8 },
+  { code: "+222", flag: "🇲🇷", country: "Mauritania", digits: 8 },
+  { code: "+230", flag: "🇲🇺", country: "Mauritius", digits: 8 },
+  { code: "+52", flag: "🇲🇽", country: "Mexico", digits: 10 },
+  { code: "+373", flag: "🇲🇩", country: "Moldova", digits: 8 },
+  { code: "+377", flag: "🇲🇨", country: "Monaco", digits: 9 },
+  { code: "+976", flag: "🇲🇳", country: "Mongolia", digits: 8 },
+  { code: "+382", flag: "🇲🇪", country: "Montenegro", digits: 8 },
+  { code: "+212", flag: "🇲🇦", country: "Morocco", digits: 9 },
+  { code: "+258", flag: "🇲🇿", country: "Mozambique", digits: 9 },
+  { code: "+95", flag: "🇲🇲", country: "Myanmar", digits: 9 },
+  { code: "+264", flag: "🇳🇦", country: "Namibia", digits: 8 },
+  { code: "+977", flag: "🇳🇵", country: "Nepal", digits: 10 },
+  { code: "+31", flag: "🇳🇱", country: "Netherlands", digits: 9 },
+  { code: "+64", flag: "🇳🇿", country: "New Zealand", digits: 9 },
+  { code: "+505", flag: "🇳🇮", country: "Nicaragua", digits: 8 },
+  { code: "+227", flag: "🇳🇪", country: "Niger", digits: 8 },
+  { code: "+234", flag: "🇳🇬", country: "Nigeria", digits: 10 },
+  { code: "+47", flag: "🇳🇴", country: "Norway", digits: 8 },
+  { code: "+968", flag: "🇴🇲", country: "Oman", digits: 8 },
+  { code: "+92", flag: "🇵🇰", country: "Pakistan", digits: 10 },
+  { code: "+970", flag: "🇵🇸", country: "Palestine", digits: 9 },
+  { code: "+507", flag: "🇵🇦", country: "Panama", digits: 8 },
+  { code: "+595", flag: "🇵🇾", country: "Paraguay", digits: 9 },
+  { code: "+51", flag: "🇵🇪", country: "Peru", digits: 9 },
+  { code: "+63", flag: "🇵🇭", country: "Philippines", digits: 10 },
+  { code: "+48", flag: "🇵🇱", country: "Poland", digits: 9 },
+  { code: "+351", flag: "🇵🇹", country: "Portugal", digits: 9 },
+  { code: "+974", flag: "🇶🇦", country: "Qatar", digits: 8 },
+  { code: "+40", flag: "🇷🇴", country: "Romania", digits: 9 },
+  { code: "+7", flag: "🇷🇺", country: "Russia", digits: 10 },
+  { code: "+250", flag: "🇷🇼", country: "Rwanda", digits: 9 },
+  { code: "+966", flag: "🇸🇦", country: "Saudi Arabia", digits: 9 },
+  { code: "+221", flag: "🇸🇳", country: "Senegal", digits: 9 },
+  { code: "+381", flag: "🇷🇸", country: "Serbia", digits: 10 },
+  { code: "+65", flag: "🇸🇬", country: "Singapore", digits: 8 },
+  { code: "+421", flag: "🇸🇰", country: "Slovakia", digits: 9 },
+  { code: "+386", flag: "🇸🇮", country: "Slovenia", digits: 9 },
+  { code: "+252", flag: "🇸🇴", country: "Somalia", digits: 9 },
+  { code: "+27", flag: "🇿🇦", country: "South Africa", digits: 9 },
+  { code: "+82", flag: "🇰🇷", country: "South Korea", digits: 10 },
+  { code: "+211", flag: "🇸🇸", country: "South Sudan", digits: 9 },
+  { code: "+34", flag: "🇪🇸", country: "Spain", digits: 9 },
+  { code: "+94", flag: "🇱🇰", country: "Sri Lanka", digits: 9 },
+  { code: "+249", flag: "🇸🇩", country: "Sudan", digits: 9 },
+  { code: "+46", flag: "🇸🇪", country: "Sweden", digits: 9 },
+  { code: "+41", flag: "🇨🇭", country: "Switzerland", digits: 9 },
+  { code: "+963", flag: "🇸🇾", country: "Syria", digits: 9 },
+  { code: "+886", flag: "🇹🇼", country: "Taiwan", digits: 9 },
+  { code: "+992", flag: "🇹🇯", country: "Tajikistan", digits: 9 },
+  { code: "+255", flag: "🇹🇿", country: "Tanzania", digits: 9 },
+  { code: "+66", flag: "🇹🇭", country: "Thailand", digits: 9 },
+  { code: "+228", flag: "🇹🇬", country: "Togo", digits: 8 },
+  { code: "+676", flag: "🇹🇴", country: "Tonga", digits: 5 },
+  { code: "+1868", flag: "🇹🇹", country: "Trinidad & Tobago", digits: 7 },
+  { code: "+216", flag: "🇹🇳", country: "Tunisia", digits: 8 },
+  { code: "+90", flag: "🇹🇷", country: "Turkey", digits: 10 },
+  { code: "+993", flag: "🇹🇲", country: "Turkmenistan", digits: 8 },
+  { code: "+256", flag: "🇺🇬", country: "Uganda", digits: 9 },
+  { code: "+380", flag: "🇺🇦", country: "Ukraine", digits: 9 },
+  { code: "+971", flag: "🇦🇪", country: "UAE", digits: 9 },
+  { code: "+44", flag: "🇬🇧", country: "United Kingdom", digits: 10 },
+  { code: "+1", flag: "🇺🇸", country: "United States", digits: 10 },
+  { code: "+598", flag: "🇺🇾", country: "Uruguay", digits: 8 },
+  { code: "+998", flag: "🇺🇿", country: "Uzbekistan", digits: 9 },
+  { code: "+58", flag: "🇻🇪", country: "Venezuela", digits: 10 },
+  { code: "+84", flag: "🇻🇳", country: "Vietnam", digits: 9 },
+  { code: "+967", flag: "🇾🇪", country: "Yemen", digits: 9 },
+  { code: "+260", flag: "🇿🇲", country: "Zambia", digits: 9 },
+  { code: "+263", flag: "🇿🇼", country: "Zimbabwe", digits: 9 },
+];
+
 const TIERS = [
   { name: "Starter", title: "1-on-1 Chart Review", price: "$200", duration: "30 min" },
   { name: "Pro", title: "Full Consultation", price: "$350", duration: "60 min" },
@@ -97,6 +264,8 @@ function PaymentContent() {
     phone: "",
     txHash: "",
   });
+  const [countryCode, setCountryCode] = useState<number | null>(null);
+  const [emailError, setEmailError] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -155,7 +324,7 @@ function PaymentContent() {
       const body = new FormData();
       body.append("name", formData.name);
       body.append("email", formData.email);
-      body.append("phone", formData.phone);
+      body.append("phone", countryCode !== null ? `${COUNTRY_CODES[countryCode].code}${formData.phone.replace(/\s/g, "")}` : formData.phone);
       body.append("txHash", formData.txHash);
       body.append("tier", TIERS[selectedTier!].name);
       body.append("amount", TIERS[selectedTier!].price);
@@ -596,7 +765,7 @@ function PaymentContent() {
                   <input
                     type="text"
                     required
-                    placeholder="John Doe"
+                    placeholder="Satoshi Nakamoto"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
@@ -609,11 +778,28 @@ function PaymentContent() {
                   <input
                     type="email"
                     required
-                    placeholder="john@example.com"
+                    placeholder="satoshi@bitcoin.org"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
+                    onChange={(e) => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (emailError) setEmailError("");
+                    }}
+                    onBlur={() => {
+                      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                        setEmailError("Please enter a valid email");
+                      } else {
+                        setEmailError("");
+                      }
+                    }}
+                    className={`w-full px-4 py-3 rounded-xl bg-white/[0.03] border text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none transition-colors ${
+                      emailError
+                        ? "border-red-500/50 focus:border-red-500/70"
+                        : "border-white/[0.08] focus:border-accent-primary/50"
+                    }`}
                   />
+                  {emailError && (
+                    <p className="text-red-400 text-xs mt-1.5">{emailError}</p>
+                  )}
                 </div>
               </div>
 
@@ -623,14 +809,29 @@ function PaymentContent() {
                   <label className="block text-text-primary text-sm font-medium mb-2">
                     Phone / WhatsApp <span className="text-red-400">*</span>
                   </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+971 XX XXX XXXX"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
-                  />
+                  <div className="flex gap-2">
+                    <select
+                      value={countryCode ?? ""}
+                      onChange={(e) => setCountryCode(e.target.value === "" ? null : Number(e.target.value))}
+                      className="w-[120px] flex-shrink-0 px-2 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm focus:outline-none focus:border-accent-primary/50 transition-colors appearance-none cursor-pointer"
+                    >
+                      <option value="" className="bg-[#12121A] text-text-secondary">Code</option>
+                      {COUNTRY_CODES.map((c, i) => (
+                        <option key={`${c.code}-${c.country}`} value={i} className="bg-[#12121A] text-text-primary">
+                          {c.flag} {c.code}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="50 123 4567"
+                      maxLength={countryCode !== null ? COUNTRY_CODES[countryCode].digits + 3 : 15}
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="flex-1 min-w-0 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-text-primary text-sm font-medium mb-2">
