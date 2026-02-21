@@ -292,7 +292,7 @@ export default function LiveMarkets() {
     async function loadHistorical() {
       try {
         const res = await fetch(
-          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=200`
+          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=60`
         );
         if (!res.ok || cancelled) return;
         const klines: (string | number)[][] = await res.json();
