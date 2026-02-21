@@ -109,7 +109,7 @@ export default function About() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M60 5 C55 30, 45 60, 40 95"
+                  d="M60 5 C58 30, 52 60, 50 95"
                   stroke="currentColor"
                   strokeWidth="3"
                   strokeLinecap="round"
@@ -118,7 +118,7 @@ export default function About() {
                 />
                 {/* Arrowhead pointing down toward Umair */}
                 <polygon
-                  points="32,90 48,90 40,104"
+                  points="42,90 58,90 50,104"
                   fill="currentColor"
                 />
               </svg>
