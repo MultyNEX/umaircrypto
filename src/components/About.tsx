@@ -98,20 +98,27 @@ export default function About() {
               </div>
 
               {/* "That's me!" label — points to Umair on the RIGHT of the photo */}
-              <span className="hidden lg:block absolute -right-14 top-[5%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+              <span className="hidden lg:block absolute -right-14 top-[5%] font-heading text-lg font-bold text-gradient-animated drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
               {/* Dashed arrow curving from label down to Umair (right side of photo) */}
               <svg
-                className="hidden lg:block absolute right-[8%] top-[6%] w-24 h-[18%] text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                className="hidden lg:block absolute right-[8%] top-[6%] w-24 h-[18%] drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
                 viewBox="0 0 100 120"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                <defs>
+                  <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#E74694" />
+                    <stop offset="50%" stopColor="#A855F7" />
+                    <stop offset="100%" stopColor="#38BDF8" />
+                  </linearGradient>
+                </defs>
                 {/* Left hook at top then line down */}
                 <path
                   d="M95 5 C75 5, 52 10, 50 25 C48 50, 49 75, 50 110"
-                  stroke="currentColor"
+                  stroke="url(#arrowGrad)"
                   strokeWidth="3"
                   strokeLinecap="round"
                   fill="none"
@@ -120,7 +127,7 @@ export default function About() {
                 {/* Arrowhead pointing down */}
                 <polygon
                   points="42,105 58,105 50,119"
-                  fill="currentColor"
+                  fill="#38BDF8"
                 />
               </svg>
             </div>
