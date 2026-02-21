@@ -77,7 +77,7 @@ export default function Footer() {
               <img
                 src="/UmairLogo.png"
                 alt="Umair Crypto"
-                className="h-20 md:h-28 w-auto transition-opacity duration-300"
+                className="h-40 md:h-56 w-auto transition-opacity duration-300"
                 loading="eager"
                 style={{ imageRendering: "crisp-edges" }}
               />

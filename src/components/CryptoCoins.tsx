@@ -47,15 +47,16 @@ interface Particle {
 
 function generateParticles(isMobile: boolean): Particle[] {
   const rand = mulberry32(77742);
-  const COUNT = isMobile ? 12 : 22;
-  const MIN_DIST = isMobile ? 0.13 : 0.11;
+  const COUNT = isMobile ? 5 : 22;
+  const MIN_DIST = isMobile ? 0.15 : 0.11;
+  const MAX_Y = isMobile ? 0.50 : 0.96;
 
   const points: { x: number; y: number }[] = [];
   let attempts = 0;
 
   while (points.length < COUNT && attempts < 800) {
     const x = 0.02 + rand() * 0.96;
-    const y = 0.02 + rand() * 0.96;
+    const y = 0.02 + rand() * MAX_Y;
     attempts++;
 
     let tooClose = false;

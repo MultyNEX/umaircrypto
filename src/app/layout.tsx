@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import WhatsAppButton from "@/components/WhatsAppButton";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -168,7 +167,6 @@ export default function RootLayout({
         {/* Circuit board grid overlay */}
         <div className="circuit-grid" aria-hidden="true" />
         {children}
-        <WhatsAppButton />
       </body>
     </html>
   );
