@@ -1,51 +1,53 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, MessageCircle } from "lucide-react";
+import { Check } from "lucide-react";
 import { useTilt } from "@/hooks/useTilt";
 
 const tiers = [
   {
     name: "Starter",
     title: "1-on-1 Chart Review",
-    price: "$XX",
+    price: "$200",
+    duration: "30 min",
     features: [
-      "30-minute session",
-      "Portfolio overview",
-      "Key levels & entries",
+      "30-minute video session",
+      "Portfolio overview & feedback",
+      "Key levels, entries & exits",
+      "Recorded session for replay",
     ],
-    cta: { label: "Book Now", href: "#contact" },
+    cta: { label: "Book Now", href: "/payment" },
     highlighted: false,
   },
   {
     name: "Pro",
     title: "Full Consultation",
-    price: "$XX",
+    price: "$350",
+    duration: "60 min",
     badge: "Most Popular",
     features: [
-      "60-minute deep dive",
+      "60-minute deep dive session",
       "Complete portfolio audit",
-      "Custom trading plan",
-      "Ongoing support (7 days)",
+      "Custom trading plan & strategy",
+      "Risk management framework",
+      "Session recording included",
     ],
-    cta: { label: "Book Now", href: "#contact" },
+    cta: { label: "Book Now", href: "/payment" },
     highlighted: true,
   },
   {
     name: "VIP",
     title: "Ongoing Mentorship",
-    price: "Let's Talk",
+    price: "$1,200",
+    duration: "6 months",
     features: [
-      "Weekly calls",
-      "Private group access",
+      "Weekly 1-on-1 calls",
+      "Private VIP group access",
       "Priority chart analysis",
-      "Custom alerts",
+      "Custom alerts & setups",
+      "Direct WhatsApp support",
     ],
-    cta: {
-      label: "Message on WhatsApp",
-      href: "https://wa.me/PLACEHOLDER?text=Hi%20Umair,%20I'm%20interested%20in%20VIP%20mentorship",
-      external: true,
-    },
+    cta: { label: "Book Now", href: "/payment" },
     highlighted: false,
   },
 ] as const;
@@ -98,18 +100,21 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
         {tier.title}
       </h3>
 
-      {/* Price */}
-      <p className="font-heading text-4xl font-bold mb-8">
-        <span
-          className={
-            tier.highlighted
-              ? "text-accent-secondary"
-              : "text-accent-primary"
-          }
-        >
-          {tier.price}
-        </span>
-      </p>
+      {/* Price + duration */}
+      <div className="mb-8">
+        <p className="font-heading text-4xl font-bold">
+          <span
+            className={
+              tier.highlighted
+                ? "text-accent-secondary"
+                : "text-accent-primary"
+            }
+          >
+            {tier.price}
+          </span>
+        </p>
+        <p className="text-text-secondary text-sm mt-1">{tier.duration}</p>
+      </div>
 
       {/* Features */}
       <ul className="space-y-3.5 mb-8 flex-1">
@@ -134,18 +139,12 @@ function TierCard({ tier, i }: { tier: (typeof tiers)[number]; i: number }) {
       {/* CTA */}
       <a
         href={tier.cta.href}
-        {...("external" in tier.cta && tier.cta.external
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {})}
         className={`flex items-center justify-center gap-2 w-full py-4 rounded-xl text-base font-semibold transition-all duration-200 btn-neon-glow ${
           tier.highlighted
             ? "bg-accent-secondary text-white hover:brightness-110 shadow-[0_0_20px_rgba(168,85,247,0.25)] hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]"
             : "bg-accent-primary text-bg-primary hover:brightness-110 shadow-[0_0_20px_rgba(56,189,248,0.25)] hover:shadow-[0_0_30px_rgba(56,189,248,0.4)]"
         }`}
       >
-        {"external" in tier.cta && tier.cta.external && (
-          <MessageCircle size={16} />
-        )}
         {tier.cta.label}
       </a>
     </motion.div>
