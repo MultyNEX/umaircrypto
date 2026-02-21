@@ -121,6 +121,7 @@ export default function LiveMarkets() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [chartReady, setChartReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [tickerData, setTickerData] = useState<Record<string, TickerData>>({});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -254,6 +255,7 @@ export default function LiveMarkets() {
       chartRef.current = chart;
       candleSeriesRef.current = candleSeries;
       volumeSeriesRef.current = volumeSeries;
+      setChartReady(true);
     }
 
     initChart();
@@ -265,13 +267,14 @@ export default function LiveMarkets() {
         chartRef.current = null;
         candleSeriesRef.current = null;
         volumeSeriesRef.current = null;
+        setChartReady(false);
       }
     };
   }, [isVisible]);
 
   // Load data + WebSocket when pair changes (or chart first mounts)
   useEffect(() => {
-    if (!isVisible || !candleSeriesRef.current || !volumeSeriesRef.current)
+    if (!chartReady || !candleSeriesRef.current || !volumeSeriesRef.current)
       return;
 
     const candleSeries = candleSeriesRef.current;
@@ -289,7 +292,7 @@ export default function LiveMarkets() {
     async function loadHistorical() {
       try {
         const res = await fetch(
-          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=500`
+          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=200`
         );
         if (!res.ok || cancelled) return;
         const klines: (string | number)[][] = await res.json();
@@ -366,7 +369,7 @@ export default function LiveMarkets() {
         wsRef.current = null;
       }
     };
-  }, [isVisible, activePair.binanceSymbol, activePair.binanceSymbol]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [chartReady, activePair.binanceSymbol]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePairSelect = (index: number) => {
     if (index === activeIndex) return;
