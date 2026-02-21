@@ -80,7 +80,7 @@ function generateParticles(isMobile: boolean): Particle[] {
   points.forEach((pt, i) => {
     const symbol = SYMBOLS[i % SYMBOLS.length];
     const size = sizeFromRank(symbol.rank, isMobile);
-    const baseOpacity = 0.07 + (9 - symbol.rank) * 0.016;
+    const baseOpacity = 0.05 + (9 - symbol.rank) * 0.008;
 
     particles.push({
       ratioX: pt.x,
@@ -92,7 +92,7 @@ function generateParticles(isMobile: boolean): Particle[] {
       floatAmpY: 25 + rand() * 35,
       floatSpeedX: 0.15 + rand() * 0.25,
       floatAmpX: 15 + rand() * 25,
-      opacity: Math.min(baseOpacity + rand() * 0.05, 0.3),
+      opacity: Math.min(baseOpacity + rand() * 0.02, 0.10),
       offsetX: 0,
       offsetY: 0,
     });
@@ -196,8 +196,8 @@ export default function CryptoCoins() {
             (finalX - mx) ** 2 + (finalY - my) ** 2
           );
           if (distToMouse < MOUSE_RADIUS * 1.5) {
-            const boost = (1 - distToMouse / (MOUSE_RADIUS * 1.5)) * 0.15;
-            drawOpacity = Math.min(p.opacity + boost, 0.45);
+            const boost = (1 - distToMouse / (MOUSE_RADIUS * 1.5)) * 0.08;
+            drawOpacity = Math.min(p.opacity + boost, 0.15);
           }
         }
 

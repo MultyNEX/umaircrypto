@@ -97,28 +97,28 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
               </div>
 
-              {/* "That's me!" label at top-right */}
-              <span className="hidden lg:block absolute -right-16 top-[2%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
+              {/* "That's me!" label — points to Umair on the RIGHT of the photo */}
+              <span className="hidden lg:block absolute -right-20 top-[1%] font-heading text-lg font-bold text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.6)] whitespace-nowrap">
                 That&apos;s me!
               </span>
-              {/* Arrow curving from label down-left toward face */}
+              {/* Dashed arrow curving from label down to Umair (right side of photo) */}
               <svg
-                className="hidden lg:block absolute -right-8 top-[6%] w-36 h-[30%] text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
-                viewBox="0 0 180 200"
+                className="hidden lg:block absolute right-[8%] top-[6%] w-24 h-[18%] text-accent-primary drop-shadow-[0_0_16px_rgba(56,189,248,0.5)]"
+                viewBox="0 0 100 120"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M150 10 C130 40, 110 80, 80 120 C60 150, 30 170, 15 180"
+                  d="M60 5 C55 30, 45 60, 40 95"
                   stroke="currentColor"
-                  strokeWidth="3.5"
+                  strokeWidth="3"
                   strokeLinecap="round"
                   fill="none"
-                  strokeDasharray="8 6"
+                  strokeDasharray="7 5"
                 />
-                {/* Arrowhead — pointing down-left at face */}
+                {/* Arrowhead pointing down toward Umair */}
                 <polygon
-                  points="6,176 22,170 12,184"
+                  points="32,90 48,90 40,104"
                   fill="currentColor"
                 />
               </svg>
