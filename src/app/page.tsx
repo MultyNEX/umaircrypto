@@ -10,18 +10,16 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+import PreloaderOnce from "@/components/PreloaderOnce";
 
 const CryptoCoins = dynamic(() => import("@/components/CryptoCoins"), {
-  ssr: false,
-});
-const Preloader = dynamic(() => import("@/components/Preloader"), {
   ssr: false,
 });
 
 export default function Home() {
   return (
     <>
-      <Preloader />
+      <PreloaderOnce />
       <CryptoCoins />
       <Navbar />
       <TickerTape />
@@ -29,8 +27,8 @@ export default function Home() {
       <div className="pt-[152px] sm:pt-[136px] md:pt-[152px]">
         <Hero />
         <About />
-        <LiveMarkets />
         <Services />
+        <LiveMarkets />
         <HowItWorks />
         <Testimonials />
         <FAQ />

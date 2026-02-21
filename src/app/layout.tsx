@@ -61,9 +61,13 @@ export default function RootLayout({
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-body antialiased overflow-x-hidden`}
-        suppressHydrationWarning
       >
-        {/* Preloader gate — removed by Preloader on homepage, by useEffect on other pages */}
+        {/*
+          Preloader gate — covers screen with dark bg until removed.
+          Removed by:
+          - Homepage: Preloader component (after animation, or instantly if session already played)
+          - /payment, /risk: useEffect in those page components
+        */}
         <div
           id="preloader-gate"
           style={{
@@ -73,7 +77,6 @@ export default function RootLayout({
             background: "#060612",
             pointerEvents: "none",
           }}
-          suppressHydrationWarning
         />
 
         {/* Circuit board grid overlay */}

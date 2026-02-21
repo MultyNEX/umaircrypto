@@ -1,10 +1,12 @@
+import Link from "next/link";
 
 const quickLinks = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
   { label: "Markets", href: "#markets" },
   { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
+  { label: "Payment", href: "/payment" },
+  { label: "Risk Disclaimer", href: "/risk" },
 ];
 
 /* Inline SVG brand icons — proper logos */
@@ -57,11 +59,13 @@ const socials = [
     label: "Telegram",
     href: "https://t.me/umairfromx",
     icon: TelegramIcon,
-    handle: "Telegram",
+    handle: "@umairfromx",
   },
 ];
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="border-t border-border bg-bg-secondary/40">
       <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-12 md:py-16">
@@ -79,7 +83,7 @@ export default function Footer() {
               />
             </a>
             <p className="text-text-secondary text-sm mt-3 leading-relaxed max-w-xs mx-auto md:mx-0">
-              Professional crypto trading consultancy. Technical analysis, portfolio guidance, and a thriving community of 300K+ traders.
+              Professional crypto trading consultancy. Technical analysis, portfolio guidance, and a thriving community of 200K+ traders.
             </p>
           </div>
 
@@ -91,12 +95,21 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-text-secondary hover:text-text-primary text-sm transition-colors duration-200"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("/") ? (
+                    <Link
+                      href={link.href}
+                      className="text-text-secondary hover:text-text-primary text-sm transition-colors duration-200"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-text-secondary hover:text-text-primary text-sm transition-colors duration-200"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -149,7 +162,10 @@ export default function Footer() {
         <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-6 text-center">
           <p className="text-xs text-text-secondary leading-relaxed max-w-3xl mx-auto">
             <span className="text-accent-primary font-semibold">Disclaimer:</span>{" "}
-            Not financial advice. Trading involves risk. Always do your own research. Cryptocurrency investments are volatile and can result in significant losses.
+            Not financial advice. Trading involves risk. Always do your own research. Cryptocurrency investments are volatile and can result in significant losses.{" "}
+            <Link href="/risk" className="text-accent-primary hover:underline">
+              Read full disclaimer →
+            </Link>
           </p>
         </div>
       </div>
@@ -157,7 +173,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-text-secondary text-center">
-          <p>&copy; 2026 Umair Crypto. All rights reserved.</p>
+          <p>&copy; {currentYear} Umair Crypto. All rights reserved.</p>
           <a
             href="#"
             className="hover:text-text-primary transition-colors duration-200"

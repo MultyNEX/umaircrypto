@@ -68,9 +68,38 @@ export default function LiveMarkets() {
       locale: "en",
       allow_symbol_change: true,
       support_host: "https://www.tradingview.com",
-      backgroundColor: "rgba(10, 10, 15, 1)",
-      gridColor: "rgba(42, 42, 62, 0.3)",
+      // ── Match site colors exactly ──
+      backgroundColor: "rgba(6, 6, 18, 1)",
+      gridColor: "rgba(56, 189, 248, 0.04)",
       hide_volume: false,
+      hide_top_toolbar: false,
+      hide_legend: false,
+      save_image: false,
+      hide_side_toolbar: false,
+      calendar: false,
+      // Custom overrides via CSS
+      overrides: {
+        // Background
+        "paneProperties.background": "#060612",
+        "paneProperties.backgroundType": "solid",
+        // Grid
+        "paneProperties.vertGridProperties.color": "rgba(56, 189, 248, 0.04)",
+        "paneProperties.horzGridProperties.color": "rgba(56, 189, 248, 0.04)",
+        // Candles — green/red with accent tint
+        "mainSeriesProperties.candleStyle.upColor": "#38BDF8",
+        "mainSeriesProperties.candleStyle.downColor": "#EF4444",
+        "mainSeriesProperties.candleStyle.borderUpColor": "#38BDF8",
+        "mainSeriesProperties.candleStyle.borderDownColor": "#EF4444",
+        "mainSeriesProperties.candleStyle.wickUpColor": "#38BDF8",
+        "mainSeriesProperties.candleStyle.wickDownColor": "#EF4444",
+        // Crosshair
+        "paneProperties.crossHairProperties.color": "rgba(56, 189, 248, 0.3)",
+        // Scale text
+        "scalesProperties.textColor": "rgba(148, 163, 184, 0.7)",
+        "scalesProperties.lineColor": "rgba(56, 189, 248, 0.08)",
+        // Volume
+        "volumePaneSize": "small",
+      },
     });
     widgetDiv.appendChild(script);
   }, []);
@@ -116,7 +145,7 @@ export default function LiveMarkets() {
           </p>
         </motion.div>
 
-        {/* Coin pair selector — ABOVE chart */}
+        {/* Coin pair selector */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -145,7 +174,7 @@ export default function LiveMarkets() {
           </div>
         </motion.div>
 
-        {/* Chart container with inner glow */}
+        {/* Chart container */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -165,30 +194,32 @@ export default function LiveMarkets() {
             </span>
           </div>
 
-          {/* Inner glow wrapper */}
+          {/* Glow wrapper */}
           <div className="relative rounded-2xl overflow-hidden">
-            {/* Top inner glow */}
-            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-accent-primary/[0.08] to-transparent pointer-events-none z-10 rounded-t-2xl" />
-            {/* Bottom inner glow */}
-            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-accent-secondary/[0.05] to-transparent pointer-events-none z-10 rounded-b-2xl" />
-            {/* Left edge glow */}
-            <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-accent-primary/[0.04] to-transparent pointer-events-none z-10" />
-            {/* Right edge glow */}
-            <div className="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-accent-secondary/[0.04] to-transparent pointer-events-none z-10" />
-            {/* Corner glow accents */}
-            <div className="absolute top-0 left-0 w-24 h-24 bg-accent-primary/[0.06] blur-2xl pointer-events-none z-10" />
-            <div className="absolute top-0 right-0 w-24 h-24 bg-accent-secondary/[0.04] blur-2xl pointer-events-none z-10" />
+            {/* Subtle edge glows to blend chart into page */}
+            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-accent-primary/[0.06] to-transparent pointer-events-none z-10 rounded-t-2xl" />
+            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-accent-secondary/[0.04] to-transparent pointer-events-none z-10 rounded-b-2xl" />
+            <div className="absolute top-0 left-0 w-24 h-24 bg-accent-primary/[0.05] blur-2xl pointer-events-none z-10" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-accent-secondary/[0.03] blur-2xl pointer-events-none z-10" />
 
             <div
               ref={containerRef}
-              className="tradingview-widget-container border border-white/[0.08] rounded-2xl h-[350px] sm:h-[450px] md:h-[520px] lg:h-[560px] shadow-[0_0_40px_rgba(56,189,248,0.06),0_0_80px_rgba(168,85,247,0.03)]"
+              className="tradingview-widget-container rounded-2xl h-[350px] sm:h-[450px] md:h-[520px] lg:h-[560px]"
+              style={{
+                border: "1px solid rgba(56, 189, 248, 0.08)",
+                boxShadow:
+                  "0 0 40px rgba(56, 189, 248, 0.06), 0 0 80px rgba(168, 85, 247, 0.03), inset 0 1px 0 rgba(56, 189, 248, 0.08)",
+              }}
             >
               <div
                 className="tradingview-widget-container__widget"
                 style={{ height: "100%", width: "100%" }}
               />
               {!isVisible && (
-                <div className="w-full h-full bg-bg-secondary flex items-center justify-center">
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  style={{ background: "#060612" }}
+                >
                   <span className="text-text-secondary text-sm">
                     Loading chart...
                   </span>

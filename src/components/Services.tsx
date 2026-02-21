@@ -16,7 +16,7 @@ const tiers = [
       "Key levels, entries & exits",
       "Recorded session for replay",
     ],
-    cta: { label: "Book Now", href: "/payment" },
+    cta: { label: "Book Now", href: "/payment?tier=0" },
     highlighted: false,
   },
   {
@@ -32,7 +32,7 @@ const tiers = [
       "Risk management framework",
       "Session recording included",
     ],
-    cta: { label: "Book Now", href: "/payment" },
+    cta: { label: "Book Now", href: "/payment?tier=1" },
     highlighted: true,
   },
   {
@@ -47,7 +47,7 @@ const tiers = [
       "Custom alerts & setups",
       "Direct WhatsApp support",
     ],
-    cta: { label: "Book Now", href: "/payment" },
+    cta: { label: "Book Now", href: "/payment?tier=2" },
     highlighted: false,
   },
 ] as const;
