@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s | UmairCrypto",
   },
   description:
-    "Professional cryptocurrency trading signals, market analysis, and crypto education by Umair. Join 300K+ traders for expert BTC & ETH technical analysis and 1-on-1 consultations.",
+    "Professional cryptocurrency trading signals, market analysis, and crypto education by Umair. Join 200K+ traders for expert BTC & ETH technical analysis and 1-on-1 consultations.",
   metadataBase: new URL("https://umaircrypto.com"),
   icons: {
     icon: "/favicon.ico",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "UmairCrypto",
     description:
-      "Professional crypto trading signals & analysis. Join 300K+ traders for expert BTC & ETH insights.",
+      "Professional crypto trading signals & analysis. Join 200K+ traders for expert BTC & ETH insights.",
     url: "https://umaircrypto.com",
     siteName: "UmairCrypto",
     type: "website",
@@ -58,21 +58,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-body antialiased overflow-x-hidden`}
+        suppressHydrationWarning
       >
-        {/* Preloader gate — covers screen instantly on HTML paint, removed by Preloader.tsx */}
+        {/* Preloader gate — removed by Preloader on homepage, by useEffect on other pages */}
         <div
           id="preloader-gate"
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 99999,
-            backgroundColor: "#060612",
+            background: "#060612",
             pointerEvents: "none",
           }}
+          suppressHydrationWarning
         />
+
         {/* Circuit board grid overlay */}
         <div className="circuit-grid" aria-hidden="true" />
         {children}

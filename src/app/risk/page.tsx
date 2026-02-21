@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -12,6 +13,12 @@ const fadeUp = {
 const LAST_UPDATED = "February 2026";
 
 export default function RiskDisclaimerPage() {
+  // Remove preloader gate on mount
+  useEffect(() => {
+    const gate = document.getElementById("preloader-gate");
+    if (gate) gate.remove();
+  }, []);
+
   return (
     <main className="relative min-h-screen bg-bg-primary">
       {/* Background effects */}

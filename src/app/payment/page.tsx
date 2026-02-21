@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Copy, Check, Shield, ArrowLeft, AlertTriangle } from "lucide-react";
 import Link from "next/link";
@@ -58,8 +58,23 @@ export default function PaymentPage() {
   const [activeWallet, setActiveWallet] = useState(0);
   const [copied, setCopied] = useState(false);
   const [selectedTier, setSelectedTier] = useState<number | null>(null);
+  const networkRef = useRef<HTMLDivElement>(null);
+
+  // Remove preloader gate on mount
+  useEffect(() => {
+    const gate = document.getElementById("preloader-gate");
+    if (gate) gate.remove();
+  }, []);
 
   const wallet = WALLETS[activeWallet];
+
+  const handleTierSelect = (i: number) => {
+    setSelectedTier(i);
+    // Smooth scroll to network selection
+    setTimeout(() => {
+      networkRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  };
 
   const handleCopy = async () => {
     try {
@@ -67,7 +82,6 @@ export default function PaymentPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for older browsers
       const textarea = document.createElement("textarea");
       textarea.value = wallet.address;
       document.body.appendChild(textarea);
@@ -137,7 +151,7 @@ export default function PaymentPage() {
             {TIERS.map((tier, i) => (
               <button
                 key={tier.name}
-                onClick={() => setSelectedTier(i)}
+                onClick={() => handleTierSelect(i)}
                 className={`relative p-4 rounded-xl border text-left transition-all duration-200 ${
                   selectedTier === i
                     ? "border-accent-primary bg-accent-primary/[0.08] shadow-[0_0_20px_rgba(56,189,248,0.15)]"
@@ -165,6 +179,7 @@ export default function PaymentPage() {
 
         {/* Step 2 — Select Network */}
         <motion.div
+          ref={networkRef}
           variants={fadeUp}
           initial="hidden"
           animate="visible"
