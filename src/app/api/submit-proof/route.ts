@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { createActionToken } from "@/lib/tokens";
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,14 +34,30 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Build email HTML
-    const refId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    // Build reference ID and action token
+    const refId = `PMT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://umaircrypto.com";
+
+    const token = await createActionToken({
+      refId,
+      name,
+      email,
+      tier,
+      amount,
+      network,
+    });
+
+    const approveUrl = `${baseUrl}/api/admin/approve?token=${token}`;
+    const rejectUrl = `${baseUrl}/api/admin/reject?token=${token}`;
+
+    // Build admin notification email HTML
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
         <h1 style="color: #38BDF8; margin-bottom: 8px;">New Payment Proof Submitted</h1>
-        <p style="color: #94a3b8; font-size: 14px;">Reference: #PMT-${refId}</p>
+        <p style="color: #94a3b8; font-size: 14px;">Reference: #${refId}</p>
         <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
-        
+
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 10px 0; color: #94a3b8; width: 140px;">Service Plan</td>
@@ -70,6 +87,20 @@ export async function POST(req: NextRequest) {
 
         <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
         <p style="color: #94a3b8; font-size: 13px;">Screenshot attached below (if provided).</p>
+
+        <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+        <p style="color: #f1f5f9; font-weight: bold; font-size: 15px; margin-bottom: 16px;">Quick Actions</p>
+        <div style="text-align: center;">
+          <a href="${approveUrl}" style="display: inline-block; background: #22c55e; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 12px;">
+            &#10003; Approve
+          </a>
+          <a href="${rejectUrl}" style="display: inline-block; background: #ef4444; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px;">
+            &#10007; Reject
+          </a>
+        </div>
+        <p style="color: #64748b; font-size: 12px; text-align: center; margin-top: 12px;">
+          Approve sends booking link to client. Reject sends a resubmit notice. Links expire in 7 days.
+        </p>
       </div>
     `;
 
@@ -84,7 +115,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Send email to payments@
+    // Send email to admin
     await transporter.sendMail({
       from: `"UmairCrypto Payments" <payments@umaircrypto.com>`,
       to: process.env.PROOF_RECIPIENT || "hello.multynex@gmail.com",
@@ -98,13 +129,13 @@ export async function POST(req: NextRequest) {
     await transporter.sendMail({
       from: `"UmairCrypto" <contact@umaircrypto.com>`,
       to: email,
-      subject: `Payment Proof Received — #PMT-${refId}`,
+      subject: `Payment Proof Received — #${refId}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
           <h1 style="color: #38BDF8;">Payment Proof Received ✓</h1>
           <p>Hi ${name},</p>
           <p>We've received your payment proof for <strong>${tier} (${amount})</strong> via <strong>${network}</strong>.</p>
-          <p>Reference ID: <strong>#PMT-${refId}</strong></p>
+          <p>Reference ID: <strong>#${refId}</strong></p>
           <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
           <h3 style="color: #38BDF8;">What's Next?</h3>
           <ol style="color: #94a3b8; line-height: 1.8;">
@@ -117,7 +148,7 @@ export async function POST(req: NextRequest) {
       `,
     });
 
-    return NextResponse.json({ success: true, refId: `PMT-${refId}` });
+    return NextResponse.json({ success: true, refId });
   } catch (error) {
     console.error("Payment proof email error:", error);
     return NextResponse.json(

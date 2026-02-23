@@ -13,6 +13,7 @@ import {
   Upload,
   X,
   ExternalLink,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -224,6 +225,16 @@ const COUNTRY_CODES = [
   { code: "+263", flag: "🇿🇼", country: "Zimbabwe", digits: 9 },
 ];
 
+const SORTED_COUNTRY_CODES = [...COUNTRY_CODES].sort(
+  (a, b) => parseInt(a.code) - parseInt(b.code)
+);
+
+const EMAIL_DOMAINS = [
+  "gmail.com", "yahoo.com", "hotmail.com", "outlook.com",
+  "icloud.com", "protonmail.com", "aol.com", "live.com",
+  "me.com", "msn.com", "mail.com",
+];
+
 const TIERS = [
   { name: "Starter", title: "1-on-1 Chart Review", price: "$200", duration: "30 min" },
   { name: "Pro", title: "Full Consultation", price: "$350", duration: "60 min" },
@@ -265,19 +276,63 @@ function PaymentContent() {
     phone: "",
     txHash: "",
   });
-  const [countryCode, setCountryCode] = useState<number | null>(null);
+  const [selectedCode, setSelectedCode] = useState<(typeof COUNTRY_CODES)[0] | null>(null);
+  const [dialInput, setDialInput] = useState("");
+  const [showDialDropdown, setShowDialDropdown] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [showEmailSuggestions, setShowEmailSuggestions] = useState(false);
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const codeWrapperRef = useRef<HTMLDivElement>(null);
+  const emailWrapperRef = useRef<HTMLDivElement>(null);
 
   // Remove preloader gate on mount
   useEffect(() => {
     const gate = document.getElementById("preloader-gate");
     if (gate) gate.remove();
   }, []);
+
+  // Close dial code dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (codeWrapperRef.current && !codeWrapperRef.current.contains(e.target as Node)) {
+        setShowDialDropdown(false);
+      }
+      if (emailWrapperRef.current && !emailWrapperRef.current.contains(e.target as Node)) {
+        setShowEmailSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filteredCodes = SORTED_COUNTRY_CODES.filter((c) => {
+    const q = dialInput.toLowerCase().replace(/^\+/, "");
+    if (!q) return true;
+    const numPart = c.code.replace("+", "");
+    return numPart.startsWith(q) || c.country.toLowerCase().includes(q);
+  });
+
+  const emailSuggestions = (() => {
+    const val = formData.email;
+    if (!val) return [];
+    const atIdx = val.indexOf("@");
+    if (atIdx === -1) {
+      // No @ yet — suggest adding popular domains
+      return EMAIL_DOMAINS.map((d) => `${val}@${d}`);
+    }
+    const local = val.slice(0, atIdx);
+    const typed = val.slice(atIdx + 1);
+    if (!local) return [];
+    // Filter domains that start with what user typed after @
+    const matches = typed
+      ? EMAIL_DOMAINS.filter((d) => d.startsWith(typed) && d !== typed)
+      : EMAIL_DOMAINS;
+    return matches.map((d) => `${local}@${d}`);
+  })();
 
   const wallet = WALLETS[activeWallet];
 
@@ -325,7 +380,7 @@ function PaymentContent() {
       const body = new FormData();
       body.append("name", formData.name);
       body.append("email", formData.email);
-      body.append("phone", countryCode !== null ? `${COUNTRY_CODES[countryCode].code}${formData.phone.replace(/\s/g, "")}` : formData.phone);
+      body.append("phone", selectedCode ? `${selectedCode.code}${formData.phone.replace(/\s/g, "")}` : formData.phone);
       body.append("txHash", formData.txHash);
       body.append("tier", TIERS[selectedTier!].name);
       body.append("amount", TIERS[selectedTier!].price);
@@ -772,19 +827,22 @@ function PaymentContent() {
                     className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
                   />
                 </div>
-                <div>
+                <div ref={emailWrapperRef} className="relative">
                   <label className="block text-text-primary text-sm font-medium mb-2">
                     Email <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="email"
                     required
+                    autoComplete="off"
                     placeholder="satoshi@bitcoin.org"
                     value={formData.email}
                     onChange={(e) => {
                       setFormData({ ...formData, email: e.target.value });
                       if (emailError) setEmailError("");
+                      setShowEmailSuggestions(true);
                     }}
+                    onFocus={() => setShowEmailSuggestions(true)}
                     onBlur={() => {
                       if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
                         setEmailError("Please enter a valid email");
@@ -798,6 +856,26 @@ function PaymentContent() {
                         : "border-white/[0.08] focus:border-accent-primary/50"
                     }`}
                   />
+                  {showEmailSuggestions && emailSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-xl bg-[#0c0c1d] border border-white/[0.08] shadow-2xl overflow-hidden">
+                      {emailSuggestions.slice(0, 5).map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setFormData({ ...formData, email: suggestion });
+                            setShowEmailSuggestions(false);
+                            setEmailError("");
+                          }}
+                          className="w-full px-4 py-2.5 text-left text-sm hover:bg-white/[0.06] transition-colors flex items-center gap-2"
+                        >
+                          <span className="text-text-secondary text-xs">✉</span>
+                          <span className="text-text-primary">{suggestion}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   {emailError && (
                     <p className="text-red-400 text-xs mt-1.5">{emailError}</p>
                   )}
@@ -811,25 +889,75 @@ function PaymentContent() {
                     Phone / WhatsApp <span className="text-red-400">*</span>
                   </label>
                   <div className="flex gap-2">
-                    <select
-                      value={countryCode ?? ""}
-                      onChange={(e) => setCountryCode(e.target.value === "" ? null : Number(e.target.value))}
-                      className="w-[120px] flex-shrink-0 px-2 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm focus:outline-none focus:border-accent-primary/50 transition-colors appearance-none cursor-pointer"
-                    >
-                      <option value="" className="bg-[#12121A] text-text-secondary">Code</option>
-                      {COUNTRY_CODES.map((c, i) => (
-                        <option key={`${c.code}-${c.country}`} value={i} className="bg-[#12121A] text-text-primary">
-                          {c.flag} {c.code}
-                        </option>
-                      ))}
-                    </select>
+                    {/* Searchable dial code combobox */}
+                    <div ref={codeWrapperRef} className="relative w-[108px] flex-shrink-0">
+                      <div className="relative flex items-center">
+                        {selectedCode && (
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none z-10 leading-none">
+                            {selectedCode.flag}
+                          </span>
+                        )}
+                        <input
+                          type="text"
+                          value={dialInput}
+                          onChange={(e) => {
+                            setDialInput(e.target.value);
+                            setSelectedCode(null);
+                            setShowDialDropdown(true);
+                          }}
+                          onFocus={() => setShowDialDropdown(true)}
+                          placeholder="+1"
+                          className={`w-full py-3 pr-7 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors ${
+                            selectedCode ? "pl-8" : "pl-3"
+                          }`}
+                        />
+                        <ChevronDown
+                          size={13}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none"
+                        />
+                      </div>
+
+                      {showDialDropdown && (
+                        <div className="absolute top-full left-0 mt-1 w-72 z-50 rounded-xl bg-[#0c0c1d] border border-white/[0.08] shadow-2xl overflow-hidden">
+                          <div className="max-h-52 overflow-y-auto scrollbar-hide">
+                            {filteredCodes.length === 0 ? (
+                              <p className="text-text-secondary text-xs text-center py-4">No results</p>
+                            ) : (
+                              filteredCodes.map((c) => (
+                                <button
+                                  key={`${c.code}-${c.country}`}
+                                  type="button"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    setSelectedCode(c);
+                                    setDialInput(c.code);
+                                    setShowDialDropdown(false);
+                                  }}
+                                  className={`w-full flex items-center gap-2.5 px-3 py-2 hover:bg-white/[0.06] text-left transition-colors ${
+                                    selectedCode?.country === c.country ? "bg-accent-primary/10" : ""
+                                  }`}
+                                >
+                                  <span className="text-base w-6 flex-shrink-0 leading-none">{c.flag}</span>
+                                  <span className="text-accent-primary text-sm font-mono w-10 flex-shrink-0">{c.code}</span>
+                                  <span className="text-text-secondary text-xs truncate">{c.country}</span>
+                                </button>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
                     <input
                       type="tel"
                       required
                       placeholder="50 123 4567"
-                      maxLength={countryCode !== null ? COUNTRY_CODES[countryCode].digits + 3 : 15}
+                      maxLength={selectedCode ? selectedCode.digits + 3 : 15}
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => {
+                        const digitsOnly = e.target.value.replace(/[^\d\s\-]/g, "");
+                        setFormData({ ...formData, phone: digitsOnly });
+                      }}
                       className="flex-1 min-w-0 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
                     />
                   </div>
