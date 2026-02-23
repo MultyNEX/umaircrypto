@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
           <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
           <h3 style="color: #38BDF8;">What's Next?</h3>
           <ol style="color: #94a3b8; line-height: 1.8;">
-            <li>We'll verify your transaction within 5-15 minutes</li>
+            <li>We'll verify your transaction within 24-48 hours</li>
             <li>You'll receive a confirmation email with your booking link</li>
             <li>Schedule your session at a time that works for you</li>
           </ol>

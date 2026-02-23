@@ -457,7 +457,7 @@ function PaymentContent() {
             <ol className="space-y-2 text-text-secondary text-sm">
               <li className="flex gap-3">
                 <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
-                Verification in progress (usually 5–15 minutes)
+                Verification in progress (within 24-48 hours)
               </li>
               <li className="flex gap-3">
                 <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
@@ -1028,7 +1028,7 @@ function PaymentContent() {
             <p>· We will NEVER ask for additional payments</p>
             <p>· These are the ONLY wallet addresses we use</p>
             <p>· Double-check network before sending</p>
-            <p>· Verification takes 5–15 minutes</p>
+            <p>· Verification takes 24-48 hours</p>
           </div>
         </motion.div>
 
