@@ -4,19 +4,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// To add a new market update:
-// 1. Go to the tweet on x.com
-// 2. Copy the URL (e.g. https://x.com/Umairorkz/status/1234567890)
-// 3. Add the number at the end (1234567890) to this array
-// 4. Remove the oldest tweet to keep 6 max
-const TWEET_IDS = [
-  "2020463178292044032", // $AVAX analysis
-  "2009563387626397774", // $LTC chart analysis
-  "2000994564291879021", // $HYPE chart analysis
-  "1990233276880232572", // $USDT.D divergence
-  "1986007555374788967", // $ETH.D levels
-  "1960727761305145400", // $BTC $125K shorts
-];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -111,7 +98,7 @@ function TweetCard({ tweetId, isVisible }: { tweetId: string; isVisible: boolean
   );
 }
 
-export default function MarketUpdates() {
+export default function MarketUpdates({ tweetIds }: { tweetIds: string[] }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -241,7 +228,7 @@ export default function MarketUpdates() {
             ref={scrollRef}
             className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-5 px-5 sm:mx-0 sm:px-0"
           >
-            {TWEET_IDS.map((id) => (
+            {tweetIds.map((id) => (
               <TweetCard key={id} tweetId={id} isVisible={isVisible} />
             ))}
           </div>
