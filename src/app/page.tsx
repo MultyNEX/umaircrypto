@@ -18,6 +18,9 @@ const CryptoCoins = dynamic(() => import("@/components/CryptoCoins"), {
   ssr: false,
 });
 
+// Revalidate every 60s so admin tweet changes appear quickly
+export const revalidate = 60;
+
 export default async function Home() {
   const tweetIds = await getTweetIds();
   return (
