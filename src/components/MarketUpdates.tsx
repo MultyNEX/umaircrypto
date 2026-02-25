@@ -66,33 +66,34 @@ function TweetCard({ tweetId, isVisible }: { tweetId: string; isVisible: boolean
   return (
     <div className="flex-shrink-0 w-[85vw] sm:w-[340px] md:w-[340px] lg:w-[360px] snap-center">
       <div
-        className="rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden"
+        className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden"
         style={{
           boxShadow:
             "0 0 20px rgba(56, 189, 248, 0.03), inset 0 1px 0 rgba(56, 189, 248, 0.05)",
           minHeight: 280,
         }}
       >
-        {/* Loading skeleton */}
+        {/* Loading skeleton — positioned absolute so tweet container stays in flow */}
         {!loaded && (
-          <div className="p-5 space-y-4 animate-pulse">
+          <div className="absolute inset-0 p-5 space-y-4 animate-pulse z-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/[0.06]" />
+              <div className="w-10 h-10 rounded-full bg-white/[0.08]" />
               <div className="space-y-2 flex-1">
-                <div className="h-3 bg-white/[0.06] rounded w-28" />
-                <div className="h-2.5 bg-white/[0.04] rounded w-20" />
+                <div className="h-3 bg-white/[0.08] rounded w-28" />
+                <div className="h-2.5 bg-white/[0.06] rounded w-20" />
               </div>
             </div>
             <div className="space-y-2.5">
-              <div className="h-3 bg-white/[0.05] rounded w-full" />
-              <div className="h-3 bg-white/[0.05] rounded w-[90%]" />
-              <div className="h-3 bg-white/[0.05] rounded w-[75%]" />
-              <div className="h-3 bg-white/[0.04] rounded w-[60%]" />
+              <div className="h-3 bg-white/[0.07] rounded w-full" />
+              <div className="h-3 bg-white/[0.07] rounded w-[90%]" />
+              <div className="h-3 bg-white/[0.07] rounded w-[75%]" />
+              <div className="h-3 bg-white/[0.06] rounded w-[60%]" />
             </div>
-            <div className="h-40 bg-white/[0.03] rounded-xl" />
+            <div className="h-40 bg-white/[0.05] rounded-xl" />
           </div>
         )}
-        <div ref={containerRef} className={loaded ? "" : "hidden"} />
+        {/* Tweet container — always visible so Twitter widget can render */}
+        <div ref={containerRef} />
       </div>
     </div>
   );
