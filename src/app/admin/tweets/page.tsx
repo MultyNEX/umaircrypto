@@ -12,6 +12,7 @@ function XLogo() {
 }
 
 export default function TweetAdminPage() {
+  const [mounted, setMounted] = useState(false);
   const [key, setKey] = useState("");
   const [savedKey, setSavedKey] = useState<string | null>(null);
   const [tweetIds, setTweetIds] = useState<string[]>([]);
@@ -21,6 +22,7 @@ export default function TweetAdminPage() {
 
   // Load saved key from localStorage on mount
   useEffect(() => {
+    setMounted(true);
     const stored = localStorage.getItem("admin_tweets_key");
     if (stored) setSavedKey(stored);
   }, []);
@@ -118,6 +120,8 @@ export default function TweetAdminPage() {
     setKey("");
     setTweetIds([]);
   }
+
+  if (!mounted) return null;
 
   // ── Login screen ──────────────────────────────────────────────
   if (!savedKey) {
