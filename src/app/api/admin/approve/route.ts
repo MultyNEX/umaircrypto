@@ -26,8 +26,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const bookingUrl =
-      process.env.CAL_BOOKING_URL || "https://cal.com/your-link";
+    const calBase =
+      process.env.CAL_BOOKING_URL || "https://cal.com/umaircrypto";
+    const calSlugs: Record<string, string> = {
+      Starter: "/chart-review",
+      Pro: "/full-consultation",
+    };
+    const bookingUrl = calBase + (calSlugs[data.tier] || "");
 
     await transporter.sendMail({
       from: '"UmairCrypto" <contact@umaircrypto.com>',
