@@ -20,11 +20,13 @@ export default function TweetAdminPage() {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Load saved key from localStorage on mount
+  // Load saved key from localStorage on mount + remove preloader gate
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem("admin_tweets_key");
     if (stored) setSavedKey(stored);
+    const gate = document.getElementById("preloader-gate");
+    if (gate) gate.style.display = "none";
   }, []);
 
   function flash(text: string, ok: boolean) {
