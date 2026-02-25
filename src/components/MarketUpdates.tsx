@@ -224,10 +224,12 @@ export default function MarketUpdates({ tweetIds }: { tweetIds: string[] }) {
             </button>
           )}
 
-          {/* Scroll container */}
+          {/* Scroll container — center when few tweets, scroll when many */}
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-5 px-5 sm:mx-0 sm:px-0"
+            className={`flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 ${
+              tweetIds.length <= 3 ? "sm:justify-center" : ""
+            }`}
           >
             {tweetIds.map((id) => (
               <TweetCard key={id} tweetId={id} isVisible={isVisible} />
