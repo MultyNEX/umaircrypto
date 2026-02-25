@@ -1,7 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Plus, ExternalLink, LogOut, Twitter } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, Plus, ExternalLink, LogOut } from "lucide-react";
+
+function XLogo() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 
 export default function TweetAdminPage() {
   const [key, setKey] = useState("");
@@ -17,18 +25,12 @@ export default function TweetAdminPage() {
     if (stored) setSavedKey(stored);
   }, []);
 
-  // When key is set, fetch current tweet list
-  useEffect(() => {
-    if (!savedKey) return;
-    fetchList(savedKey);
-  }, [savedKey]);
-
   function flash(text: string, ok: boolean) {
     setMsg({ text, ok });
     setTimeout(() => setMsg(null), 3000);
   }
 
-  async function fetchList(adminKey: string) {
+  const fetchList = useCallback(async (adminKey: string) => {
     const res = await fetch("/api/admin/tweets", {
       headers: { "x-admin-key": adminKey },
     });
@@ -40,7 +42,14 @@ export default function TweetAdminPage() {
     }
     const ids = await res.json();
     setTweetIds(ids);
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // When key is set, fetch current tweet list
+  useEffect(() => {
+    if (!savedKey) return;
+    fetchList(savedKey);
+  }, [savedKey, fetchList]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -116,7 +125,7 @@ export default function TweetAdminPage() {
       <div className="min-h-screen bg-[#060612] flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <Twitter size={20} className="text-[#38BDF8]" />
+            <span className="text-[#38BDF8]"><XLogo /></span>
             <span className="text-white font-semibold text-lg">Tweet Manager</span>
           </div>
           <form
@@ -157,7 +166,7 @@ export default function TweetAdminPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Twitter size={18} className="text-[#38BDF8]" />
+            <span className="text-[#38BDF8]"><XLogo /></span>
             <h1 className="text-white font-semibold text-lg">Tweet Manager</h1>
             <span className="text-[#475569] text-sm ml-1">
               ({tweetIds.length}/12)

@@ -1,3 +1,5 @@
+import { Redis } from "@upstash/redis";
+
 // Fallback tweet IDs used when Redis is not configured (local dev or before KV setup)
 const FALLBACK_IDS = [
   "2020463178292044032", // $AVAX analysis
@@ -13,7 +15,6 @@ const MAX_TWEETS = 12;
 
 function getRedis() {
   try {
-    const { Redis } = require("@upstash/redis");
     return Redis.fromEnv();
   } catch {
     return null;
