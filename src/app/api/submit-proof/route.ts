@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import sharp from "sharp";
 import { createActionToken } from "@/lib/tokens";
+import { saveOrder, type Order } from "@/lib/orders";
 
 export async function POST(req: NextRequest) {
   try {
@@ -147,6 +149,36 @@ export async function POST(req: NextRequest) {
         </div>
       `,
     });
+
+    // Persist order to Redis (best-effort — don't break email flow)
+    try {
+      let thumbnail = "";
+      if (screenshot && screenshot.size > 0) {
+        const buf = Buffer.from(await screenshot.arrayBuffer());
+        const compressed = await sharp(buf)
+          .resize(200, undefined, { withoutEnlargement: true })
+          .jpeg({ quality: 60 })
+          .toBuffer();
+        thumbnail = `data:image/jpeg;base64,${compressed.toString("base64")}`;
+      }
+
+      const order: Order = {
+        refId,
+        name,
+        email,
+        phone,
+        tier,
+        amount,
+        network,
+        txHash,
+        thumbnail,
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      };
+      await saveOrder(order);
+    } catch (e) {
+      console.error("Failed to persist order to Redis:", e);
+    }
 
     return NextResponse.json({ success: true, refId });
   } catch (error) {

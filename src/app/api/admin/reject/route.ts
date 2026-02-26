@@ -5,6 +5,7 @@ import {
   buildRejectionEmailHtml,
   buildAdminResultPageHtml,
 } from "@/lib/email-templates";
+import { updateOrderStatus } from "@/lib/orders";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
@@ -32,6 +33,9 @@ export async function GET(req: NextRequest) {
       subject: `Payment Update — #${data.refId}`,
       html: buildRejectionEmailHtml(data),
     });
+
+    // Sync status to Redis (best-effort)
+    try { await updateOrderStatus(data.refId, "rejected"); } catch {}
 
     return new NextResponse(
       buildAdminResultPageHtml("rejected", data.name, data.email, data.refId),

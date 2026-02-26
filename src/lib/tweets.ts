@@ -1,4 +1,4 @@
-import { Redis } from "@upstash/redis";
+import { getRedis } from "./redis";
 
 // Fallback tweet IDs used when Redis is not configured (local dev or before KV setup)
 const FALLBACK_IDS = [
@@ -12,13 +12,6 @@ const FALLBACK_IDS = [
 
 const KV_KEY = "tweet_ids";
 const MAX_TWEETS = 12;
-
-function getRedis() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
-}
 
 export async function getTweetIds(): Promise<string[]> {
   try {
