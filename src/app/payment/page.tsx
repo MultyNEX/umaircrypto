@@ -282,6 +282,7 @@ function PaymentContent() {
   const [dragOver, setDragOver] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [autoApproved, setAutoApproved] = useState(false);
 
   // LFGbot analysis state
   interface AnalysisResult {
@@ -464,7 +465,9 @@ function PaymentContent() {
         throw new Error(data.error || "Submission failed");
       }
 
+      const data = await res.json();
       setSubmitting(false);
+      setAutoApproved(!!data.autoApproved);
       setSubmitted(true);
     } catch (err: unknown) {
       setSubmitting(false);
@@ -486,20 +489,37 @@ function PaymentContent() {
           transition={{ duration: 0.4 }}
           className="relative z-10 max-w-lg mx-auto px-5 py-16 text-center"
         >
-          <div className="w-20 h-20 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-6">
+          <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${
+            autoApproved
+              ? "bg-green-500/20 border border-green-500/30"
+              : "bg-green-500/20 border border-green-500/30"
+          }`}>
             <Check size={40} className="text-green-400" />
           </div>
           <h1 className="font-heading text-2xl sm:text-3xl font-bold text-text-primary mb-3">
-            Payment Proof Received
+            {autoApproved ? "Payment Verified!" : "Payment Proof Received"}
           </h1>
           <p className="text-text-secondary mb-8">
-            Thanks, {formData.name}! We&apos;ve received your payment proof.
+            {autoApproved
+              ? <>Thanks, {formData.name}! Your payment has been verified automatically. Check your email for your booking link.</>
+              : <>Thanks, {formData.name}! We&apos;ve received your payment proof.</>
+            }
           </p>
 
           <div className="rounded-xl bg-bg-secondary/60 border border-white/[0.08] p-6 mb-8 text-left space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-text-secondary">Status</span>
-              <span className="text-green-400 font-semibold">Proof Submitted</span>
+              {autoApproved ? (
+                <span className="text-green-400 font-semibold flex items-center gap-1.5">
+                  <span className="lfgbot-dot bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]" />
+                  Auto-Approved
+                </span>
+              ) : (
+                <span className="text-yellow-400 font-semibold flex items-center gap-1.5">
+                  <span className="lfgbot-dot bg-yellow-400 shadow-[0_0_6px_rgba(250,204,21,0.6)]" />
+                  Under Review
+                </span>
+              )}
             </div>
             {selectedTier !== null && (
               <div className="flex justify-between text-sm">
@@ -517,23 +537,38 @@ function PaymentContent() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-accent-primary/[0.05] border border-accent-primary/20 p-5 mb-8 text-left">
-            <p className="text-accent-primary font-semibold text-sm mb-3">What&apos;s Next:</p>
-            <ol className="space-y-2 text-text-secondary text-sm">
-              <li className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
-                Verification in progress (usually within a few hours)
-              </li>
-              <li className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
-                Confirmation sent to {formData.email}
-              </li>
-              <li className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
-                Booking link delivered once verified
-              </li>
-            </ol>
-          </div>
+          {autoApproved ? (
+            <div className="rounded-xl bg-green-500/[0.05] border border-green-500/20 p-5 mb-8 text-left">
+              <div className="flex items-center gap-2 mb-3">
+                <img src="/robot.png" alt="LFGbot" className="lfgbot-icon" />
+                <p className="text-green-400 font-semibold text-sm">Verified by LFGbot</p>
+              </div>
+              <p className="text-text-secondary text-sm mb-3">
+                All checks passed — amount, network, address, and transaction status verified.
+              </p>
+              <p className="text-text-secondary text-sm">
+                Your booking link has been sent to <strong className="text-text-primary">{formData.email}</strong>
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-xl bg-accent-primary/[0.05] border border-accent-primary/20 p-5 mb-8 text-left">
+              <p className="text-accent-primary font-semibold text-sm mb-3">What&apos;s Next:</p>
+              <ol className="space-y-2 text-text-secondary text-sm">
+                <li className="flex gap-3">
+                  <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+                  Verification in progress (usually within a few hours)
+                </li>
+                <li className="flex gap-3">
+                  <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+                  Confirmation sent to {formData.email}
+                </li>
+                <li className="flex gap-3">
+                  <span className="w-5 h-5 rounded-full bg-accent-primary/20 text-accent-primary text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+                  Booking link delivered once verified
+                </li>
+              </ol>
+            </div>
+          )}
 
           <Link
             href="/"

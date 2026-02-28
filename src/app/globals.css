@@ -5,8 +5,8 @@
 /* LFGbot custom robot icon — scales with surrounding text */
 .lfgbot-icon {
   display: inline-block;
-  width: 2.8em;
-  height: 2.8em;
+  width: 3.5em;
+  height: 3.5em;
   vertical-align: middle;
   object-fit: contain;
 }
