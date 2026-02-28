@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     const isVip = data.tier === "VIP";
 
     await transporter.sendMail({
-      from: '"UmairCrypto" <contact@umaircrypto.com>',
+      from: '"UmairCrypto" <noreply@umaircrypto.com>',
       to: data.email,
       subject: isVip
         ? `Welcome to VIP Mentorship — #${data.refId}`

@@ -10,13 +10,14 @@ export interface Order {
   network: string;
   txHash: string;
   thumbnail: string; // base64 data URL
-  status: "pending" | "approved" | "rejected" | "wrong_amount";
+  status: "pending" | "approved" | "rejected" | "wrong_amount" | "booked";
   createdAt: string; // ISO timestamp
   resolvedAt?: string; // ISO timestamp when approved/rejected
   amountReceived?: string; // what Umair actually received
   amountRemaining?: string; // shortfall
   topupToken?: string; // token for top-up page
   topupRefId?: string; // ref ID of the top-up submission
+  thankyouSent?: boolean; // post-session thank you sent
 }
 
 const INDEX_KEY = "order_ids";
@@ -65,7 +66,7 @@ export async function getAllOrders(): Promise<Order[]> {
 
 export async function updateOrderStatus(
   refId: string,
-  status: "approved" | "rejected" | "wrong_amount"
+  status: "approved" | "rejected" | "wrong_amount" | "booked"
 ): Promise<void> {
   const redis = getRedis();
   if (!redis) return;

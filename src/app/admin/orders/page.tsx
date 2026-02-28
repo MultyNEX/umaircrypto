@@ -1,364 +1,634 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import {
-  Copy,
-  Check,
-  AlertTriangle,
-  Upload,
-  X,
-  ExternalLink,
-  Shield,
-} from "lucide-react";
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import {
+  ArrowLeft,
+  LogOut,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertTriangle,
+  CalendarCheck,
+  Send,
+  Image as ImageIcon,
+  X,
+} from "lucide-react";
 
-interface TopupInfo {
-  originalRefId: string;
+interface Order {
+  refId: string;
   name: string;
+  email: string;
+  phone: string;
   tier: string;
-  tierPrice: string;
-  amountReceived: string;
-  amountRemaining: string;
+  amount: string;
   network: string;
+  txHash: string;
+  thumbnail: string;
+  status: "pending" | "approved" | "rejected" | "wrong_amount" | "booked";
+  createdAt: string;
+  resolvedAt?: string;
+  amountReceived?: string;
+  amountRemaining?: string;
+  thankyouSent?: boolean;
 }
 
-const WALLET_META: Record<string, { qr: string; color: string; icon: string; explorerBase: string }> = {
-  "Tron (TRC20)": { qr: "/qr-trc20.png", color: "#26A17B", icon: "₮", explorerBase: "https://tronscan.org/#/address/" },
-  "Solana": { qr: "/qr-sol.png", color: "#9945FF", icon: "◎", explorerBase: "https://solscan.io/account/" },
-  "Ethereum (ERC20)": { qr: "/qr-erc20.png", color: "#627EEA", icon: "Ξ", explorerBase: "https://etherscan.io/address/" },
+type Filter = "all" | "pending" | "approved" | "rejected" | "wrong_amount" | "booked";
+
+const TIER_COLORS: Record<string, string> = {
+  Starter: "#38BDF8",
+  Pro: "#A855F7",
+  VIP: "#F59E0B",
 };
 
-const NETWORK_TO_WALLET_KEY: Record<string, string> = {
-  "Tron (TRC20)": "trc20",
-  "Solana": "sol",
-  "Ethereum (ERC20)": "erc20",
+const STATUS_CONFIG = {
+  pending: { color: "#F59E0B", bg: "#F59E0B15", label: "Pending", icon: Clock },
+  approved: { color: "#22c55e", bg: "#22c55e15", label: "Approved", icon: CheckCircle2 },
+  booked: { color: "#38BDF8", bg: "#38BDF815", label: "Booked", icon: CalendarCheck },
+  rejected: { color: "#ef4444", bg: "#ef444415", label: "Rejected", icon: XCircle },
+  wrong_amount: { color: "#F97316", bg: "#F9731615", label: "Wrong Amount", icon: AlertTriangle },
 };
 
-export default function TopupPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-[#060612]" />}>
-      <TopupContent />
-    </Suspense>
-  );
-}
-
-function TopupContent() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-
-  const [info, setInfo] = useState<TopupInfo | null>(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [txHash, setTxHash] = useState("");
-  const [screenshot, setScreenshot] = useState<File | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export default function OrdersAdminPage() {
+  const [mounted, setMounted] = useState(false);
+  const [key, setKey] = useState("");
+  const [savedKey, setSavedKey] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{
+    refId: string;
+    action: "approve" | "reject";
+  } | null>(null);
+  const [wrongAmountModal, setWrongAmountModal] = useState<string | null>(null); // refId
+  const [wrongAmountInput, setWrongAmountInput] = useState("");
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   useEffect(() => {
+    setMounted(true);
+    const stored = localStorage.getItem("admin_tweets_key");
+    if (stored) setSavedKey(stored);
     const gate = document.getElementById("preloader-gate");
-    if (gate) gate.remove();
+    if (gate) gate.style.display = "none";
   }, []);
 
-  // Fetch top-up info + wallet addresses
+  function flash(text: string, ok: boolean) {
+    setMsg({ text, ok });
+    setTimeout(() => setMsg(null), 4000);
+  }
+
+  const fetchOrders = useCallback(async (adminKey: string) => {
+    const res = await fetch("/api/admin/orders", {
+      headers: { "x-admin-key": adminKey },
+    });
+    if (res.status === 401) {
+      localStorage.removeItem("admin_tweets_key");
+      setSavedKey(null);
+      flash("Wrong key. Try again.", false);
+      return;
+    }
+    const data = await res.json();
+    setOrders(data.orders || []);
+  }, []);
+
   useEffect(() => {
-    if (!token) {
-      setError("Missing top-up token. Please use the link from your email.");
-      setLoading(false);
+    if (!savedKey) return;
+    fetchOrders(savedKey);
+  }, [savedKey, fetchOrders]);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!key.trim()) return;
+    setLoading(true);
+    const res = await fetch("/api/admin/orders", {
+      headers: { "x-admin-key": key.trim() },
+    });
+    setLoading(false);
+    if (res.status === 401) {
+      flash("Wrong key. Try again.", false);
+      return;
+    }
+    localStorage.setItem("admin_tweets_key", key.trim());
+    setSavedKey(key.trim());
+    const data = await res.json();
+    setOrders(data.orders || []);
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("admin_tweets_key");
+    setSavedKey(null);
+    setKey("");
+    setOrders([]);
+  }
+
+  async function handleAction(refId: string, action: "approve" | "reject") {
+    if (!savedKey) return;
+    setActionLoading(refId);
+    setConfirmAction(null);
+
+    const res = await fetch(`/api/admin/orders/${refId}/${action}`, {
+      method: "POST",
+      headers: { "x-admin-key": savedKey },
+    });
+
+    setActionLoading(null);
+
+    if (!res.ok) {
+      const data = await res.json();
+      flash(data.error || `Failed to ${action}`, false);
       return;
     }
 
-    Promise.all([
-      fetch(`/api/topup-info?token=${token}`).then((r) => r.json()),
-      fetch("/api/wallets").then((r) => r.json()),
-    ])
-      .then(([topupData, walletData]) => {
-        if (topupData.error) {
-          setError(topupData.error);
-        } else {
-          setInfo(topupData);
-          // Get the right wallet address for this network
-          const walletKey = NETWORK_TO_WALLET_KEY[topupData.network];
-          if (walletKey && walletData.wallets?.[walletKey]) {
-            setWalletAddress(walletData.wallets[walletKey]);
-          }
-        }
-      })
-      .catch(() => setError("Failed to load top-up details. Please try again."))
-      .finally(() => setLoading(false));
-  }, [token]);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(walletAddress);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = walletAddress;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setSubmitError("");
-
-    try {
-      const body = new FormData();
-      body.append("topupToken", token || "");
-      body.append("txHash", txHash);
-      if (screenshot) body.append("screenshot", screenshot);
-
-      const res = await fetch("/api/submit-topup", { method: "POST", body });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Submission failed");
-      }
-      setSubmitted(true);
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Loading state
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-[#060612] flex items-center justify-center">
-        <p className="text-[#94a3b8] text-sm animate-pulse">Loading top-up details...</p>
-      </main>
+    flash(
+      action === "approve"
+        ? "Approved! Booking email sent."
+        : "Rejected. Notification sent.",
+      true
     );
+
+    // Refresh orders
+    await fetchOrders(savedKey);
   }
 
-  // Error state
-  if (error) {
+  async function handleWrongAmount(refId: string) {
+    if (!savedKey || !wrongAmountInput) return;
+    setActionLoading(refId);
+    setWrongAmountModal(null);
+
+    const res = await fetch(`/api/admin/orders/${refId}/wrong-amount`, {
+      method: "POST",
+      headers: {
+        "x-admin-key": savedKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amountReceived: wrongAmountInput }),
+    });
+
+    setActionLoading(null);
+    setWrongAmountInput("");
+
+    if (!res.ok) {
+      const data = await res.json();
+      flash(data.error || "Failed to process wrong amount", false);
+      return;
+    }
+
+    const data = await res.json();
+    flash(`Top-up request sent! Client owes $${data.amountRemaining}`, true);
+    await fetchOrders(savedKey);
+  }
+
+  async function handleThankYou(refId: string) {
+    if (!savedKey) return;
+    setActionLoading(refId);
+
+    const res = await fetch(`/api/admin/orders/${refId}/thankyou`, {
+      method: "POST",
+      headers: { "x-admin-key": savedKey },
+    });
+
+    setActionLoading(null);
+
+    if (!res.ok) {
+      const data = await res.json();
+      flash(data.error || "Failed to send thank you", false);
+      return;
+    }
+
+    flash("Thank you email sent! 🎉", true);
+    await fetchOrders(savedKey);
+  }
+
+  const filtered =
+    filter === "all" ? orders : orders.filter((o) => o.status === filter);
+
+  const counts = {
+    all: orders.length,
+    pending: orders.filter((o) => o.status === "pending").length,
+    approved: orders.filter((o) => o.status === "approved").length,
+    booked: orders.filter((o) => o.status === "booked").length,
+    rejected: orders.filter((o) => o.status === "rejected").length,
+    wrong_amount: orders.filter((o) => o.status === "wrong_amount").length,
+  };
+
+  if (!mounted) return null;
+
+  // Login screen
+  if (!savedKey) {
     return (
-      <main className="min-h-screen bg-[#060612] flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle size={28} className="text-red-400" />
+      <div className="min-h-screen bg-[#060612] flex items-center justify-center px-4">
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-8">
+            <h1 className="text-white font-semibold text-xl">Orders</h1>
+            <p className="text-[#64748b] text-sm mt-1">Enter your admin key</p>
           </div>
-          <h1 className="text-white font-semibold text-lg mb-2">Link Expired or Invalid</h1>
-          <p className="text-[#94a3b8] text-sm mb-6">{error}</p>
-          <Link
-            href="/"
-            className="inline-block bg-[#38BDF8] text-[#060612] font-semibold px-6 py-3 rounded-xl text-sm hover:brightness-110 transition"
+          <form
+            onSubmit={handleLogin}
+            className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 space-y-4"
           >
-            Back to Home
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
-  // Submitted state
-  if (submitted) {
-    return (
-      <main className="min-h-screen bg-[#060612] flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-            <Check size={28} className="text-green-400" />
-          </div>
-          <h1 className="text-white font-semibold text-lg mb-2">Top-Up Submitted!</h1>
-          <p className="text-[#94a3b8] text-sm mb-2">We&apos;ve received your remaining payment proof.</p>
-          <p className="text-[#94a3b8] text-sm">We&apos;ll verify it and send your booking link within 24 hours.</p>
-        </div>
-      </main>
-    );
-  }
-
-  if (!info) return null;
-
-  const meta = WALLET_META[info.network];
-
-  return (
-    <main className="min-h-screen bg-[#060612] px-4 py-8 sm:py-12">
-      <div className="max-w-lg mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center">
-          <div className="inline-block bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-full px-4 py-1.5 mb-4">
-            <span className="text-[#F59E0B] text-xs font-semibold">Top-Up Required</span>
-          </div>
-          <h1 className="text-white font-semibold text-xl sm:text-2xl mb-1">Complete Your Payment</h1>
-          <p className="text-[#94a3b8] text-sm">
-            Original order: <span className="font-mono text-white">#{info.originalRefId}</span>
-          </p>
-        </div>
-
-        {/* Shortfall summary */}
-        <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 space-y-3">
-          <div className="flex justify-between text-sm">
-            <span className="text-[#94a3b8]">Plan</span>
-            <span className="text-white font-semibold">{info.tier} (${info.tierPrice})</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-[#94a3b8]">Amount Received</span>
-            <span className="text-white">${info.amountReceived}</span>
-          </div>
-          <hr className="border-white/[0.06]" />
-          <div className="flex justify-between text-base">
-            <span className="text-[#F59E0B] font-semibold">Remaining</span>
-            <span className="text-[#F59E0B] font-bold text-lg">${info.amountRemaining}</span>
-          </div>
-        </div>
-
-        {/* Wallet + QR */}
-        <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/[0.06] flex items-center gap-3">
-            {meta && (
-              <span className="text-xl font-bold" style={{ color: meta.color }}>{meta.icon}</span>
+            <input
+              type="password"
+              value={key}
+              onChange={(e) => setKey(e.target.value)}
+              placeholder="Admin key"
+              autoFocus
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-white text-sm placeholder-[#475569] outline-none focus:border-[#38BDF8]/50 transition-colors"
+            />
+            {msg && (
+              <p className={`text-sm ${msg.ok ? "text-green-400" : "text-red-400"}`}>
+                {msg.text}
+              </p>
             )}
-            <div>
-              <p className="text-white text-sm font-semibold">{info.network}</p>
-              <p className="text-[#64748b] text-xs">Same network as your original payment</p>
-            </div>
-          </div>
-
-          <div className="p-6 flex flex-col items-center gap-6">
-            {meta && (
-              <div className="p-4 bg-white rounded-2xl shadow-lg">
-                <Image src={meta.qr} alt={`${info.network} QR Code`} width={180} height={180} />
-              </div>
-            )}
-
-            <div className="w-full">
-              <p className="text-[#94a3b8] text-xs mb-2 text-center">Wallet Address</p>
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                <code className="flex-1 text-white text-xs font-mono break-all leading-relaxed">
-                  {walletAddress || <span className="text-[#94a3b8] animate-pulse">Loading...</span>}
-                </code>
-                <button
-                  onClick={handleCopy}
-                  disabled={!walletAddress}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                    copied
-                      ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                      : "bg-[#38BDF8]/15 text-[#38BDF8] hover:bg-[#38BDF8]/25 border border-[#38BDF8]/20"
-                  } disabled:opacity-40`}
-                >
-                  {copied ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
-                </button>
-              </div>
-              <div className="flex items-center justify-between mt-2">
-                <p className="flex items-center gap-1 text-xs text-yellow-400/60">
-                  <AlertTriangle size={11} />
-                  Verify first and last 4 characters
-                </p>
-                {walletAddress && meta && (
-                  <a
-                    href={`${meta.explorerBase}${walletAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-[#38BDF8]/50 hover:text-[#38BDF8]/80 transition-colors"
-                  >
-                    Explorer <ExternalLink size={11} />
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* Amount reminder */}
-            <div className="w-full p-4 rounded-xl bg-[#F59E0B]/[0.06] border border-[#F59E0B]/20 text-center">
-              <p className="text-[#94a3b8] text-xs mb-1">Send exactly</p>
-              <p className="text-[#F59E0B] text-2xl font-bold">${info.amountRemaining}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Proof form */}
-        <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-          <h3 className="text-white text-sm font-semibold mb-4">Submit Top-Up Proof</h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-white text-sm font-medium mb-2">
-                TX Hash <span className="text-[#94a3b8] text-xs font-normal">(Optional)</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Transaction hash"
-                value={txHash}
-                onChange={(e) => setTxHash(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-sm placeholder:text-[#475569] focus:outline-none focus:border-[#38BDF8]/50 transition-colors"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white text-sm font-medium mb-2">
-                Screenshot <span className="text-red-400">*</span>
-              </label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) setScreenshot(e.target.files[0]);
-                }}
-              />
-              {screenshot ? (
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.08]">
-                  <p className="flex-1 text-white text-sm truncate">{screenshot.name}</p>
-                  <button
-                    type="button"
-                    onClick={() => { setScreenshot(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                    className="text-[#94a3b8] hover:text-white transition-colors"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full p-6 rounded-xl border-2 border-dashed border-white/[0.08] hover:border-white/[0.15] text-center transition-colors"
-                >
-                  <Upload size={24} className="mx-auto text-[#475569] mb-2" />
-                  <p className="text-[#94a3b8] text-sm">Click to upload screenshot</p>
-                </button>
-              )}
-            </div>
-
-            {submitError && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
-                {submitError}
-              </div>
-            )}
-
             <button
               type="submit"
-              disabled={!screenshot || submitting}
-              className="w-full py-4 rounded-xl text-base font-semibold bg-[#F59E0B] text-[#0a0a0f] hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={loading || !key.trim()}
+              className="w-full bg-[#38BDF8] text-[#060612] font-semibold py-3 rounded-xl text-sm hover:bg-[#7DD3FC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? "Submitting..." : `Submit Top-Up Proof — $${info.amountRemaining}`}
+              {loading ? "Checking..." : "Enter"}
             </button>
           </form>
         </div>
+      </div>
+    );
+  }
 
-        {/* Security notice */}
-        <div className="p-4 rounded-xl border border-[#22c55e]/20 bg-[#22c55e]/[0.03]">
-          <p className="text-[#22c55e] text-xs font-semibold mb-2 flex items-center gap-1.5">
-            <Shield size={14} /> Security Notice
-          </p>
-          <div className="text-[#94a3b8] text-xs space-y-1">
-            <p>· This is the same wallet address as your original payment</p>
-            <p>· This link expires in 48 hours</p>
-            <p>· We will NEVER ask for additional payments beyond this top-up</p>
+  return (
+    <div className="min-h-screen bg-[#060612] px-4 py-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin"
+              className="text-[#64748b] hover:text-white transition-colors"
+            >
+              <ArrowLeft size={18} />
+            </Link>
+            <div>
+              <h1 className="text-white font-semibold text-lg">Orders</h1>
+              <p className="text-[#475569] text-xs">
+                {counts.pending} pending
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 text-[#64748b] hover:text-white text-sm transition-colors"
+          >
+            <LogOut size={14} />
+            Log out
+          </button>
+        </div>
+
+        {/* Toast */}
+        {msg && (
+          <div
+            className={`px-4 py-3 rounded-xl text-sm font-medium border ${
+              msg.ok
+                ? "bg-green-500/10 border-green-500/20 text-green-400"
+                : "bg-red-500/10 border-red-500/20 text-red-400"
+            }`}
+          >
+            {msg.text}
+          </div>
+        )}
+
+        {/* Filter tabs */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+          {(["all", "pending", "approved", "booked", "rejected", "wrong_amount"] as Filter[]).map((f) => {
+            const label = f === "wrong_amount" ? "Wrong Amt" : f.charAt(0).toUpperCase() + f.slice(1);
+            return (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                  filter === f
+                    ? "bg-white/[0.1] text-white border border-white/[0.15]"
+                    : "text-[#64748b] border border-transparent hover:text-[#94a3b8]"
+                }`}
+              >
+                {label}
+                <span className="ml-1.5 text-xs opacity-60">{counts[f]}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Orders list */}
+        {filtered.length === 0 ? (
+          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl px-6 py-16 text-center">
+            <p className="text-[#475569] text-sm">
+              {orders.length === 0
+                ? "No orders yet. They'll appear here when clients submit payment proofs."
+                : "No orders match this filter."}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filtered.map((order) => {
+              const sc = STATUS_CONFIG[order.status];
+              const tierColor = TIER_COLORS[order.tier] || "#38BDF8";
+              const isActioning = actionLoading === order.refId;
+
+              return (
+                <div
+                  key={order.refId}
+                  className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-5 space-y-4"
+                >
+                  {/* Top row: thumbnail + info + status */}
+                  <div className="flex gap-4">
+                    {/* Thumbnail */}
+                    {order.thumbnail ? (
+                      <button
+                        onClick={() => setExpandedImage(order.thumbnail)}
+                        className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/[0.2] transition-colors"
+                      >
+                        <img
+                          src={order.thumbnail}
+                          alt="Screenshot"
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ) : (
+                      <div className="flex-shrink-0 w-16 h-16 rounded-xl border border-white/[0.08] flex items-center justify-center">
+                        <ImageIcon size={20} className="text-[#334155]" />
+                      </div>
+                    )}
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-white font-medium text-sm truncate">
+                            {order.name}
+                          </p>
+                          <p className="text-[#64748b] text-xs truncate">
+                            {order.email}
+                          </p>
+                        </div>
+                        {/* Status badge */}
+                        <div
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium flex-shrink-0"
+                          style={{ backgroundColor: sc.bg, color: sc.color }}
+                        >
+                          <sc.icon size={12} />
+                          {sc.label}
+                        </div>
+                      </div>
+
+                      {/* Details row */}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
+                        <span
+                          className="text-xs font-semibold px-2 py-0.5 rounded-md"
+                          style={{
+                            backgroundColor: `${tierColor}15`,
+                            color: tierColor,
+                          }}
+                        >
+                          {order.tier}
+                        </span>
+                        <span className="text-[#94a3b8] text-xs">
+                          {order.amount}
+                        </span>
+                        <span className="text-[#475569] text-xs">
+                          {order.network}
+                        </span>
+                        <span className="text-[#334155] text-xs font-mono">
+                          #{order.refId}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Extra details */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#475569]">
+                    {order.phone && <span>Phone: {order.phone}</span>}
+                    {order.txHash && order.txHash !== "Not provided" && (
+                      <span className="font-mono truncate max-w-[200px]">
+                        TX: {order.txHash}
+                      </span>
+                    )}
+                    <span>
+                      {new Date(order.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+
+                  {/* Actions for pending orders */}
+                  {order.status === "pending" && (
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <button
+                        onClick={() =>
+                          setConfirmAction({
+                            refId: order.refId,
+                            action: "approve",
+                          })
+                        }
+                        disabled={isActioning}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl text-sm font-medium hover:bg-green-500/20 transition-all disabled:opacity-50"
+                      >
+                        <CheckCircle2 size={14} />
+                        {isActioning ? "Sending..." : "Approve"}
+                      </button>
+                      <button
+                        onClick={() =>
+                          setConfirmAction({
+                            refId: order.refId,
+                            action: "reject",
+                          })
+                        }
+                        disabled={isActioning}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-medium hover:bg-red-500/20 transition-all disabled:opacity-50"
+                      >
+                        <XCircle size={14} />
+                        Reject
+                      </button>
+                      <button
+                        onClick={() => {
+                          setWrongAmountModal(order.refId);
+                          setWrongAmountInput("");
+                        }}
+                        disabled={isActioning}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-xl text-sm font-medium hover:bg-orange-500/20 transition-all disabled:opacity-50"
+                      >
+                        <AlertTriangle size={14} />
+                        Wrong Amount
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Shortfall info for wrong_amount orders */}
+                  {order.status === "wrong_amount" && order.amountReceived && (
+                    <div className="flex items-center gap-3 pt-1 text-xs">
+                      <span className="text-[#94a3b8]">
+                        Received: <span className="text-white font-medium">${order.amountReceived}</span>
+                      </span>
+                      <span className="text-orange-400 font-semibold">
+                        Shortfall: ${order.amountRemaining}
+                      </span>
+                      <span className="text-[#475569]">Top-up email sent to client</span>
+                    </div>
+                  )}
+
+                  {/* Actions for approved/booked orders */}
+                  {(order.status === "approved" || order.status === "booked") && (
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      {order.status === "booked" && (
+                        <span className="flex items-center gap-1 text-xs text-sky-400">
+                          <CalendarCheck size={12} />
+                          Session booked via Cal.com
+                        </span>
+                      )}
+                      {order.thankyouSent ? (
+                        <span className="flex items-center gap-1 text-xs text-green-400/60">
+                          <CheckCircle2 size={12} />
+                          Thank you sent
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleThankYou(order.refId)}
+                          disabled={isActioning}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-lg text-xs font-medium hover:bg-sky-500/20 transition-all disabled:opacity-50"
+                        >
+                          <Send size={12} />
+                          {isActioning ? "Sending..." : "Send Thank You"}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <p className="text-center text-[#334155] text-xs">
+          umaircrypto.com — orders
+        </p>
+      </div>
+
+      {/* Confirmation modal */}
+      {confirmAction && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => setConfirmAction(null)}
+        >
+          <div
+            className="bg-[#0a0a1a] border border-white/[0.1] rounded-2xl p-6 max-w-sm w-full space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-white font-semibold text-base">
+              {confirmAction.action === "approve"
+                ? "Approve this order?"
+                : "Reject this order?"}
+            </h3>
+            <p className="text-[#94a3b8] text-sm">
+              {confirmAction.action === "approve"
+                ? "This will send a booking email to the client."
+                : "This will send a rejection notice to the client."}
+            </p>
+            <p className="text-[#475569] text-xs font-mono">
+              #{confirmAction.refId}
+            </p>
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={() => setConfirmAction(null)}
+                className="flex-1 px-4 py-2.5 border border-white/[0.1] text-[#94a3b8] rounded-xl text-sm font-medium hover:bg-white/[0.04] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() =>
+                  handleAction(confirmAction.refId, confirmAction.action)
+                }
+                className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  confirmAction.action === "approve"
+                    ? "bg-green-500 text-white hover:bg-green-600"
+                    : "bg-red-500 text-white hover:bg-red-600"
+                }`}
+              >
+                {confirmAction.action === "approve" ? "Approve" : "Reject"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      )}
+
+      {/* Wrong amount modal */}
+      {wrongAmountModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => setWrongAmountModal(null)}
+        >
+          <div
+            className="bg-[#0a0a1a] border border-white/[0.1] rounded-2xl p-6 max-w-sm w-full space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-white font-semibold text-base">Wrong Amount Received</h3>
+            <p className="text-[#94a3b8] text-sm">
+              How much did you actually receive for this order? The system will calculate the shortfall and email the client a top-up link.
+            </p>
+            <p className="text-[#475569] text-xs font-mono">#{wrongAmountModal}</p>
+            <div>
+              <label className="block text-[#94a3b8] text-xs mb-1.5">Amount received ($)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={wrongAmountInput}
+                onChange={(e) => setWrongAmountInput(e.target.value)}
+                placeholder="e.g. 350.00"
+                autoFocus
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-white text-sm placeholder-[#475569] outline-none focus:border-[#F59E0B]/50 transition-colors"
+              />
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={() => setWrongAmountModal(null)}
+                className="flex-1 px-4 py-2.5 border border-white/[0.1] text-[#94a3b8] rounded-xl text-sm font-medium hover:bg-white/[0.04] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleWrongAmount(wrongAmountModal)}
+                disabled={!wrongAmountInput || parseFloat(wrongAmountInput) <= 0}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#F59E0B] text-[#0a0a0f] hover:bg-[#D97706] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Send Top-Up Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image expand modal */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div className="relative max-w-lg w-full">
+            <button
+              onClick={() => setExpandedImage(null)}
+              className="absolute -top-10 right-0 text-white/60 hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+            <img
+              src={expandedImage}
+              alt="Screenshot"
+              className="w-full rounded-2xl border border-white/[0.1]"
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

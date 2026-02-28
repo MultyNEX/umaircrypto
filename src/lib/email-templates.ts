@@ -29,8 +29,9 @@ export function buildApprovalEmailHtml(
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
       <p style="color: #94a3b8; font-size: 13px;">
-        Questions? Reply to this email or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
+        Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
       </p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -86,7 +87,7 @@ export function buildVipApprovalEmailHtml(
           </td>
           <td style="padding: 12px 0; color: #f1f5f9;">
             <strong>Ongoing Access</strong><br/>
-            <span style="color: #94a3b8; font-size: 13px;">As a VIP member you get ongoing mentorship for the month — not just a single call. We'll work together to level up your trading.</span>
+            <span style="color: #94a3b8; font-size: 13px;">As a VIP member you get ongoing mentorship for 6 months — weekly 1-on-1 calls, priority chart analysis, custom alerts, and direct WhatsApp support.</span>
           </td>
         </tr>
       </table>
@@ -108,7 +109,7 @@ export function buildVipApprovalEmailHtml(
         <p style="color: #F59E0B; font-weight: bold; font-size: 14px; margin: 0 0 8px;">Your VIP Membership Includes</p>
         <p style="color: #94a3b8; font-size: 13px; margin: 0; line-height: 1.8;">
           ✦ Onboarding strategy session<br/>
-          ✦ Ongoing 1-on-1 mentorship for the month<br/>
+          ✦ Ongoing 1-on-1 mentorship for 6 months<br/>
           ✦ Personalized portfolio guidance<br/>
           ✦ Priority access to Umair's insights
         </p>
@@ -116,8 +117,9 @@ export function buildVipApprovalEmailHtml(
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
       <p style="color: #94a3b8; font-size: 13px;">
-        Questions? Reply to this email or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
+        Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #F59E0B;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
       </p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -149,8 +151,9 @@ export function buildRejectionEmailHtml(data: SubmissionPayload): string {
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
       <p style="color: #94a3b8; font-size: 13px;">
-        Need help? Reply to this email or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
+        Need help? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
       </p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -238,8 +241,105 @@ export function buildWrongAmountEmailHtml(
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
       <p style="color: #94a3b8; font-size: 13px;">
-        Questions? Reply to this email or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
+        Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
       </p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
+    </div>
+  `;
+}
+
+export function buildThankYouEmailHtml(
+  name: string,
+  tier: string,
+  refId: string
+): string {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
+      <h1 style="color: #38BDF8; margin-bottom: 8px;">Thanks for Your Session! 🎉</h1>
+      <p>Hi ${name},</p>
+      <p>Hope you got value from our <strong>${tier}</strong> session today. It was great working through your portfolio and strategy together.</p>
+      <p style="color: #94a3b8; font-size: 13px;">Reference: #${refId}</p>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+
+      <div style="background: #38BDF810; border: 1px solid #38BDF820; border-radius: 10px; padding: 16px; margin: 16px 0;">
+        <p style="color: #38BDF8; font-weight: bold; font-size: 14px; margin: 0 0 8px;">Quick Reminders</p>
+        <p style="color: #94a3b8; font-size: 13px; margin: 0; line-height: 1.8;">
+          ✦ Review the key levels and setups we discussed<br/>
+          ✦ Stick to the plan — discipline over emotion<br/>
+          ✦ DM me anytime if something comes up before your next session
+        </p>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+
+      <p style="color: #94a3b8; font-size: 13px;">
+        Want to keep going? <a href="https://umaircrypto.com/payment" style="color: #38BDF8;">Book another session</a> or follow <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> for daily insights.
+      </p>
+    </div>
+  `;
+}
+
+export function buildVipWeeklyCheckinHtml(
+  name: string,
+  weekNumber: number,
+  bookingUrl: string
+): string {
+  const weeksLeft = 26 - weekNumber;
+  const motivations = [
+    "Let's keep the momentum going.",
+    "Consistency is what separates winners from the rest.",
+    "Another week to sharpen your edge.",
+    "Your portfolio doesn't build itself — let's work.",
+    "Stay locked in. The market rewards the disciplined.",
+    "Let's review your setups and stay ahead.",
+  ];
+  const motivation = motivations[(weekNumber - 1) % motivations.length];
+
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span style="display: inline-block; background: linear-gradient(135deg, #F59E0B, #D97706); color: #0a0a0f; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; padding: 4px 14px; border-radius: 20px; text-transform: uppercase;">
+          ★ VIP — Week ${weekNumber} of 26
+        </span>
+      </div>
+
+      <h1 style="color: #F59E0B; margin-bottom: 4px; text-align: center; font-size: 22px;">Time for Your Weekly Call</h1>
+      <p style="text-align: center; color: #94a3b8; font-size: 14px; margin-top: 4px;">${motivation}</p>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+
+      <p>Hey ${name},</p>
+      <p>Week ${weekNumber} of your VIP mentorship — ${weeksLeft > 0 ? `${weeksLeft} weeks remaining` : "this is your final week!"}. Book your 1-on-1 call for this week:</p>
+
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="${bookingUrl}" style="display: inline-block; background: linear-gradient(135deg, #F59E0B, #D97706); color: #0a0a0f; padding: 14px 32px; border-radius: 12px; font-weight: bold; text-decoration: none; font-size: 16px;">
+          Book This Week's Call
+        </a>
+      </div>
+
+      <div style="background: #F59E0B08; border: 1px solid #F59E0B20; border-radius: 10px; padding: 16px; margin: 16px 0;">
+        <p style="color: #F59E0B; font-weight: bold; font-size: 13px; margin: 0 0 6px;">Before your call, think about:</p>
+        <p style="color: #94a3b8; font-size: 13px; margin: 0; line-height: 1.8;">
+          ✦ Any trades you took this week — wins or losses<br/>
+          ✦ Charts or setups you want reviewed<br/>
+          ✦ Questions about your strategy or risk management
+        </p>
+      </div>
+
+      <div style="margin: 20px 0;">
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 6px;">Mentorship Progress</p>
+        <div style="background: #1e293b; border-radius: 6px; height: 8px; overflow: hidden;">
+          <div style="background: linear-gradient(90deg, #F59E0B, #D97706); height: 100%; width: ${Math.round((weekNumber / 26) * 100)}%; border-radius: 6px;"></div>
+        </div>
+        <p style="color: #64748b; font-size: 11px; margin-top: 4px; text-align: right;">${Math.round((weekNumber / 26) * 100)}% complete</p>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #94a3b8; font-size: 13px;">
+        Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #F59E0B;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
+      </p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { getOrder, updateOrderStatus } from "@/lib/orders";
-import { buildRejectionEmailHtml } from "@/lib/email-templates";
+import { getOrder, updateOrder } from "@/lib/orders";
+import { buildThankYouEmailHtml } from "@/lib/email-templates";
 
 function isAuthorized(req: NextRequest): boolean {
   const key = req.headers.get("x-admin-key");
@@ -22,9 +22,9 @@ export async function POST(
   if (!order) {
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
-  if (order.status !== "pending") {
+  if (order.status !== "approved" && order.status !== "booked") {
     return NextResponse.json(
-      { error: `Order already ${order.status}` },
+      { error: "Can only send thank you for approved/booked orders" },
       { status: 400 }
     );
   }
@@ -42,18 +42,12 @@ export async function POST(
   await transporter.sendMail({
     from: '"UmairCrypto" <noreply@umaircrypto.com>',
     to: order.email,
-    subject: `Payment Update — #${order.refId}`,
-    html: buildRejectionEmailHtml({
-      refId: order.refId,
-      name: order.name,
-      email: order.email,
-      tier: order.tier,
-      amount: order.amount,
-      network: order.network,
-    }),
+    subject: `Thanks for Your Session! — #${order.refId}`,
+    html: buildThankYouEmailHtml(order.name, order.tier, order.refId),
   });
 
-  await updateOrderStatus(id, "rejected");
+  // Mark that thank you was sent
+  await updateOrder(id, { thankyouSent: true });
 
   return NextResponse.json({ success: true });
 }
