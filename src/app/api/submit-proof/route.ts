@@ -13,6 +13,7 @@ import {
   buildApprovalEmailHtml,
   buildVipApprovalEmailHtml,
 } from "@/lib/email-templates";
+import { verifyTransaction, type TxVerification } from "@/lib/verify-tx";
 
 // Network alias map — maps detected network strings to wallet env var keys
 const NETWORK_TO_WALLET_KEY: Record<string, string> = {
@@ -42,7 +43,8 @@ function shouldAutoApprove(
   analysis: ScreenshotAnalysis,
   expectedAmount: string,
   expectedNetwork: string,
-  expectedAddress: string
+  expectedAddress: string,
+  chainVerification: TxVerification | null
 ): { approve: boolean; reasons: string[] } {
   const reasons: string[] = [];
 
@@ -95,6 +97,27 @@ function shouldAutoApprove(
   // 6. No warnings from AI
   if (analysis.warnings && analysis.warnings.length > 0) {
     reasons.push(`AI warnings: ${analysis.warnings.length}`);
+  }
+
+  // 7. On-chain TX verification must confirm
+  if (chainVerification) {
+    if (!chainVerification.verified) {
+      reasons.push(`TX not verified on-chain: ${chainVerification.status}`);
+    } else {
+      // Cross-check on-chain amount against expected
+      const expected = parseFloat(expectedAmount.replace(/[^0-9.]/g, ""));
+      if (chainVerification.amount !== null && !isNaN(expected) && chainVerification.amount < expected) {
+        reasons.push(`On-chain amount short: $${chainVerification.amount.toFixed(2)} vs expected $${expected}`);
+      }
+      // Cross-check on-chain address against expected
+      if (chainVerification.toAddress && expectedAddress) {
+        if (chainVerification.toAddress.toLowerCase() !== expectedAddress.toLowerCase()) {
+          reasons.push("On-chain recipient address mismatch");
+        }
+      }
+    }
+  } else {
+    reasons.push("On-chain verification unavailable");
   }
 
   return { approve: reasons.length === 0, reasons };
@@ -164,10 +187,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // ── Verify TX on-chain ──
+    let chainVerification: TxVerification | null = null;
+    const detectedHash = serverAnalysis?.txHash || txHash;
+    if (detectedHash && detectedHash !== "Not provided") {
+      try {
+        chainVerification = await verifyTransaction(detectedHash, network);
+      } catch (e) {
+        console.error("On-chain verification failed (non-critical):", e);
+      }
+    }
+
     // ── Check auto-approve conditions ──
     const expectedAddress = getExpectedWalletAddress(network);
     const autoApproveResult = serverAnalysis
-      ? shouldAutoApprove(serverAnalysis, amount, network, expectedAddress)
+      ? shouldAutoApprove(serverAnalysis, amount, network, expectedAddress, chainVerification)
       : { approve: false, reasons: ["No AI analysis available"] };
 
     const isAutoApproved = autoApproveResult.approve;

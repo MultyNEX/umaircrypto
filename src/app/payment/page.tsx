@@ -300,6 +300,19 @@ function PaymentContent() {
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [analysisError, setAnalysisError] = useState("");
+
+  // On-chain TX verification state
+  interface TxVerifyResult {
+    verified: boolean;
+    amount: number | null;
+    toAddress: string | null;
+    fromAddress: string | null;
+    status: "confirmed" | "pending" | "failed" | "not_found";
+    network: string;
+    error?: string;
+  }
+  const [txVerifying, setTxVerifying] = useState(false);
+  const [txVerification, setTxVerification] = useState<TxVerifyResult | null>(null);
   const [walletAddresses, setWalletAddresses] = useState<Record<string, string>>({});
   const [walletsLoading, setWalletsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -404,10 +417,30 @@ function PaymentContent() {
     }
   };
 
+  const verifyTxOnChain = async (txHash: string, network: string) => {
+    setTxVerifying(true);
+    setTxVerification(null);
+    try {
+      const res = await fetch("/api/verify-tx", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ txHash, network }),
+      });
+      const data = await res.json();
+      setTxVerification(data);
+    } catch {
+      setTxVerification(null);
+    } finally {
+      setTxVerifying(false);
+    }
+  };
+
   const analyzeFile = async (file: File) => {
     setAnalyzing(true);
     setAnalysis(null);
     setAnalysisError("");
+    setTxVerification(null);
+    setTxVerifying(false);
     try {
       const body = new FormData();
       body.append("screenshot", file);
@@ -421,6 +454,10 @@ function PaymentContent() {
         // Auto-fill TX hash if detected and field is empty
         if (data.analysis.txHash && !formData.txHash) {
           setFormData((prev) => ({ ...prev, txHash: data.analysis.txHash }));
+        }
+        // Verify TX hash on-chain if detected
+        if (data.analysis.txHash && data.analysis.network) {
+          verifyTxOnChain(data.analysis.txHash, data.analysis.network);
         }
       } else {
         setAnalysisError(data.error || "Analysis unavailable");
@@ -901,7 +938,7 @@ function PaymentContent() {
                       <span className="text-text-primary text-sm">{screenshot.name}</span>
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); setScreenshot(null); setAnalysis(null); setAnalysisError(""); setAnalyzing(false); }}
+                        onClick={(e) => { e.stopPropagation(); setScreenshot(null); setAnalysis(null); setAnalysisError(""); setAnalyzing(false); setTxVerification(null); setTxVerifying(false); }}
                         className="p-1 rounded-full hover:bg-white/10 text-text-secondary"
                       >
                         <X size={16} />
@@ -1024,10 +1061,22 @@ function PaymentContent() {
                         </div>
                       )}
                       {analysis.txHash && (
-                        <div className="flex justify-between col-span-2">
+                        <div className="flex justify-between items-center col-span-2">
                           <span className="text-text-secondary">TX Hash</span>
-                          <span className="text-accent-primary font-mono text-xs">
-                            {analysis.txHash.slice(0, 8)}...{analysis.txHash.slice(-8)}
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-accent-primary font-mono text-xs">
+                              {analysis.txHash.slice(0, 8)}...{analysis.txHash.slice(-8)}
+                            </span>
+                            {txVerifying && (
+                              <span className="text-text-secondary text-xs animate-pulse">Verifying...</span>
+                            )}
+                            {txVerification && !txVerifying && (
+                              txVerification.verified
+                                ? <span className="text-green-400 flex items-center gap-0.5 text-xs"><Check size={12} /> On-chain</span>
+                                : txVerification.status === "not_found"
+                                ? <span className="text-red-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> Not found</span>
+                                : <span className="text-yellow-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> {txVerification.status}</span>
+                            )}
                           </span>
                         </div>
                       )}
@@ -1094,6 +1143,56 @@ function PaymentContent() {
                             {w}
                           </p>
                         ))}
+                      </div>
+                    )}
+
+                    {/* On-chain verification result */}
+                    {txVerification && !txVerifying && txVerification.verified && (
+                      <div className="mt-3 p-2.5 rounded-lg bg-green-500/[0.06] border border-green-500/20">
+                        <p className="text-green-400 text-xs font-medium flex items-center gap-1.5 mb-1.5">
+                          <Check size={13} />
+                          Transaction confirmed on-chain
+                        </p>
+                        <div className="grid gap-1 text-[11px]">
+                          {txVerification.amount !== null && (
+                            <div className="flex gap-2">
+                              <span className="text-text-secondary shrink-0">Chain amount:</span>
+                              <span className={`font-mono ${
+                                expectedPrice > 0 && txVerification.amount >= expectedPrice
+                                  ? "text-green-400/80"
+                                  : "text-yellow-400/80"
+                              }`}>
+                                ${txVerification.amount.toFixed(2)}
+                                {expectedPrice > 0 && txVerification.amount >= expectedPrice && " ✓"}
+                                {expectedPrice > 0 && txVerification.amount < expectedPrice && ` (short by $${(expectedPrice - txVerification.amount).toFixed(2)})`}
+                              </span>
+                            </div>
+                          )}
+                          {txVerification.toAddress && (
+                            <div className="flex gap-2">
+                              <span className="text-text-secondary shrink-0">To:</span>
+                              <span className="text-text-secondary/80 font-mono break-all">
+                                {txVerification.toAddress.slice(0, 8)}...{txVerification.toAddress.slice(-8)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {txVerification && !txVerifying && !txVerification.verified && (
+                      <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
+                        <p className="text-red-400 text-xs font-medium flex items-center gap-1.5">
+                          <AlertTriangle size={13} />
+                          TX hash not found on-chain{txVerification.error ? ` — ${txVerification.error}` : ""}
+                        </p>
+                      </div>
+                    )}
+                    {txVerifying && (
+                      <div className="mt-3 p-2.5 rounded-lg bg-accent-primary/[0.04] border border-accent-primary/10 animate-pulse">
+                        <p className="text-accent-primary/60 text-xs flex items-center gap-1.5">
+                          <span className="lfgbot-dot bg-accent-primary shadow-[0_0_6px_rgba(56,189,248,0.4)]" />
+                          Verifying transaction on-chain...
+                        </p>
                       </div>
                     )}
                   </div>
