@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { getOrder, updateOrderStatus } from "@/lib/orders";
-import { buildApprovalEmailHtml } from "@/lib/email-templates";
+import { buildApprovalEmailHtml, buildVipApprovalEmailHtml } from "@/lib/email-templates";
 
 function isAuthorized(req: NextRequest): boolean {
   const key = req.headers.get("x-admin-key");
@@ -44,24 +44,29 @@ export async function POST(
   const calSlugs: Record<string, string> = {
     Starter: "/chart-review",
     Pro: "/full-consultation",
+    VIP: "/vip-onboarding",
   };
   const bookingUrl = calBase + (calSlugs[order.tier] || "");
+
+  const isVip = order.tier === "VIP";
+  const emailPayload = {
+    refId: order.refId,
+    name: order.name,
+    email: order.email,
+    tier: order.tier,
+    amount: order.amount,
+    network: order.network,
+  };
 
   await transporter.sendMail({
     from: '"UmairCrypto" <contact@umaircrypto.com>',
     to: order.email,
-    subject: `Payment Confirmed — Book Your Session #${order.refId}`,
-    html: buildApprovalEmailHtml(
-      {
-        refId: order.refId,
-        name: order.name,
-        email: order.email,
-        tier: order.tier,
-        amount: order.amount,
-        network: order.network,
-      },
-      bookingUrl
-    ),
+    subject: isVip
+      ? `Welcome to VIP Mentorship — #${order.refId}`
+      : `Payment Confirmed — Book Your Session #${order.refId}`,
+    html: isVip
+      ? buildVipApprovalEmailHtml(emailPayload, bookingUrl)
+      : buildApprovalEmailHtml(emailPayload, bookingUrl),
   });
 
   await updateOrderStatus(id, "approved");

@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { verifyActionToken } from "@/lib/tokens";
 import {
   buildApprovalEmailHtml,
+  buildVipApprovalEmailHtml,
   buildAdminResultPageHtml,
 } from "@/lib/email-templates";
 import { updateOrderStatus } from "@/lib/orders";
@@ -32,14 +33,21 @@ export async function GET(req: NextRequest) {
     const calSlugs: Record<string, string> = {
       Starter: "/chart-review",
       Pro: "/full-consultation",
+      VIP: "/vip-onboarding",
     };
     const bookingUrl = calBase + (calSlugs[data.tier] || "");
+
+    const isVip = data.tier === "VIP";
 
     await transporter.sendMail({
       from: '"UmairCrypto" <contact@umaircrypto.com>',
       to: data.email,
-      subject: `Payment Confirmed — Book Your Session #${data.refId}`,
-      html: buildApprovalEmailHtml(data, bookingUrl),
+      subject: isVip
+        ? `Welcome to VIP Mentorship — #${data.refId}`
+        : `Payment Confirmed — Book Your Session #${data.refId}`,
+      html: isVip
+        ? buildVipApprovalEmailHtml(data, bookingUrl)
+        : buildApprovalEmailHtml(data, bookingUrl),
     });
 
     // Sync status to Redis (best-effort)
