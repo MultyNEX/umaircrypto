@@ -174,7 +174,7 @@ function TopupContent() {
           </div>
           <h1 className="text-white font-semibold text-lg mb-2">Top-Up Submitted!</h1>
           <p className="text-[#94a3b8] text-sm mb-2">We&apos;ve received your remaining payment proof.</p>
-          <p className="text-[#94a3b8] text-sm">We&apos;ll verify it and send your booking link within 24 hours.</p>
+          <p className="text-[#94a3b8] text-sm">We&apos;ll verify it and send your booking link shortly — usually within a few hours.</p>
         </div>
       </main>
     );

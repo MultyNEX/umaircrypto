@@ -157,7 +157,7 @@ export async function POST(req: NextRequest) {
           <p>We've received your top-up payment of <strong>$${topupData.amountRemaining}</strong> for your <strong>${topupData.tier}</strong> plan.</p>
           <p>Reference ID: <strong>#${refId}</strong></p>
           <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
-          <p style="color: #94a3b8;">We'll verify this and send your booking link shortly. This usually takes under 24 hours.</p>
+          <p style="color: #94a3b8;">We'll verify this and send your booking link shortly — usually within a few hours.</p>
           <p style="color: #94a3b8; font-size: 13px; margin-top: 20px;">Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.</p>
           <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
         </div>
