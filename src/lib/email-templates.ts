@@ -28,10 +28,10 @@ export function buildApprovalEmailHtml(
       </p>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
         Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
       </p>
-      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -116,10 +116,10 @@ export function buildVipApprovalEmailHtml(
       </div>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
         Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #F59E0B;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
       </p>
-      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -150,10 +150,10 @@ export function buildRejectionEmailHtml(data: SubmissionPayload): string {
       </div>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
         Need help? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
       </p>
-      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -240,10 +240,10 @@ export function buildWrongAmountEmailHtml(
       <p style="color: #ef4444; font-size: 13px; font-weight: bold;">⏰ This link expires in 48 hours.</p>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
         Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
       </p>
-      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
@@ -273,8 +273,12 @@ export function buildThankYouEmailHtml(
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
 
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
         Want to keep going? <a href="https://umaircrypto.com/payment" style="color: #38BDF8;">Book another session</a> or follow <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> for daily insights.
+      </p>
+      <p style="color: #94a3b8; font-size: 13px;">
+        Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #38BDF8;">contact@umaircrypto.com</a>
       </p>
     </div>
   `;
@@ -336,10 +340,10 @@ export function buildVipWeeklyCheckinHtml(
       </div>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
         Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #F59E0B;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
       </p>
-      <p style="color: #64748b; font-size: 11px; margin-top: 12px;">This is an automated message — please do not reply to this email.</p>
     </div>
   `;
 }
