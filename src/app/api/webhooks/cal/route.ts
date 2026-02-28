@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
     if (event === "MEETING_ENDED") {
       // Send thank you email
       await transporter.sendMail({
-        from: '"UmairCrypto" <noreply@umaircrypto.com>',
+        from: '"UmairCrypto" <no-reply@umaircrypto.com>',
         to: matchingOrder.email,
         subject: `Thanks for Your Session! — #${matchingOrder.refId}`,
         html: buildThankYouEmailHtml(

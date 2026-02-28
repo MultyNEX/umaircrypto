@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
 
         // Send the weekly check-in email
         await transporter.sendMail({
-          from: '"UmairCrypto VIP" <noreply@umaircrypto.com>',
+          from: '"UmairCrypto VIP" <no-reply@umaircrypto.com>',
           to: vip.email,
           subject: `Week ${currentWeek}/26 — Book Your VIP Call 🔥`,
           html: buildVipWeeklyCheckinHtml(vip.name, currentWeek, bookingUrl),

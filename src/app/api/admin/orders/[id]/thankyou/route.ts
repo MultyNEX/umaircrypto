@@ -40,7 +40,7 @@ export async function POST(
   });
 
   await transporter.sendMail({
-    from: '"UmairCrypto" <noreply@umaircrypto.com>',
+    from: '"UmairCrypto" <no-reply@umaircrypto.com>',
     to: order.email,
     subject: `Thanks for Your Session! — #${order.refId}`,
     html: buildThankYouEmailHtml(order.name, order.tier, order.refId),
