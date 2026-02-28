@@ -1071,8 +1071,11 @@ function PaymentContent() {
                               <span className="text-text-secondary text-xs animate-pulse">Verifying...</span>
                             )}
                             {txVerification && !txVerifying && (
-                              txVerification.verified
-                                ? <span className="text-green-400 flex items-center gap-0.5 text-xs"><Check size={12} /> On-chain</span>
+                              txVerification.verified && txVerification.toAddress && wallet.address &&
+                              txVerification.toAddress.toLowerCase() === wallet.address.toLowerCase()
+                                ? <span className="text-green-400 flex items-center gap-0.5 text-xs"><Check size={12} /> Received</span>
+                                : txVerification.verified
+                                ? <span className="text-yellow-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> Wrong wallet</span>
                                 : txVerification.status === "not_found"
                                 ? <span className="text-red-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> Not found</span>
                                 : <span className="text-yellow-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> {txVerification.status}</span>
@@ -1147,43 +1150,56 @@ function PaymentContent() {
                     )}
 
                     {/* On-chain verification result */}
-                    {txVerification && !txVerifying && txVerification.verified && (
-                      <div className="mt-3 p-2.5 rounded-lg bg-green-500/[0.06] border border-green-500/20">
-                        <p className="text-green-400 text-xs font-medium flex items-center gap-1.5 mb-1.5">
-                          <Check size={13} />
-                          Transaction confirmed on-chain
-                        </p>
-                        <div className="grid gap-1 text-[11px]">
-                          {txVerification.amount !== null && (
-                            <div className="flex gap-2">
-                              <span className="text-text-secondary shrink-0">Chain amount:</span>
-                              <span className={`font-mono ${
-                                expectedPrice > 0 && txVerification.amount >= expectedPrice
-                                  ? "text-green-400/80"
-                                  : "text-yellow-400/80"
-                              }`}>
-                                ${txVerification.amount.toFixed(2)}
-                                {expectedPrice > 0 && txVerification.amount >= expectedPrice && " ✓"}
-                                {expectedPrice > 0 && txVerification.amount < expectedPrice && ` (short by $${(expectedPrice - txVerification.amount).toFixed(2)})`}
-                              </span>
-                            </div>
-                          )}
-                          {txVerification.toAddress && (
-                            <div className="flex gap-2">
-                              <span className="text-text-secondary shrink-0">To:</span>
-                              <span className="text-text-secondary/80 font-mono break-all">
-                                {txVerification.toAddress.slice(0, 8)}...{txVerification.toAddress.slice(-8)}
-                              </span>
-                            </div>
-                          )}
+                    {txVerification && !txVerifying && txVerification.verified && (() => {
+                      const walletReceived = txVerification.toAddress && wallet.address &&
+                        txVerification.toAddress.toLowerCase() === wallet.address.toLowerCase();
+                      const amountOk = txVerification.amount !== null && expectedPrice > 0 && txVerification.amount >= expectedPrice;
+                      const allGreen = walletReceived && amountOk;
+
+                      return allGreen ? (
+                        <div className="mt-3 p-2.5 rounded-lg bg-green-500/[0.06] border border-green-500/20">
+                          <p className="text-green-400 text-xs font-medium flex items-center gap-1.5 mb-1.5">
+                            <Check size={13} />
+                            Payment received — ${txVerification.amount?.toFixed(2)} confirmed to your wallet
+                          </p>
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="mt-3 p-2.5 rounded-lg bg-yellow-500/[0.06] border border-yellow-500/20">
+                          <p className="text-yellow-400 text-xs font-medium flex items-center gap-1.5 mb-1.5">
+                            <AlertTriangle size={13} />
+                            Transaction found on-chain but has issues
+                          </p>
+                          <div className="grid gap-1 text-[11px]">
+                            {txVerification.amount !== null && (
+                              <div className="flex gap-2">
+                                <span className="text-text-secondary shrink-0">Received:</span>
+                                <span className={`font-mono ${amountOk ? "text-green-400/80" : "text-yellow-400/80"}`}>
+                                  ${txVerification.amount.toFixed(2)}
+                                  {!amountOk && expectedPrice > 0 && ` (short by $${(expectedPrice - txVerification.amount).toFixed(2)})`}
+                                </span>
+                              </div>
+                            )}
+                            {txVerification.toAddress && (
+                              <div className="flex gap-2 items-center">
+                                <span className="text-text-secondary shrink-0">Sent to:</span>
+                                <span className="font-mono break-all text-text-secondary/80">
+                                  {txVerification.toAddress.slice(0, 8)}...{txVerification.toAddress.slice(-8)}
+                                </span>
+                                {walletReceived
+                                  ? <span className="text-green-400 flex items-center gap-0.5 shrink-0"><Check size={11} /> Our wallet</span>
+                                  : <span className="text-red-400 flex items-center gap-0.5 shrink-0"><AlertTriangle size={11} /> Wrong wallet</span>
+                                }
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()}
                     {txVerification && !txVerifying && !txVerification.verified && (
                       <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
                         <p className="text-red-400 text-xs font-medium flex items-center gap-1.5">
                           <AlertTriangle size={13} />
-                          TX hash not found on-chain{txVerification.error ? ` — ${txVerification.error}` : ""}
+                          TX hash not found on-chain — this transaction doesn&apos;t exist or hasn&apos;t been confirmed yet
                         </p>
                       </div>
                     )}
@@ -1191,7 +1207,7 @@ function PaymentContent() {
                       <div className="mt-3 p-2.5 rounded-lg bg-accent-primary/[0.04] border border-accent-primary/10 animate-pulse">
                         <p className="text-accent-primary/60 text-xs flex items-center gap-1.5">
                           <span className="lfgbot-dot bg-accent-primary shadow-[0_0_6px_rgba(56,189,248,0.4)]" />
-                          Verifying transaction on-chain...
+                          Checking if your wallet received the funds...
                         </p>
                       </div>
                     )}
