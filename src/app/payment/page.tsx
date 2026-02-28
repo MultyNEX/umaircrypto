@@ -287,6 +287,7 @@ function PaymentContent() {
   interface AnalysisResult {
     amountSent: string | null;
     currency: string | null;
+    receivingAddress: string | null;
     txHash: string | null;
     network: string | null;
     exchange: string | null;
@@ -892,7 +893,7 @@ function PaymentContent() {
                 {analyzing && (
                   <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-accent-primary/20 animate-pulse">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-base">🤖</span>
+                      <img src="/robot.png" alt="LFGbot" className="lfgbot-icon" />
                       <span className="text-accent-primary text-sm font-semibold">LFGbot</span>
                     </div>
                     <p className="text-text-secondary text-sm">Scanning your screenshot...</p>
@@ -903,7 +904,7 @@ function PaymentContent() {
                   <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-base">🤖</span>
+                        <img src="/robot.png" alt="LFGbot" className="lfgbot-icon" />
                         <span className="text-accent-primary text-sm font-semibold">LFGbot Analysis</span>
                       </div>
                       <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
@@ -958,7 +959,40 @@ function PaymentContent() {
                           </span>
                         </div>
                       )}
+                      {analysis.receivingAddress && (
+                        <div className="flex justify-between items-center col-span-2">
+                          <span className="text-text-secondary">Address</span>
+                          <span className="font-mono text-xs flex items-center gap-1.5">
+                            {analysis.receivingAddress.slice(0, 6)}...{analysis.receivingAddress.slice(-6)}
+                            {wallet.address && (
+                              analysis.receivingAddress.toLowerCase() === wallet.address.toLowerCase()
+                                ? <span className="text-green-400 flex items-center gap-0.5"><Check size={12} /> Match</span>
+                                : <span className="text-red-400 flex items-center gap-0.5"><AlertTriangle size={12} /> Mismatch</span>
+                            )}
+                          </span>
+                        </div>
+                      )}
                     </div>
+                    {/* Address mismatch warning */}
+                    {analysis.receivingAddress && wallet.address &&
+                      analysis.receivingAddress.toLowerCase() !== wallet.address.toLowerCase() && (
+                      <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
+                        <p className="text-red-400 text-xs font-medium flex items-start gap-1.5">
+                          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+                          The receiving address in your screenshot does not match the wallet address shown above. Please double-check you sent to the correct address.
+                        </p>
+                        <div className="mt-2 grid gap-1 text-[11px] font-mono">
+                          <div className="flex gap-2">
+                            <span className="text-text-secondary shrink-0">Expected:</span>
+                            <span className="text-green-400/80 break-all">{wallet.address}</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <span className="text-text-secondary shrink-0">Detected:</span>
+                            <span className="text-red-400/80 break-all">{analysis.receivingAddress}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     {analysis.warnings?.length > 0 && (
                       <div className="mt-3 space-y-1">
                         {analysis.warnings.map((w, i) => (

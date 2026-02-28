@@ -219,7 +219,7 @@ export function buildAnalysisEmailBlock(
   return `
     <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 16px; margin: 16px 0;">
       <p style="color: #38BDF8; font-weight: bold; font-size: 14px; margin: 0 0 4px;">
-        🤖 LFGbot Screenshot Analysis
+        <img src="https://umaircrypto.com/robot.png" alt="LFGbot" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;object-fit:contain;margin-right:4px;" /> LFGbot Screenshot Analysis
         <span style="color: ${confColor}; font-size: 12px; font-weight: normal; margin-left: 8px;">
           (${confLabel} confidence)
         </span>

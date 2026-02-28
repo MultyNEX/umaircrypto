@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* LFGbot custom robot icon — scales with surrounding text */
+.lfgbot-icon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
 :root {
   --bg-primary: 6 6 18;          /* #060612 */
   --bg-secondary: 12 12 29;      /* #0c0c1d */
