@@ -18,43 +18,40 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
-// ─── Wallet data ────────────────────────────────────────────────────
-const WALLETS = [
+// ─── Wallet display metadata (no sensitive addresses) ──────────────
+const WALLET_META = [
   {
     id: "trc20",
     network: "Tron (TRC20)",
     token: "USDT",
-    address: "TF2Hu8Uu6rcLNQX32681G2Cu9uCjCQwoeg",
     qr: "/qr-trc20.png",
     color: "#26A17B",
     icon: "₮",
     fee: "~$1",
     speed: "~30 seconds",
-    explorer: "https://tronscan.org/#/address/TF2Hu8Uu6rcLNQX32681G2Cu9uCjCQwoeg",
+    explorerBase: "https://tronscan.org/#/address/",
   },
   {
     id: "sol",
     network: "Solana",
     token: "USDT",
-    address: "4ueGVRXrbY1tA4LSRQ6R6Se6tWwgAJHmEHQ8SqBTKEdj",
     qr: "/qr-sol.png",
     color: "#9945FF",
     icon: "◎",
     fee: "~$0.01",
     speed: "~2 seconds",
-    explorer: "https://solscan.io/account/4ueGVRXrbY1tA4LSRQ6R6Se6tWwgAJHmEHQ8SqBTKEdj",
+    explorerBase: "https://solscan.io/account/",
   },
   {
     id: "erc20",
     network: "Ethereum (ERC20)",
     token: "USDT / ETH",
-    address: "0x59cda610b21524ec8c70fe4e7c5f3fbb134b9d9e",
     qr: "/qr-erc20.png",
     color: "#627EEA",
     icon: "Ξ",
     fee: "~$2-10",
     speed: "~30 seconds",
-    explorer: "https://etherscan.io/address/0x59cda610b21524ec8c70fe4e7c5f3fbb134b9d9e",
+    explorerBase: "https://etherscan.io/address/",
   },
 ];
 
@@ -285,9 +282,20 @@ function PaymentContent() {
   const [dragOver, setDragOver] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [walletAddresses, setWalletAddresses] = useState<Record<string, string>>({});
+  const [walletsLoading, setWalletsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const codeWrapperRef = useRef<HTMLDivElement>(null);
   const emailWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Fetch wallet addresses from backend (never hardcoded)
+  useEffect(() => {
+    fetch("/api/wallets")
+      .then((res) => res.json())
+      .then((data) => setWalletAddresses(data.wallets || {}))
+      .catch(() => console.error("Failed to load wallet addresses"))
+      .finally(() => setWalletsLoading(false));
+  }, []);
 
   // Remove preloader gate on mount
   useEffect(() => {
@@ -334,7 +342,14 @@ function PaymentContent() {
     return matches.map((d) => `${local}@${d}`);
   })();
 
-  const wallet = WALLETS[activeWallet];
+  const walletMeta = WALLET_META[activeWallet];
+  const wallet = {
+    ...walletMeta,
+    address: walletAddresses[walletMeta.id] || "",
+    explorer: walletAddresses[walletMeta.id]
+      ? `${walletMeta.explorerBase}${walletAddresses[walletMeta.id]}`
+      : "",
+  };
 
   const handleTierSelect = (i: number) => {
     if (isLocked) return;
@@ -384,7 +399,7 @@ function PaymentContent() {
       body.append("txHash", formData.txHash);
       body.append("tier", TIERS[selectedTier!].name);
       body.append("amount", TIERS[selectedTier!].price);
-      body.append("network", WALLETS[activeWallet].network);
+      body.append("network", WALLET_META[activeWallet].network);
       if (screenshot) {
         body.append("screenshot", screenshot);
       }
@@ -593,7 +608,7 @@ function PaymentContent() {
             Choose Network
           </p>
           <div className="grid grid-cols-3 gap-3">
-            {WALLETS.map((w, i) => (
+            {WALLET_META.map((w, i) => (
               <button
                 key={w.id}
                 onClick={() => { setActiveWallet(i); setCopied(false); }}
@@ -672,15 +687,22 @@ function PaymentContent() {
                     <p className="text-text-secondary text-xs mb-2 text-center">Wallet Address</p>
                     <div className="flex items-center gap-2 p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
                       <code className="flex-1 text-text-primary text-xs sm:text-sm font-mono break-all leading-relaxed">
-                        {wallet.address}
+                        {walletsLoading ? (
+                          <span className="text-text-secondary animate-pulse">Loading wallet address...</span>
+                        ) : wallet.address ? (
+                          wallet.address
+                        ) : (
+                          <span className="text-red-400">Failed to load address. Refresh the page.</span>
+                        )}
                       </code>
                       <button
                         onClick={handleCopy}
+                        disabled={!wallet.address}
                         className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
                           copied
                             ? "bg-green-500/20 text-green-400 border border-green-500/30"
                             : "bg-accent-primary/15 text-accent-primary hover:bg-accent-primary/25 border border-accent-primary/20"
-                        }`}
+                        } disabled:opacity-40 disabled:cursor-not-allowed`}
                       >
                         {copied ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
                       </button>
@@ -690,14 +712,16 @@ function PaymentContent() {
                         <AlertTriangle size={11} />
                         Always verify the first and last 4 characters after pasting
                       </p>
-                      <a
-                        href={wallet.explorer}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs text-accent-primary/50 hover:text-accent-primary/80 transition-colors"
-                      >
-                        Verify on Explorer <ExternalLink size={11} />
-                      </a>
+                      {wallet.explorer && (
+                        <a
+                          href={wallet.explorer}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-xs text-accent-primary/50 hover:text-accent-primary/80 transition-colors"
+                        >
+                          Verify on Explorer <ExternalLink size={11} />
+                        </a>
+                      )}
                     </div>
                   </div>
 
@@ -985,7 +1009,7 @@ function PaymentContent() {
 
               <button
                 type="submit"
-                disabled={!screenshot || !formData.name || !formData.email || !formData.phone || submitting}
+                disabled={!screenshot || !formData.name || !formData.email || !formData.phone || !wallet.address || submitting}
                 className="w-full py-4 rounded-xl text-base font-semibold transition-all duration-200 bg-accent-primary text-bg-primary hover:brightness-110 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:shadow-none"
               >
                 {submitting ? "Submitting..." : "Submit Payment Proof"}
