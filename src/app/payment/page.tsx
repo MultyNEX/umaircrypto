@@ -942,11 +942,21 @@ function PaymentContent() {
                   const amountMatch = detectedAmount >= expectedPrice && expectedPrice > 0;
                   const amountShort = expectedPrice > 0 && detectedAmount > 0 && detectedAmount < expectedPrice;
 
-                  // Network verification
-                  const selectedNetwork = wallet.network?.toLowerCase().replace(/[\s()-]/g, "") || "";
-                  const detectedNetwork = analysis.network?.toLowerCase().replace(/[\s()-]/g, "") || "";
-                  const networkMatch = detectedNetwork && selectedNetwork &&
-                    (detectedNetwork.includes(selectedNetwork) || selectedNetwork.includes(detectedNetwork));
+                  // Network verification (canonical alias matching)
+                  const networkAliases: Record<string, string[]> = {
+                    tron: ["trc20", "tron", "trx", "trontrc20"],
+                    ethereum: ["erc20", "ethereum", "eth", "ethereumerc20"],
+                    solana: ["solana", "sol", "spl"],
+                  };
+                  const findGroup = (s: string) => {
+                    const n = s.toLowerCase().replace(/[\s()\-\/]/g, "");
+                    for (const [g, aliases] of Object.entries(networkAliases)) {
+                      if (aliases.some((a) => n.includes(a) || a.includes(n))) return g;
+                    }
+                    return n;
+                  };
+                  const networkMatch = analysis.network && wallet.network &&
+                    findGroup(analysis.network) === findGroup(wallet.network);
 
                   return (
                   <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
@@ -986,7 +996,7 @@ function PaymentContent() {
                           <span className="text-text-secondary">Network</span>
                           <span className="flex items-center gap-1.5">
                             <span className="text-text-primary font-semibold">{analysis.network}</span>
-                            {selectedNetwork && (
+                            {wallet.network && (
                               networkMatch
                                 ? <span className="text-green-400"><Check size={12} /></span>
                                 : <span className="text-red-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> Wrong</span>
@@ -1047,7 +1057,7 @@ function PaymentContent() {
                     )}
 
                     {/* Network mismatch warning */}
-                    {analysis.network && selectedNetwork && !networkMatch && (
+                    {analysis.network && wallet.network && !networkMatch && (
                       <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
                         <p className="text-red-400 text-xs font-medium flex items-start gap-1.5">
                           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />

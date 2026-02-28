@@ -1,6 +1,29 @@
 // AI Screenshot Analysis via Google Gemini Flash (free tier)
 // Extracts transaction details from payment screenshots
 
+// Canonical network IDs for matching across different naming conventions
+const NETWORK_ALIASES: Record<string, string[]> = {
+  tron: ["trc20", "trc-20", "tron", "trx", "trontrc20", "trc20tron", "tronnetwork"],
+  ethereum: ["erc20", "erc-20", "ethereum", "eth", "ethereumerc20", "erc20ethereum", "ethereumnetwork", "ethereummainnet"],
+  solana: ["solana", "sol", "spl", "solananetwork", "solanaspl"],
+  bsc: ["bep20", "bep-20", "bsc", "bnb", "binancesmartchain"],
+};
+
+/** Check if two network strings refer to the same blockchain */
+export function networksMatch(a: string, b: string): boolean {
+  const na = a.toLowerCase().replace(/[\s()\-\/]/g, "");
+  const nb = b.toLowerCase().replace(/[\s()\-\/]/g, "");
+  if (na === nb) return true;
+  // Find canonical group for each
+  let groupA = "";
+  let groupB = "";
+  for (const [canonical, aliases] of Object.entries(NETWORK_ALIASES)) {
+    if (aliases.some((alias) => na.includes(alias) || alias.includes(na))) groupA = canonical;
+    if (aliases.some((alias) => nb.includes(alias) || alias.includes(nb))) groupB = canonical;
+  }
+  return groupA !== "" && groupA === groupB;
+}
+
 export interface ScreenshotAnalysis {
   amountSent: string | null;
   currency: string | null;
@@ -36,7 +59,9 @@ Important rules:
 - Be extra careful with wallet addresses — they must be exact
 - Flag any signs of image manipulation or editing
 - Note if the transaction status is anything other than completed/successful
-- If the screenshot doesn't appear to be a crypto transaction at all, set confidence to "low" and explain in summary`;
+- If the screenshot doesn't appear to be a crypto transaction at all, set confidence to "low" and explain in summary
+- For the "network" field, ALWAYS use one of these canonical values: "TRC20" for Tron/TRX/TRC-20/TRON, "ERC20" for Ethereum/ETH/ERC-20, "Solana" for SOL/SPL/Solana, "BEP20" for BSC/BNB/BEP-20. Do NOT return "TRX" or "ETH" or "SOL" as the network — use the canonical names above.
+- Do NOT flag dates as suspicious or "in the future". Different exchanges use different date formats (DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD) and different time zones. Date discrepancies are not a concern.`;
 
 export async function analyzeScreenshot(
   imageBuffer: Buffer,

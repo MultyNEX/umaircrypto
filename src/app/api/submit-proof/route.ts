@@ -6,6 +6,7 @@ import { saveOrder, type Order } from "@/lib/orders";
 import {
   analyzeScreenshot,
   buildAnalysisEmailBlock,
+  networksMatch,
   type ScreenshotAnalysis,
 } from "@/lib/lfgbot";
 import {
@@ -65,11 +66,9 @@ function shouldAutoApprove(
     reasons.push("Amount not detected");
   }
 
-  // 3. Network must match
+  // 3. Network must match (using canonical alias matching)
   if (analysis.network) {
-    const detected = analysis.network.toLowerCase().replace(/[\s()-]/g, "");
-    const expected = expectedNetwork.toLowerCase().replace(/[\s()-]/g, "");
-    if (!detected.includes(expected) && !expected.includes(detected)) {
+    if (!networksMatch(analysis.network, expectedNetwork)) {
       reasons.push(`Network mismatch: ${analysis.network} vs ${expectedNetwork}`);
     }
   } else {
