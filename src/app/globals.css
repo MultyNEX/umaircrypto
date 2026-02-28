@@ -5,10 +5,23 @@
 /* LFGbot custom robot icon — scales with surrounding text */
 .lfgbot-icon {
   display: inline-block;
-  width: 2em;
-  height: 2em;
+  width: 2.8em;
+  height: 2.8em;
   vertical-align: middle;
   object-fit: contain;
+}
+
+/* Blinking confidence dot */
+@keyframes lfgbot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.lfgbot-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: lfgbot-blink 1.5s ease-in-out infinite;
 }
 
 :root {

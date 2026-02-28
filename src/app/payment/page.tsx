@@ -900,36 +900,63 @@ function PaymentContent() {
                   </div>
                 )}
 
-                {analysis && !analyzing && (
+                {analysis && !analyzing && (() => {
+                  // Price verification
+                  const expectedPrice = selectedTier !== null ? parseFloat(TIERS[selectedTier].price.replace(/[^0-9.]/g, "")) : 0;
+                  const detectedAmount = analysis.amountSent ? parseFloat(analysis.amountSent) : 0;
+                  const amountMatch = detectedAmount >= expectedPrice && expectedPrice > 0;
+                  const amountShort = expectedPrice > 0 && detectedAmount > 0 && detectedAmount < expectedPrice;
+
+                  // Network verification
+                  const selectedNetwork = wallet.network?.toLowerCase().replace(/[\s()-]/g, "") || "";
+                  const detectedNetwork = analysis.network?.toLowerCase().replace(/[\s()-]/g, "") || "";
+                  const networkMatch = detectedNetwork && selectedNetwork &&
+                    (detectedNetwork.includes(selectedNetwork) || selectedNetwork.includes(detectedNetwork));
+
+                  return (
                   <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <img src="/robot.png" alt="LFGbot" className="lfgbot-icon" />
                         <span className="text-accent-primary text-sm font-semibold">LFGbot Analysis</span>
                       </div>
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                      <span className={`lfgbot-dot ${
                         analysis.confidence === "high"
-                          ? "bg-green-500/15 text-green-400"
+                          ? "bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]"
                           : analysis.confidence === "medium"
-                          ? "bg-yellow-500/15 text-yellow-400"
-                          : "bg-red-500/15 text-red-400"
-                      }`}>
-                        {analysis.confidence.charAt(0).toUpperCase() + analysis.confidence.slice(1)} confidence
-                      </span>
+                          ? "bg-yellow-400 shadow-[0_0_6px_rgba(250,204,21,0.6)]"
+                          : "bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)]"
+                      }`} title={`${analysis.confidence} confidence`} />
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                       {analysis.amountSent && (
-                        <div className="flex justify-between col-span-2 sm:col-span-1">
+                        <div className="flex justify-between items-center col-span-2 sm:col-span-1">
                           <span className="text-text-secondary">Amount</span>
-                          <span className="text-text-primary font-semibold">
-                            {analysis.amountSent} {analysis.currency || ""}
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-text-primary font-semibold">
+                              {analysis.amountSent} {analysis.currency || ""}
+                            </span>
+                            {expectedPrice > 0 && (
+                              amountMatch
+                                ? <span className="text-green-400 flex items-center gap-0.5 text-xs"><Check size={12} /></span>
+                                : amountShort
+                                ? <span className="text-red-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> Short</span>
+                                : <span className="text-yellow-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /></span>
+                            )}
                           </span>
                         </div>
                       )}
                       {analysis.network && (
-                        <div className="flex justify-between col-span-2 sm:col-span-1">
+                        <div className="flex justify-between items-center col-span-2 sm:col-span-1">
                           <span className="text-text-secondary">Network</span>
-                          <span className="text-text-primary font-semibold">{analysis.network}</span>
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-text-primary font-semibold">{analysis.network}</span>
+                            {selectedNetwork && (
+                              networkMatch
+                                ? <span className="text-green-400"><Check size={12} /></span>
+                                : <span className="text-red-400 flex items-center gap-0.5 text-xs"><AlertTriangle size={12} /> Wrong</span>
+                            )}
+                          </span>
                         </div>
                       )}
                       {analysis.exchange && (
@@ -973,13 +1000,34 @@ function PaymentContent() {
                         </div>
                       )}
                     </div>
+
+                    {/* Amount mismatch warning */}
+                    {amountShort && (
+                      <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
+                        <p className="text-red-400 text-xs font-medium flex items-start gap-1.5">
+                          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+                          Amount is short — expected ${expectedPrice} but screenshot shows ${detectedAmount}. You&apos;re ${(expectedPrice - detectedAmount).toFixed(2)} short.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Network mismatch warning */}
+                    {analysis.network && selectedNetwork && !networkMatch && (
+                      <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
+                        <p className="text-red-400 text-xs font-medium flex items-start gap-1.5">
+                          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+                          Network mismatch — you selected {wallet.network} but the screenshot shows {analysis.network}. Sending on the wrong network may result in lost funds.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Address mismatch warning */}
                     {analysis.receivingAddress && wallet.address &&
                       analysis.receivingAddress.toLowerCase() !== wallet.address.toLowerCase() && (
                       <div className="mt-3 p-2.5 rounded-lg bg-red-500/[0.08] border border-red-500/20">
                         <p className="text-red-400 text-xs font-medium flex items-start gap-1.5">
                           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
-                          The receiving address in your screenshot does not match the wallet address shown above. Please double-check you sent to the correct address.
+                          The receiving address does not match. Please double-check you sent to the correct address.
                         </p>
                         <div className="mt-2 grid gap-1 text-[11px] font-mono">
                           <div className="flex gap-2">
@@ -1004,7 +1052,8 @@ function PaymentContent() {
                       </div>
                     )}
                   </div>
-                )}
+                  );
+                })()}
 
                 {analysisError && !analyzing && (
                   <div className="mt-4 p-3 rounded-xl bg-yellow-500/[0.06] border border-yellow-500/15">
