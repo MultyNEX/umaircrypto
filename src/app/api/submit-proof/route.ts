@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import sharp from "sharp";
 import { createActionToken } from "@/lib/tokens";
 import { saveOrder, type Order } from "@/lib/orders";
+import { analyzeScreenshot, buildAnalysisEmailBlock } from "@/lib/lfgbot";
 
 export async function POST(req: NextRequest) {
   try {
@@ -54,6 +55,20 @@ export async function POST(req: NextRequest) {
     const rejectUrl = `${baseUrl}/api/admin/reject?token=${token}`;
     const wrongAmountUrl = `${baseUrl}/api/admin/wrong-amount?token=${token}`;
 
+    // Run AI screenshot analysis (non-blocking — if it fails, email still sends)
+    let aiBlock = "";
+    if (screenshot && screenshot.size > 0) {
+      try {
+        const buf = Buffer.from(await screenshot.arrayBuffer());
+        const analysis = await analyzeScreenshot(buf, screenshot.type);
+        if (analysis) {
+          aiBlock = buildAnalysisEmailBlock(analysis, amount, network);
+        }
+      } catch (e) {
+        console.error("AI analysis failed (non-critical):", e);
+      }
+    }
+
     // Build admin notification email HTML
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
@@ -90,6 +105,8 @@ export async function POST(req: NextRequest) {
 
         <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
         <p style="color: #94a3b8; font-size: 13px;">Screenshot attached below (if provided).</p>
+
+        ${aiBlock}
 
         <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
         <p style="color: #f1f5f9; font-weight: bold; font-size: 15px; margin-bottom: 16px;">Quick Actions</p>
