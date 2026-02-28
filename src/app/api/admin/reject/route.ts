@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     });
 
     await transporter.sendMail({
-      from: '"UmairCrypto" <noreply@umaircrypto.com>',
+      from: '"UmairCrypto" <no-reply@umaircrypto.com>',
       to: data.email,
       subject: `Payment Update — #${data.refId}`,
       html: buildRejectionEmailHtml(data),

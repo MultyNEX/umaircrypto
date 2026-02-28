@@ -40,7 +40,7 @@ export async function POST(
   });
 
   await transporter.sendMail({
-    from: '"UmairCrypto" <noreply@umaircrypto.com>',
+    from: '"UmairCrypto" <no-reply@umaircrypto.com>',
     to: order.email,
     subject: `Payment Update — #${order.refId}`,
     html: buildRejectionEmailHtml({

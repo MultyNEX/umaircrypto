@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
     });
 
     await transporter.sendMail({
-      from: '"UmairCrypto" <noreply@umaircrypto.com>',
+      from: '"UmairCrypto" <no-reply@umaircrypto.com>',
       to: data.email,
       subject: `Action Required — Your payment is short by $${remaining}`,
       html: buildWrongAmountEmailHtml(data, received.toFixed(2), remaining, topupUrl),
