@@ -94,12 +94,14 @@ export async function POST(req: NextRequest) {
         <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
         <p style="color: #f1f5f9; font-weight: bold; font-size: 15px; margin-bottom: 16px;">Quick Actions</p>
         <div style="text-align: center;">
-          <a href="${approveUrl}" style="display: inline-block; background: #22c55e; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 8px;">
-            &#10003; Approve
-          </a>
-          <a href="${rejectUrl}" style="display: inline-block; background: #ef4444; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 8px;">
-            &#10007; Reject
-          </a>
+          <div style="margin-bottom: 10px;">
+            <a href="${approveUrl}" style="display: inline-block; background: #22c55e; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 8px;">
+              &#10003; Approve
+            </a>
+            <a href="${rejectUrl}" style="display: inline-block; background: #ef4444; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px;">
+              &#10007; Reject
+            </a>
+          </div>
           <a href="${wrongAmountUrl}" style="display: inline-block; background: #F59E0B; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px;">
             &#9888; Wrong Amount
           </a>
