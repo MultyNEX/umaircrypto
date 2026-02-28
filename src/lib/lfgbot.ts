@@ -52,7 +52,7 @@ export async function analyzeScreenshot(
     const base64Image = imageBuffer.toString("base64");
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -72,7 +72,7 @@ export async function analyzeScreenshot(
           ],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 1024,
+            maxOutputTokens: 4096,
           },
         }),
       }
@@ -84,23 +84,53 @@ export async function analyzeScreenshot(
     }
 
     const data = await response.json();
+    
+    // Extract text from all parts, filtering out any thinking parts
     const text = data?.candidates?.[0]?.content?.parts
-      ?.map((p: { text?: string }) => p.text || "")
+      ?.filter((p: { text?: string }) => p.text)
+      .map((p: { text?: string }) => p.text || "")
       .join("")
       .trim();
 
-    if (!text) return null;
+    if (!text) {
+      console.error("LFGbot: No text in response. Full response:", JSON.stringify(data).slice(0, 500));
+      return null;
+    }
 
-    // Clean up — remove markdown fences if present
-    const cleaned = text
+    // Clean up — remove markdown fences, leading/trailing whitespace, any preamble before JSON
+    let cleaned = text
       .replace(/```json\s*/g, "")
       .replace(/```\s*/g, "")
       .trim();
+    
+    // Find the first { and last } to extract JSON even if there's surrounding text
+    const firstBrace = cleaned.indexOf("{");
+    const lastBrace = cleaned.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+    }
 
     const parsed = JSON.parse(cleaned) as ScreenshotAnalysis;
     return parsed;
   } catch (error) {
-    console.error("AI screenshot analysis failed:", error);
+    if (error instanceof SyntaxError) {
+      console.error("LFGbot JSON parse failed. Raw text (first 300 chars):", 
+        (error as Error).message);
+      // Return a minimal fallback analysis
+      return {
+        amountSent: null,
+        currency: null,
+        receivingAddress: null,
+        txHash: null,
+        network: null,
+        exchange: null,
+        status: null,
+        confidence: "low" as const,
+        summary: "LFGbot could not fully parse this screenshot. Please verify manually.",
+        warnings: ["Analysis was incomplete — manual review required"],
+      };
+    }
+    console.error("LFGbot screenshot analysis error:", error instanceof Error ? error.message : error);
     return null;
   }
 }
