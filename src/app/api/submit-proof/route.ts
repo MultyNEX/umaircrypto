@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
     // Send email to admin
     await transporter.sendMail({
       from: `"UmairCrypto Payments" <no-reply@umaircrypto.com>`,
-      to: process.env.PROOF_RECIPIENT || "hello.multynex@gmail.com",
+      to: process.env.PROOF_RECIPIENT || "umairxcrypto@gmail.com",
       replyTo: email,
       subject: `💰 New Payment Proof — ${tier} (${amount}) — ${name}`,
       html,
