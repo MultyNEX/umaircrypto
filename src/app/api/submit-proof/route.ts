@@ -55,9 +55,16 @@ export async function POST(req: NextRequest) {
     const rejectUrl = `${baseUrl}/api/admin/reject?token=${token}`;
     const wrongAmountUrl = `${baseUrl}/api/admin/wrong-amount?token=${token}`;
 
-    // Run AI screenshot analysis (non-blocking — if it fails, email still sends)
+    // Use pre-computed analysis from client if available, otherwise run server-side
     let aiBlock = "";
-    if (screenshot && screenshot.size > 0) {
+    const preComputedAnalysis = formData.get("analysis") as string | null;
+    if (preComputedAnalysis) {
+      try {
+        const analysis = JSON.parse(preComputedAnalysis) as Parameters<typeof buildAnalysisEmailBlock>[0];
+        aiBlock = buildAnalysisEmailBlock(analysis, amount, network);
+      } catch {}
+    }
+    if (!aiBlock && screenshot && screenshot.size > 0) {
       try {
         const buf = Buffer.from(await screenshot.arrayBuffer());
         const analysis = await analyzeScreenshot(buf, screenshot.type);

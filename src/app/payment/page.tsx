@@ -282,6 +282,22 @@ function PaymentContent() {
   const [dragOver, setDragOver] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // LFGbot analysis state
+  interface AnalysisResult {
+    amountSent: string | null;
+    currency: string | null;
+    txHash: string | null;
+    network: string | null;
+    exchange: string | null;
+    status: string | null;
+    confidence: "high" | "medium" | "low";
+    summary: string;
+    warnings: string[];
+  }
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [analysisError, setAnalysisError] = useState("");
   const [walletAddresses, setWalletAddresses] = useState<Record<string, string>>({});
   const [walletsLoading, setWalletsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -380,7 +396,37 @@ function PaymentContent() {
     e.preventDefault();
     setDragOver(false);
     if (e.dataTransfer.files.length > 0) {
-      setScreenshot(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      setScreenshot(file);
+      analyzeFile(file);
+    }
+  };
+
+  const analyzeFile = async (file: File) => {
+    setAnalyzing(true);
+    setAnalysis(null);
+    setAnalysisError("");
+    try {
+      const body = new FormData();
+      body.append("screenshot", file);
+      const res = await fetch("/api/analyze-screenshot", {
+        method: "POST",
+        body,
+      });
+      const data = await res.json();
+      if (data.analysis) {
+        setAnalysis(data.analysis);
+        // Auto-fill TX hash if detected and field is empty
+        if (data.analysis.txHash && !formData.txHash) {
+          setFormData((prev) => ({ ...prev, txHash: data.analysis.txHash }));
+        }
+      } else {
+        setAnalysisError(data.error || "Analysis unavailable");
+      }
+    } catch {
+      setAnalysisError("Analysis unavailable — you can still submit normally");
+    } finally {
+      setAnalyzing(false);
     }
   };
 
@@ -402,6 +448,9 @@ function PaymentContent() {
       body.append("network", WALLET_META[activeWallet].network);
       if (screenshot) {
         body.append("screenshot", screenshot);
+      }
+      if (analysis) {
+        body.append("analysis", JSON.stringify(analysis));
       }
 
       const res = await fetch("/api/submit-proof", {
@@ -803,7 +852,11 @@ function PaymentContent() {
                     accept="image/*,.pdf"
                     className="hidden"
                     onChange={(e) => {
-                      if (e.target.files?.[0]) setScreenshot(e.target.files[0]);
+                      if (e.target.files?.[0]) {
+                        const file = e.target.files[0];
+                        setScreenshot(file);
+                        analyzeFile(file);
+                      }
                     }}
                   />
                   {screenshot ? (
@@ -812,7 +865,7 @@ function PaymentContent() {
                       <span className="text-text-primary text-sm">{screenshot.name}</span>
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); setScreenshot(null); }}
+                        onClick={(e) => { e.stopPropagation(); setScreenshot(null); setAnalysis(null); setAnalysisError(""); setAnalyzing(false); }}
                         className="p-1 rounded-full hover:bg-white/10 text-text-secondary"
                       >
                         <X size={16} />
@@ -834,6 +887,99 @@ function PaymentContent() {
                     <span className="flex items-center gap-1"><Check size={12} className="text-green-400" /> Completed</span>
                   </div>
                 </div>
+
+                {/* LFGbot Analysis Results */}
+                {analyzing && (
+                  <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-accent-primary/20 animate-pulse">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-base">🤖</span>
+                      <span className="text-accent-primary text-sm font-semibold">LFGbot</span>
+                    </div>
+                    <p className="text-text-secondary text-sm">Scanning your screenshot...</p>
+                  </div>
+                )}
+
+                {analysis && !analyzing && (
+                  <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🤖</span>
+                        <span className="text-accent-primary text-sm font-semibold">LFGbot Analysis</span>
+                      </div>
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                        analysis.confidence === "high"
+                          ? "bg-green-500/15 text-green-400"
+                          : analysis.confidence === "medium"
+                          ? "bg-yellow-500/15 text-yellow-400"
+                          : "bg-red-500/15 text-red-400"
+                      }`}>
+                        {analysis.confidence.charAt(0).toUpperCase() + analysis.confidence.slice(1)} confidence
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                      {analysis.amountSent && (
+                        <div className="flex justify-between col-span-2 sm:col-span-1">
+                          <span className="text-text-secondary">Amount</span>
+                          <span className="text-text-primary font-semibold">
+                            {analysis.amountSent} {analysis.currency || ""}
+                          </span>
+                        </div>
+                      )}
+                      {analysis.network && (
+                        <div className="flex justify-between col-span-2 sm:col-span-1">
+                          <span className="text-text-secondary">Network</span>
+                          <span className="text-text-primary font-semibold">{analysis.network}</span>
+                        </div>
+                      )}
+                      {analysis.exchange && (
+                        <div className="flex justify-between col-span-2 sm:col-span-1">
+                          <span className="text-text-secondary">Exchange</span>
+                          <span className="text-text-primary font-semibold">{analysis.exchange}</span>
+                        </div>
+                      )}
+                      {analysis.status && (
+                        <div className="flex justify-between col-span-2 sm:col-span-1">
+                          <span className="text-text-secondary">Status</span>
+                          <span className={`font-semibold ${
+                            analysis.status.toLowerCase().includes("complet") ||
+                            analysis.status.toLowerCase().includes("success")
+                              ? "text-green-400"
+                              : "text-yellow-400"
+                          }`}>
+                            {analysis.status}
+                          </span>
+                        </div>
+                      )}
+                      {analysis.txHash && (
+                        <div className="flex justify-between col-span-2">
+                          <span className="text-text-secondary">TX Hash</span>
+                          <span className="text-accent-primary font-mono text-xs">
+                            {analysis.txHash.slice(0, 8)}...{analysis.txHash.slice(-8)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    {analysis.warnings?.length > 0 && (
+                      <div className="mt-3 space-y-1">
+                        {analysis.warnings.map((w, i) => (
+                          <p key={i} className="text-yellow-400/80 text-xs flex items-start gap-1.5">
+                            <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
+                            {w}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {analysisError && !analyzing && (
+                  <div className="mt-4 p-3 rounded-xl bg-yellow-500/[0.06] border border-yellow-500/15">
+                    <p className="text-yellow-400/70 text-xs flex items-center gap-1.5">
+                      <AlertTriangle size={12} />
+                      {analysisError}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Name + Email row */}
