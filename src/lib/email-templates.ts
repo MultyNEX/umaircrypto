@@ -195,3 +195,51 @@ export function buildAdminResultPageHtml(
 </body>
 </html>`;
 }
+
+export function buildWrongAmountEmailHtml(
+  data: SubmissionPayload,
+  amountReceived: string,
+  amountRemaining: string,
+  topupUrl: string
+): string {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
+      <h1 style="color: #F59E0B; margin-bottom: 8px;">Payment Shortfall</h1>
+      <p>Hi ${data.name},</p>
+      <p>We received <strong>$${amountReceived}</strong> toward your <strong>${data.tier}</strong> plan (${data.amount}) via <strong>${data.network}</strong>.</p>
+      <p>You are short by <strong style="color: #F59E0B;">$${amountRemaining}</strong>.</p>
+      <p>Reference: <strong>#${data.refId}</strong></p>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+
+      <div style="background: #F59E0B10; border: 1px solid #F59E0B20; border-radius: 10px; padding: 16px; margin: 16px 0;">
+        <p style="color: #F59E0B; font-weight: bold; font-size: 14px; margin: 0 0 8px;">Why does this happen?</p>
+        <p style="color: #94a3b8; font-size: 13px; margin: 0; line-height: 1.6;">
+          This usually happens when your exchange deducts a withdrawal fee from the amount you send. For example, Binance charges ~$1 for TRC20 withdrawals, which reduces the amount we receive.
+        </p>
+      </div>
+
+      <p>Please send the remaining <strong>$${amountRemaining}</strong> to complete your payment:</p>
+
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="${topupUrl}" style="display: inline-block; background: #F59E0B; color: #0a0a0f; padding: 14px 32px; border-radius: 12px; font-weight: bold; text-decoration: none; font-size: 16px;">
+          Complete Payment — Send $${amountRemaining}
+        </a>
+      </div>
+
+      <p style="color: #94a3b8; font-size: 13px; text-align: center;">
+        If the button doesn't work, copy this link:<br/>
+        <a href="${topupUrl}" style="color: #F59E0B; word-break: break-all;">${topupUrl}</a>
+      </p>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+
+      <p style="color: #ef4444; font-size: 13px; font-weight: bold;">⏰ This link expires in 48 hours.</p>
+
+      <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
+      <p style="color: #94a3b8; font-size: 13px;">
+        Questions? Reply to this email or DM <a href="https://instagram.com/umairorkz" style="color: #38BDF8;">@umairorkz</a> on Instagram.
+      </p>
+    </div>
+  `;
+}

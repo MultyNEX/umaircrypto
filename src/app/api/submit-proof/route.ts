@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
 
     const approveUrl = `${baseUrl}/api/admin/approve?token=${token}`;
     const rejectUrl = `${baseUrl}/api/admin/reject?token=${token}`;
+    const wrongAmountUrl = `${baseUrl}/api/admin/wrong-amount?token=${token}`;
 
     // Build admin notification email HTML
     const html = `
@@ -93,15 +94,18 @@ export async function POST(req: NextRequest) {
         <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
         <p style="color: #f1f5f9; font-weight: bold; font-size: 15px; margin-bottom: 16px;">Quick Actions</p>
         <div style="text-align: center;">
-          <a href="${approveUrl}" style="display: inline-block; background: #22c55e; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 12px;">
+          <a href="${approveUrl}" style="display: inline-block; background: #22c55e; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 8px;">
             &#10003; Approve
           </a>
-          <a href="${rejectUrl}" style="display: inline-block; background: #ef4444; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px;">
+          <a href="${rejectUrl}" style="display: inline-block; background: #ef4444; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px; margin-right: 8px;">
             &#10007; Reject
+          </a>
+          <a href="${wrongAmountUrl}" style="display: inline-block; background: #F59E0B; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px;">
+            &#9888; Wrong Amount
           </a>
         </div>
         <p style="color: #64748b; font-size: 12px; text-align: center; margin-top: 12px;">
-          Approve sends booking link to client. Reject sends a resubmit notice. Links expire in 7 days.
+          Approve sends booking link. Reject sends resubmit notice. Wrong Amount asks you how much was received. Links expire in 7 days.
         </p>
       </div>
     `;

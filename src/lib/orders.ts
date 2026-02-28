@@ -10,9 +10,13 @@ export interface Order {
   network: string;
   txHash: string;
   thumbnail: string; // base64 data URL
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "wrong_amount";
   createdAt: string; // ISO timestamp
   resolvedAt?: string; // ISO timestamp when approved/rejected
+  amountReceived?: string; // what Umair actually received
+  amountRemaining?: string; // shortfall
+  topupToken?: string; // token for top-up page
+  topupRefId?: string; // ref ID of the top-up submission
 }
 
 const INDEX_KEY = "order_ids";
@@ -61,7 +65,7 @@ export async function getAllOrders(): Promise<Order[]> {
 
 export async function updateOrderStatus(
   refId: string,
-  status: "approved" | "rejected"
+  status: "approved" | "rejected" | "wrong_amount"
 ): Promise<void> {
   const redis = getRedis();
   if (!redis) return;
@@ -69,5 +73,17 @@ export async function updateOrderStatus(
   if (!order) return;
   order.status = status;
   order.resolvedAt = new Date().toISOString();
+  await redis.set(`order:${order.refId}`, JSON.stringify(order));
+}
+
+export async function updateOrder(
+  refId: string,
+  updates: Partial<Order>
+): Promise<void> {
+  const redis = getRedis();
+  if (!redis) return;
+  const order = await getOrder(refId);
+  if (!order) return;
+  Object.assign(order, updates);
   await redis.set(`order:${order.refId}`, JSON.stringify(order));
 }
