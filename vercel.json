@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/vip-checkin",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/fetch-tweets",
+      "schedule": "*/30 * * * *"
     }
   ]
 }
