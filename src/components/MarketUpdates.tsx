@@ -42,7 +42,7 @@ function TweetCard({ tweetId, isVisible }: { tweetId: string; isVisible: boolean
           theme: "dark",
           dnt: true,
           conversation: "none",
-          cards: "visible",
+          cards: "hidden",
           width: 360,
         })
         .then((el) => {
@@ -70,7 +70,7 @@ function TweetCard({ tweetId, isVisible }: { tweetId: string; isVisible: boolean
         style={{
           boxShadow:
             "0 0 20px rgba(56, 189, 248, 0.03), inset 0 1px 0 rgba(56, 189, 248, 0.05)",
-          minHeight: 280,
+          height: 320,
         }}
       >
         {/* Loading skeleton — positioned absolute so tweet container stays in flow */}
@@ -100,6 +100,12 @@ function TweetCard({ tweetId, isVisible }: { tweetId: string; isVisible: boolean
 }
 
 export default function MarketUpdates({ tweetIds }: { tweetIds: string[] }) {
+  // Sort by tweet ID descending (Snowflake IDs encode timestamp — higher = newer)
+  const sortedIds = [...tweetIds].sort((a, b) => {
+    if (a.length !== b.length) return b.length - a.length;
+    return b.localeCompare(a);
+  });
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -228,10 +234,10 @@ export default function MarketUpdates({ tweetIds }: { tweetIds: string[] }) {
           <div
             ref={scrollRef}
             className={`flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 ${
-              tweetIds.length <= 3 ? "sm:justify-center" : ""
+              sortedIds.length <= 3 ? "sm:justify-center" : ""
             }`}
           >
-            {tweetIds.map((id) => (
+            {sortedIds.map((id) => (
               <TweetCard key={id} tweetId={id} isVisible={isVisible} />
             ))}
           </div>
