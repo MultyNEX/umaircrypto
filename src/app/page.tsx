@@ -5,7 +5,7 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import LiveMarkets from "@/components/LiveMarkets";
 import MarketUpdates from "@/components/MarketUpdates";
-import { getTweetIds } from "@/lib/tweets";
+import { getTweetIdsFresh } from "@/lib/tweets";
 import Services from "@/components/Services";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
@@ -22,7 +22,7 @@ const CryptoCoins = dynamic(() => import("@/components/CryptoCoins"), {
 export const revalidate = 60;
 
 export default async function Home() {
-  const tweetIds = await getTweetIds();
+  const tweetIds = await getTweetIdsFresh();
   return (
     <>
       <PreloaderOnce />
