@@ -198,13 +198,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ── Check auto-approve conditions ──
+    // ── Auto-approve disabled — all submissions go to manual review ──
     const expectedAddress = getExpectedWalletAddress(network);
     const autoApproveResult = serverAnalysis
       ? shouldAutoApprove(serverAnalysis, amount, network, expectedAddress, chainVerification)
       : { approve: false, reasons: ["No AI analysis available"] };
 
-    const isAutoApproved = autoApproveResult.approve;
+    const isAutoApproved = false; // auto-approve disabled
 
     // ── Prepare attachments ──
     const attachments: { filename: string; content: Buffer; contentType: string }[] = [];

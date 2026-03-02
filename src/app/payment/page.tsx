@@ -473,6 +473,7 @@ function PaymentContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (selectedTier === null) return;
     setSubmitting(true);
     setSubmitError("");
 
@@ -482,8 +483,8 @@ function PaymentContent() {
       body.append("email", formData.email);
       body.append("phone", selectedCode ? `${selectedCode.code}${formData.phone.replace(/\s/g, "")}` : formData.phone);
       body.append("txHash", formData.txHash);
-      body.append("tier", TIERS[selectedTier!].name);
-      body.append("amount", TIERS[selectedTier!].price);
+      body.append("tier", TIERS[selectedTier].name);
+      body.append("amount", TIERS[selectedTier].price);
       body.append("network", WALLET_META[activeWallet].network);
       if (screenshot) {
         body.append("screenshot", screenshot);
@@ -1398,7 +1399,7 @@ function PaymentContent() {
 
               <button
                 type="submit"
-                disabled={!screenshot || !formData.name || !formData.email || !formData.phone || !wallet.address || submitting}
+                disabled={!screenshot || !formData.name || !formData.email || !formData.phone || !wallet.address || selectedTier === null || submitting}
                 className="w-full py-4 rounded-xl text-base font-semibold transition-all duration-200 bg-accent-primary text-bg-primary hover:brightness-110 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:shadow-none"
               >
                 {submitting ? "Submitting..." : "Submit Payment Proof"}
