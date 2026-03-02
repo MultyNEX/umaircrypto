@@ -124,6 +124,7 @@ export default function LiveMarkets() {
   const [chartReady, setChartReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [tickerData, setTickerData] = useState<Record<string, TickerData>>({});
+  const [chartUnlocked, setChartUnlocked] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,6 +134,33 @@ export default function LiveMarkets() {
   const wsRef = useRef<WebSocket | null>(null);
 
   const activePair = COIN_PAIRS[activeIndex];
+  const chartWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Re-lock chart when clicking outside or scrolling away
+  useEffect(() => {
+    if (!chartUnlocked) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (chartWrapperRef.current && !chartWrapperRef.current.contains(e.target as Node)) {
+        setChartUnlocked(false);
+      }
+    }
+
+    function handleScroll() {
+      if (!chartWrapperRef.current) return;
+      const rect = chartWrapperRef.current.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) {
+        setChartUnlocked(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [chartUnlocked]);
 
   // Intersection observer for lazy loading
   useEffect(() => {
@@ -292,7 +320,7 @@ export default function LiveMarkets() {
     async function loadHistorical() {
       try {
         const res = await fetch(
-          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=60`
+          `https://api.binance.com/api/v3/klines?symbol=${activePair.binanceSymbol}&interval=4h&limit=200`
         );
         if (!res.ok || cancelled) return;
         const klines: (string | number)[][] = await res.json();
@@ -558,14 +586,14 @@ export default function LiveMarkets() {
           </div>
 
           {/* Glow wrapper */}
-          <div className="relative rounded-2xl overflow-hidden">
+          <div ref={chartWrapperRef} className="relative rounded-2xl overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-accent-primary/[0.05] to-transparent pointer-events-none z-10 rounded-t-2xl" />
             <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-accent-secondary/[0.03] to-transparent pointer-events-none z-10 rounded-b-2xl" />
             <div className="absolute top-0 left-0 w-20 h-20 bg-accent-primary/[0.04] blur-2xl pointer-events-none z-10" />
             <div className="absolute top-0 right-0 w-20 h-20 bg-accent-secondary/[0.03] blur-2xl pointer-events-none z-10" />
 
             <div
-              className="rounded-2xl h-[350px] sm:h-[450px] md:h-[520px] lg:h-[560px]"
+              className="relative rounded-2xl h-[350px] sm:h-[450px] md:h-[520px] lg:h-[560px]"
               style={{
                 border: "1px solid rgba(56, 189, 248, 0.06)",
                 boxShadow:
@@ -573,9 +601,24 @@ export default function LiveMarkets() {
                 background: "#060612",
               }}
             >
+              {/* Click-to-interact overlay — prevents accidental scroll/zoom */}
+              {!chartUnlocked && chartReady && (
+                <button
+                  onClick={() => setChartUnlocked(true)}
+                  className="absolute inset-0 z-20 flex items-center justify-center cursor-pointer bg-transparent group"
+                >
+                  <span className="px-4 py-2 rounded-full bg-black/60 backdrop-blur-sm border border-white/[0.1] text-text-secondary text-sm font-medium group-hover:border-accent-primary/30 group-hover:text-text-primary transition-all">
+                    Click to interact with chart
+                  </span>
+                </button>
+              )}
               <div
                 ref={chartContainerRef}
-                style={{ width: "100%", height: "100%" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  pointerEvents: chartUnlocked ? "auto" : "none",
+                }}
               />
               {!isVisible && (
                 <div

@@ -66,7 +66,7 @@ function TweetCard({ tweetId, isVisible }: { tweetId: string; isVisible: boolean
   return (
     <div className="flex-shrink-0 w-[85vw] sm:w-[340px] md:w-[340px] lg:w-[360px] snap-center">
       <div
-        className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden"
+        className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-y-auto scrollbar-hide"
         style={{
           boxShadow:
             "0 0 20px rgba(56, 189, 248, 0.03), inset 0 1px 0 rgba(56, 189, 248, 0.05)",
