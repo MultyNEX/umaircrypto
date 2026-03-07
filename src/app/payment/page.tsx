@@ -272,6 +272,8 @@ function PaymentContent() {
     email: "",
     phone: "",
     txHash: "",
+    nationality: "",
+    language: "",
   });
   const [selectedCode, setSelectedCode] = useState<(typeof COUNTRY_CODES)[0] | null>(null);
   const [dialInput, setDialInput] = useState("");
@@ -483,6 +485,8 @@ function PaymentContent() {
       body.append("email", formData.email);
       body.append("phone", selectedCode ? `${selectedCode.code}${formData.phone.replace(/\s/g, "")}` : formData.phone);
       body.append("txHash", formData.txHash);
+      body.append("nationality", formData.nationality);
+      body.append("language", formData.language);
       body.append("tier", TIERS[selectedTier].name);
       body.append("amount", TIERS[selectedTier].price);
       body.append("network", WALLET_META[activeWallet].network);
@@ -1390,6 +1394,42 @@ function PaymentContent() {
                 </div>
               </div>
 
+              {/* Nationality + Language row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-text-primary text-sm font-medium mb-2">
+                    Nationality <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Pakistani, Saudi, British"
+                    value={formData.nationality}
+                    onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-text-primary text-sm font-medium mb-2">
+                    Preferred Language <span className="text-red-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      required
+                      value={formData.language}
+                      onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm focus:outline-none focus:border-accent-primary/50 transition-colors appearance-none cursor-pointer"
+                      style={{ colorScheme: "dark" }}
+                    >
+                      <option value="" disabled className="bg-[#0c0c1d] text-text-secondary">Select language</option>
+                      <option value="English" className="bg-[#0c0c1d] text-text-primary">English</option>
+                      <option value="Urdu" className="bg-[#0c0c1d] text-text-primary">اردو — Urdu</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
               {/* Submit */}
               {submitError && (
                 <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
@@ -1399,7 +1439,7 @@ function PaymentContent() {
 
               <button
                 type="submit"
-                disabled={!screenshot || !formData.name || !formData.email || !formData.phone || !wallet.address || selectedTier === null || submitting}
+                disabled={!screenshot || !formData.name || !formData.email || !formData.phone || !formData.nationality || !formData.language || !wallet.address || selectedTier === null || submitting}
                 className="w-full py-4 rounded-xl text-base font-semibold transition-all duration-200 bg-accent-primary text-bg-primary hover:brightness-110 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.55)] btn-neon-glow disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:shadow-none"
               >
                 {submitting ? "Submitting..." : "Submit Payment Proof"}
