@@ -11,7 +11,7 @@ const FALLBACK_IDS = [
 ];
 
 const USERNAME = "Umairorkz";
-const HASHTAG = "#MarketUpdate";
+const HASHTAGS = ["#MarketUpdate", "#MARKET"];
 const KV_KEY = "tweet_ids";
 const KV_LAST_FETCH = "tweet_ids_last_fetch";
 const MAX_TWEETS = 12;
@@ -79,8 +79,13 @@ export async function refreshTweetsFromTwitter(): Promise<string[]> {
   }
 
   const html = await res.text();
-  const hashtagLower = HASHTAG.toLowerCase();
+  const hashtagsLower = HASHTAGS.map((h) => h.toLowerCase());
   const ids: string[] = [];
+
+  function matchesAnyHashtag(text: string): boolean {
+    const lower = text.toLowerCase();
+    return hashtagsLower.some((h) => lower.includes(h));
+  }
 
   // Try structured blocks first (article or data-tweet-id elements)
   const blockPattern =
@@ -89,7 +94,7 @@ export async function refreshTweetsFromTwitter(): Promise<string[]> {
 
   if (blocks) {
     for (const block of blocks) {
-      if (!block.toLowerCase().includes(hashtagLower)) continue;
+      if (!matchesAnyHashtag(block)) continue;
       const idMatch = block.match(/\/status\/(\d{15,})/);
       if (idMatch && !ids.includes(idMatch[1])) ids.push(idMatch[1]);
     }
@@ -102,16 +107,16 @@ export async function refreshTweetsFromTwitter(): Promise<string[]> {
     while ((m = statusPattern.exec(html)) !== null) {
       const start = Math.max(0, m.index - 1500);
       const end = Math.min(html.length, m.index + 1500);
-      const chunk = html.slice(start, end).toLowerCase();
-      if (chunk.includes(hashtagLower) && !ids.includes(m[1])) {
+      const chunk = html.slice(start, end);
+      if (matchesAnyHashtag(chunk) && !ids.includes(m[1])) {
         ids.push(m[1]);
       }
     }
   }
 
-  // If no #MarketUpdate tweets found, keep existing data
+  // If no matching tweets found, keep existing data
   if (ids.length === 0) {
-    console.warn("No #MarketUpdate tweets found — keeping existing data");
+    console.warn("No matching hashtag tweets found — keeping existing data");
     return getTweetIds();
   }
 

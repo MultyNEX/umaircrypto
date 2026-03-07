@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -167,6 +168,7 @@ export default function RootLayout({
         {/* Circuit board grid overlay */}
         <div className="circuit-grid" aria-hidden="true" />
         {children}
+        <Analytics />
       </body>
     </html>
   );

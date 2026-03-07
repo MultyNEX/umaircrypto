@@ -147,11 +147,8 @@ export default function LiveMarkets() {
     }
 
     function handleScroll() {
-      if (!chartWrapperRef.current) return;
-      const rect = chartWrapperRef.current.getBoundingClientRect();
-      if (rect.bottom < 0 || rect.top > window.innerHeight) {
-        setChartUnlocked(false);
-      }
+      // Re-lock chart as soon as user scrolls the page
+      setChartUnlocked(false);
     }
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -601,16 +598,24 @@ export default function LiveMarkets() {
                 background: "#060612",
               }}
             >
-              {/* Click-to-interact overlay — prevents accidental scroll/zoom */}
+              {/* Click-to-interact overlay — prevents accidental scroll/zoom on trackpads */}
               {!chartUnlocked && chartReady && (
-                <button
+                <div
                   onClick={() => setChartUnlocked(true)}
-                  className="absolute inset-0 z-20 flex items-center justify-center cursor-pointer bg-transparent group"
+                  onWheel={(e) => {
+                    // Let page scroll normally — don't let the chart capture trackpad gestures
+                    e.stopPropagation();
+                    window.scrollBy({ top: e.deltaY, left: e.deltaX });
+                  }}
+                  className="absolute inset-0 z-20 flex items-center justify-center cursor-pointer group"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setChartUnlocked(true); }}
                 >
                   <span className="px-4 py-2 rounded-full bg-black/60 backdrop-blur-sm border border-white/[0.1] text-text-secondary text-sm font-medium group-hover:border-accent-primary/30 group-hover:text-text-primary transition-all">
                     Click to interact with chart
                   </span>
-                </button>
+                </div>
               )}
               <div
                 ref={chartContainerRef}
