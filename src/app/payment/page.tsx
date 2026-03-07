@@ -1300,7 +1300,7 @@ function PaymentContent() {
                 </div>
               </div>
 
-              {/* Phone + TX Hash row */}
+              {/* Phone row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-text-primary text-sm font-medium mb-2">
@@ -1380,18 +1380,6 @@ function PaymentContent() {
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-text-primary text-sm font-medium mb-2">
-                    TX Hash <span className="text-text-secondary text-xs font-normal">(Optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Transaction hash"
-                    value={formData.txHash}
-                    onChange={(e) => setFormData({ ...formData, txHash: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
-                  />
-                </div>
               </div>
 
               {/* Nationality + Language row */}
@@ -1428,6 +1416,20 @@ function PaymentContent() {
                     <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none" />
                   </div>
                 </div>
+              </div>
+
+              {/* TX Hash */}
+              <div>
+                <label className="block text-text-primary text-sm font-medium mb-2">
+                  TX Hash <span className="text-text-secondary text-xs font-normal">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Transaction hash"
+                  value={formData.txHash}
+                  onChange={(e) => setFormData({ ...formData, txHash: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent-primary/50 transition-colors"
+                />
               </div>
 
               {/* Submit */}
