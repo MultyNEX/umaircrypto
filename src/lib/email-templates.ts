@@ -38,7 +38,8 @@ export function buildApprovalEmailHtml(
 
 export function buildVipApprovalEmailHtml(
   data: SubmissionPayload,
-  bookingUrl: string
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _bookingUrl: string
 ): string {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f1f5f9; padding: 30px; border-radius: 12px;">
@@ -50,17 +51,17 @@ export function buildVipApprovalEmailHtml(
       </div>
 
       <h1 style="color: #F59E0B; margin-bottom: 4px; text-align: center; font-size: 24px;">Welcome to VIP Mentorship</h1>
-      <p style="text-align: center; color: #94a3b8; font-size: 14px; margin-top: 0;">You're in. Let's get started.</p>
+      <p style="text-align: center; color: #94a3b8; font-size: 14px; margin-top: 0;">Your membership has been confirmed. We will be in touch shortly.</p>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 24px 0;" />
 
-      <p>Hi ${data.name},</p>
-      <p>Your payment of <strong>${data.amount}</strong> via <strong>${data.network}</strong> has been confirmed.</p>
-      <p>Reference: <strong>#${data.refId}</strong></p>
+      <p>Dear ${data.name},</p>
+      <p>We are pleased to confirm that your payment of <strong>${data.amount}</strong> via <strong>${data.network}</strong> has been successfully verified and your VIP membership is now active.</p>
+      <p style="color: #94a3b8; font-size: 13px;">Reference: <strong style="color: #f1f5f9;">#${data.refId}</strong></p>
 
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 24px 0;" />
 
-      <h3 style="color: #F59E0B; margin-bottom: 12px;">What Happens Next</h3>
+      <h3 style="color: #F59E0B; margin-bottom: 16px;">What Happens Next</h3>
 
       <table style="width: 100%; border-collapse: collapse;">
         <tr>
@@ -68,8 +69,8 @@ export function buildVipApprovalEmailHtml(
             <span style="display: inline-block; background: #F59E0B20; color: #F59E0B; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px;">1</span>
           </td>
           <td style="padding: 12px 0; color: #f1f5f9;">
-            <strong>Book Your Onboarding Call</strong><br/>
-            <span style="color: #94a3b8; font-size: 13px;">This is your first 1-on-1 session where we'll review your portfolio, understand your goals, and map out your mentorship plan.</span>
+            <strong>You Will Be Contacted via WhatsApp</strong><br/>
+            <span style="color: #94a3b8; font-size: 13px;">Our team will reach out to you personally on the WhatsApp number you provided within 24 hours to initiate your onboarding.</span>
           </td>
         </tr>
         <tr>
@@ -77,8 +78,8 @@ export function buildVipApprovalEmailHtml(
             <span style="display: inline-block; background: #F59E0B20; color: #F59E0B; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px;">2</span>
           </td>
           <td style="padding: 12px 0; color: #f1f5f9;">
-            <strong>Fill In the Pre-Call Questions</strong><br/>
-            <span style="color: #94a3b8; font-size: 13px;">After booking, you'll see a few questions about your experience, portfolio, and focus areas. Fill them in so we can hit the ground running.</span>
+            <strong>Access to the Elite 6-Month Group</strong><br/>
+            <span style="color: #94a3b8; font-size: 13px;">Your exclusive invitation link to the Elite Mentorship Group will be shared with you directly via WhatsApp upon onboarding completion.</span>
           </td>
         </tr>
         <tr>
@@ -86,39 +87,33 @@ export function buildVipApprovalEmailHtml(
             <span style="display: inline-block; background: #F59E0B20; color: #F59E0B; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px;">3</span>
           </td>
           <td style="padding: 12px 0; color: #f1f5f9;">
-            <strong>Ongoing Access</strong><br/>
-            <span style="color: #94a3b8; font-size: 13px;">As a VIP member you get ongoing mentorship for 6 months — weekly 1-on-1 calls, priority chart analysis, custom alerts, and direct WhatsApp support.</span>
+            <strong>6 Months of Elite Mentorship</strong><br/>
+            <span style="color: #94a3b8; font-size: 13px;">Priority chart analysis, direct strategic guidance, custom trade alerts, and personal access to Umair throughout your entire membership period.</span>
           </td>
         </tr>
       </table>
 
-      <div style="text-align: center; margin: 28px 0;">
-        <a href="${bookingUrl}" style="display: inline-block; background: linear-gradient(135deg, #F59E0B, #D97706); color: #0a0a0f; padding: 16px 40px; border-radius: 12px; font-weight: bold; text-decoration: none; font-size: 16px;">
-          Book Your Onboarding Call
-        </a>
-      </div>
-
-      <p style="color: #94a3b8; font-size: 13px; text-align: center;">
-        If the button doesn't work, copy this link:<br/>
-        <a href="${bookingUrl}" style="color: #F59E0B; word-break: break-all;">${bookingUrl}</a>
-      </p>
-
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 24px 0;" />
 
-      <div style="background: #F59E0B08; border: 1px solid #F59E0B20; border-radius: 10px; padding: 16px; margin-bottom: 16px;">
-        <p style="color: #F59E0B; font-weight: bold; font-size: 14px; margin: 0 0 8px;">Your VIP Membership Includes</p>
-        <p style="color: #94a3b8; font-size: 13px; margin: 0; line-height: 1.8;">
-          ✦ Onboarding strategy session<br/>
-          ✦ Ongoing 1-on-1 mentorship for 6 months<br/>
-          ✦ Personalized portfolio guidance<br/>
-          ✦ Priority access to Umair's insights
+      <div style="background: #F59E0B08; border: 1px solid #F59E0B20; border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+        <p style="color: #F59E0B; font-weight: bold; font-size: 14px; margin: 0 0 10px;">Your VIP Membership Includes</p>
+        <p style="color: #94a3b8; font-size: 13px; margin: 0; line-height: 2;">
+          ✦ Personal onboarding via WhatsApp<br/>
+          ✦ Access to the exclusive Elite 6-Month Mentorship Group<br/>
+          ✦ Ongoing strategic guidance for 6 months<br/>
+          ✦ Priority chart analysis &amp; custom trade alerts<br/>
+          ✦ Direct access to Umair's market insights
         </p>
       </div>
 
+      <p style="color: #94a3b8; font-size: 13px; text-align: center;">
+        Please ensure your WhatsApp is active on the number provided during registration. We look forward to working with you.
+      </p>
+
       <hr style="border: none; border-top: 1px solid #1e293b; margin: 20px 0;" />
-      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated message — please do not reply to this email.</p>
+      <p style="color: #64748b; font-size: 12px; font-style: italic;">This is an automated confirmation — please do not reply to this email.</p>
       <p style="color: #94a3b8; font-size: 13px;">
-        Questions? Email us at <a href="mailto:contact@umaircrypto.com" style="color: #F59E0B;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
+        For any queries, contact us at <a href="mailto:contact@umaircrypto.com" style="color: #F59E0B;">contact@umaircrypto.com</a> or DM <a href="https://instagram.com/umairorkz" style="color: #F59E0B;">@umairorkz</a> on Instagram.
       </p>
     </div>
   `;
