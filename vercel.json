@@ -7,7 +7,7 @@
     },
     {
       "path": "/api/cron/fetch-tweets",
-      "schedule": "*/30 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
